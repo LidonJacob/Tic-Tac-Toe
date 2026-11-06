@@ -1,8 +1,7 @@
 
-
-const square = ({value}) => {
+const square = ({value, onClick}) => {
   return (
-    <button className="w-24 h-24 border-2 border-gray-700 rounded-lg text-4xl font-bold hover:bg-gray-800">
+    <button onClick = {onClick} className="w-24 h-24 bg-gray-800 border-2 border-gray-600 rounded-lg flex items-center justify-center text-5xl font-bold text-white hover:bg-gray-700 transition-colors">
         {value}
     </button>
   )
