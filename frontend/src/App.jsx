@@ -1,4 +1,8 @@
-import Square from "./components/Square";
+import GameBoard from "./components/GameBoard";
+import GameStatus from "./components/GameStatus";
+import GameControls from "./components/GameControls";
+import GameModeSelector from "./components/GameModeSelector";
+import DifficultySelector from "./components/DifficultySelector";
 import { useState } from "react";
 
 function App() {
@@ -6,7 +10,9 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [winner, setWinner] = useState(null);
   const [isDraw, setIsDraw] = useState(false);
-
+  const [gameMode, setGameMode] = useState(null);
+  const [aiDifficulty, setAIDifficulty] = useState(null);
+  //conditional rendering
   const handleClick = (index) => {
     if (winner || isDraw) {
       return;
@@ -61,30 +67,40 @@ function App() {
     return null;
   };
 
+  if (gameMode === null) {
+    return <GameModeSelector onSelectMode={setGameMode} />;
+  }
+
+  if (gameMode === "ai" && aiDifficulty === null) {
+    return (
+      <DifficultySelector
+        onSelectDifficulty={setAIDifficulty}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6">
       <h1 className="text-4xl font-bold text-cyan-400">Tic-Tac-Toe</h1>
-      {winner ? (
-        <p className="text-2xl font-bold text-green-400">
-          Player {winner} wins{" "}
-        </p>
-      ) : isDraw ? (
-        <p className="text-2xl font-bold text-white"> It is a Draw</p>
-      ) : (
-        <p className="text-lg text-gray-300">Player {currentPlayer}'s turn</p>
-      )}
-      <div className="grid grid-cols-3 gap-2">
-        {board.map((value, index) => {
-          return (
-            <Square
-              key={index}
-              value={value}
-              onClick={() => handleClick(index)}
-            />
-          );
-        })}
+      <p className=" text-lg text-gray-300">
+        {" "}
+        {gameMode === "player" ? "Player vs Player" : "Player vs AI"}
+      </p>
+      <GameStatus
+        currentPlayer={currentPlayer}
+        winner={winner}
+        isDraw={isDraw}
+      />
+      <div>
+        <GameBoard board={board} onSquareClick={handleClick} />
       </div>
-      <button onClick={handleRestart} className="mt-6 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-bold rounded-lg">Restart Game </button>
+
+      <div className="flex gap-5">
+        <GameControls
+          onRestart={handleRestart}
+          onChangeMode={() => setGameMode(null)}
+        />
+      </div>
     </div>
   );
 }
