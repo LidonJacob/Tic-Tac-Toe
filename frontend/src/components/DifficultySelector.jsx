@@ -12,14 +12,14 @@ const DifficultySelector = ({ onSelectDifficulty }) => {
       </button>
       <button
         onClick={() => onSelectDifficulty("medium")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor:pointer hover:bg-yellow-500"
+        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-yellow-500"
       >
         {" "}
         Medium{" "}
       </button>
       <button
-        onClick={() => onSelectDifficulty("medium")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor:pointer hover:bg-red-500"
+        onClick={() => onSelectDifficulty("hard")}
+        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-red-500"
       >
         {" "}
         Hard{" "}
@@ -29,3 +29,12 @@ const DifficultySelector = ({ onSelectDifficulty }) => {
 };
 
 export default DifficultySelector;
+
+
+//useeffect is a hook that allows you to perform side effects in function components, it has a dependency array
+//dpendency array 
+//No dependncy array runs after every render
+//empty dependncy array runs after first render
+//dependency array runs after every render or change of dependency also on the first render
+
+//useCallback keeps a function in memory
