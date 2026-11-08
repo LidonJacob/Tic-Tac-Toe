@@ -56,7 +56,7 @@ const getWinningMove = (board, player) => {
   return null;
 };
 
-const useGameLogic = () => {
+const useGameLogic = (aiDifficulty) => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [winner, setWinner] = useState(null);
@@ -92,14 +92,20 @@ const useGameLogic = () => {
     if (winner || isDraw) {
       return;
     }
-    const winningMove = getWinningMove(board, "O");
-    const blockingMove = getWinningMove(board, "X");
-    const aiMove =
-      winningMove !== null
-        ? winningMove
-        : blockingMove !== null
-          ? blockingMove
-          : getRandomMove(board);
+    let aiMove;
+
+    if (aiDifficulty === "easy") {
+      aiMove = getRandomMove(board);
+    } else {
+      const winningMove = getWinningMove(board, "O");
+      const blockingMove = getWinningMove(board, "X");
+      aiMove =
+        winningMove !== null
+          ? winningMove
+          : blockingMove !== null
+            ? blockingMove
+            : getRandomMove(board);
+    }
 
     if (aiMove === null) {
       return;
@@ -122,7 +128,7 @@ const useGameLogic = () => {
 
     setBoard(newBoard);
     setCurrentPlayer("X");
-  }, [board, winner, isDraw]);
+  }, [board, winner, isDraw, aiDifficulty]);
 
   const handleRestart = () => {
     setBoard(["", "", "", "", "", "", "", "", ""]);

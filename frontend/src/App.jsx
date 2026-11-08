@@ -7,6 +7,10 @@ import useGameLogic from "./hooks/useGameLogic";
 import { useState, useEffect } from "react";
 
 function App() {
+
+  const [gameMode, setGameMode] = useState(null);
+  const [aiDifficulty, setAIDifficulty] = useState(null);
+
   const {
     board,
     currentPlayer,
@@ -15,11 +19,9 @@ function App() {
     handleClick,
     handleRestart,
     handleAiMove,
-  } = useGameLogic();
+  } = useGameLogic(aiDifficulty);
 
-  const [gameMode, setGameMode] = useState(null);
-  const [aiDifficulty, setAIDifficulty] = useState(null);
-
+  
   useEffect(() => {
     if (gameMode === "ai" && currentPlayer === "O") {
       const timer = setTimeout(() => {

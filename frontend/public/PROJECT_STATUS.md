@@ -29,7 +29,7 @@ Gameplay
 AI
 
 - Easy AI: Random legal moves
-- AI delay: At least one second
+- AI delay: At least 600 ms
 - AI win detection
 - Medium AI:
   1. Take an immediate winning move.
