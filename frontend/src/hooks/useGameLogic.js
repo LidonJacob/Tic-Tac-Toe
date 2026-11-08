@@ -56,6 +56,60 @@ const getWinningMove = (board, player) => {
   return null;
 };
 
+const minimax = (board, isMaximizing, depth) => {
+  const result = checkWinner(board);
+  //base cases
+  if (result === "O") return 10 - depth;
+  if (result === "X") return depth - 10;
+
+  if (getAvailableMoves(board).length === 0) return 0;
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+
+    for (let move of getAvailableMoves(board)) {
+      const testBoard = [...board];
+      testBoard[move] = "O";
+
+      const score = minimax(testBoard, false, depth + 1);
+      bestScore = Math.max(bestScore, score);
+    }
+
+    return bestScore;
+  }
+
+  let bestScore = Infinity;
+
+  for (let move of getAvailableMoves(board)) {
+    const testBoard = [...board];
+    testBoard[move] = "X";
+
+    const score = minimax(testBoard, true, depth + 1);
+    bestScore = Math.min(bestScore, score);
+  }
+
+  return bestScore;
+};
+
+const getBestMove = (board) => {
+  let bestScore = -Infinity;
+  let bestMove = null;
+
+  for (let move of getAvailableMoves(board)) {
+    const testBoard = [...board];
+    testBoard[move] = "O";
+
+    const score = minimax(testBoard, false, 1);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = move;
+    }
+  }
+
+  return bestMove;
+};
+
 const useGameLogic = (aiDifficulty) => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [currentPlayer, setCurrentPlayer] = useState("X");
@@ -96,7 +150,7 @@ const useGameLogic = (aiDifficulty) => {
 
     if (aiDifficulty === "easy") {
       aiMove = getRandomMove(board);
-    } else {
+    } else if (aiDifficulty === "medium") {
       const winningMove = getWinningMove(board, "O");
       const blockingMove = getWinningMove(board, "X");
       aiMove =
@@ -105,6 +159,8 @@ const useGameLogic = (aiDifficulty) => {
           : blockingMove !== null
             ? blockingMove
             : getRandomMove(board);
+    } else {
+      aiMove = getBestMove(board);
     }
 
     if (aiMove === null) {
