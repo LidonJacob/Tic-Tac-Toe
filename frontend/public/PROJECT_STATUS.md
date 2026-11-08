@@ -79,3 +79,50 @@ The developer is learning React and JavaScript.
 Use beginner-friendly explanations, explain why changes are made, ask short understanding questions and wait for confirmation before proceeding.
 
 Never unnecessarily repeat completed work or request code that is already available in the current project context.
+
+Current Development Position — November 8, 2026
+
+Current priority: Frontend production-readiness.
+
+Completed
+
+- Player vs Player and Player vs AI.
+- Easy, Medium and Hard AI.
+- Hard AI using depth-aware Minimax.
+- All three difficulty levels tested.
+- Updated "frontend/index.html" with:
+  - Page title.
+  - Meta description.
+  - Theme color.
+  - Open Graph metadata.
+  - Viewport meta tag.
+- Changes pushed and verified on GitHub "main".
+
+Exact next task
+
+Begin responsive design.
+
+First task: Make the Tic-Tac-Toe board responsive on small phone screens while remaining comfortable on larger screens.
+
+Files inspected:
+
+- "frontend/src/components/Square.jsx" — fixed "w-24 h-24" dimensions.
+- "frontend/src/components/GameBoard.jsx" — "grid grid-cols-3 gap-2".
+- "frontend/src/index.css" — currently only imports Tailwind.
+- "frontend/src/App.jsx" — dark background and centered layout.
+- "frontend/src/components/GameControls.jsx" — horizontal controls.
+
+Start with square and board sizing only. Do not change game logic or AI.
+
+Teaching preferences
+
+- Beginner-friendly explanations.
+- One task at a time.
+- Explain why each change is needed.
+- Wait for confirmation before proceeding.
+- Use GitHub as the source of truth; inspect the latest pushed code.
+- Never unnecessarily ask for code that can be fetched from GitHub.
+
+Deferred
+
+Alpha-Beta Pruning. Not part of the current priority.
