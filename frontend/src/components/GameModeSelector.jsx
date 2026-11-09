@@ -7,14 +7,14 @@ const GameModeSelector = ({ onSelectMode }) => {
 
       <button
         onClick={() => onSelectMode("player")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg "
+        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg "
       >
         {" "}
         Player vs Player{" "}
       </button>
       <button
         onClick={() => onSelectMode("ai")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg"
+        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg"
       >
         Player vs AI
       </button>
