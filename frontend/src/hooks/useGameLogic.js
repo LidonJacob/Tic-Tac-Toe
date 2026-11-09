@@ -11,6 +11,17 @@ const winningCombinations = [
   [2, 4, 6],
 ];
 
+const getWinningCombination = (board) => {
+  for (let combination of winningCombinations) {
+    const [a, b, c] = combination;
+
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      return combination;
+    }
+  }
+  return null;
+};
+
 const checkWinner = (board) => {
   for (let combination of winningCombinations) {
     const [a, b, c] = combination;
@@ -115,6 +126,7 @@ const useGameLogic = (aiDifficulty) => {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [winner, setWinner] = useState(null);
   const [isDraw, setIsDraw] = useState(false);
+  const [winningCombination, setWinningCombination] = useState(null);
 
   const handleClick = (index) => {
     if (winner || isDraw) {
@@ -132,6 +144,8 @@ const useGameLogic = (aiDifficulty) => {
 
     if (result) {
       setWinner(result);
+
+      setWinningCombination(getWinningCombination(newBoard));
       return;
     }
     if (newBoard.every((square) => square !== "")) {
@@ -173,6 +187,8 @@ const useGameLogic = (aiDifficulty) => {
 
     if (result) {
       setWinner(result);
+
+      setWinningCombination(getWinningCombination(newBoard));
       setBoard(newBoard);
       return;
     }
@@ -191,6 +207,7 @@ const useGameLogic = (aiDifficulty) => {
     setCurrentPlayer("X");
     setWinner(null);
     setIsDraw(false);
+    setWinningCombination(null);
   };
 
   return {
@@ -198,6 +215,7 @@ const useGameLogic = (aiDifficulty) => {
     currentPlayer,
     winner,
     isDraw,
+    winningCombination,
     handleClick,
     handleRestart,
     handleAiMove,

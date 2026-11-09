@@ -15,6 +15,7 @@ function App() {
     currentPlayer,
     winner,
     isDraw,
+    winningCombination,
     handleClick,
     handleRestart,
     handleAiMove,
@@ -53,7 +54,11 @@ function App() {
         isDraw={isDraw}
       />
       <div>
-        <GameBoard board={board} onSquareClick={handleClick} />
+        <GameBoard
+          board={board}
+          onSquareClick={handleClick}
+          winningCombination={winningCombination}
+        />
       </div>
 
       <div className="flex gap-5">
