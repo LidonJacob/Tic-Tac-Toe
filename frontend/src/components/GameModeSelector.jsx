@@ -7,14 +7,16 @@ const GameModeSelector = ({ onSelectMode }) => {
 
       <button
         onClick={() => onSelectMode("player")}
-        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg "
+        className="px-4 py-3 sm:px-6 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
       >
         {" "}
         Player vs Player{" "}
       </button>
       <button
         onClick={() => onSelectMode("ai")}
-        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg"
+        className="px-4 py-3 sm:px-6 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
       >
         Player vs AI
       </button>
