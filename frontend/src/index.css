@@ -9,3 +9,10 @@
 .animate-draw-line {
   animation: draw-line 600ms ease-out forwards;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-draw-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
