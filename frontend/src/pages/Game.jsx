@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { saveGameResult } from "../utils/gameHistory";
 
 import GameBoard from "../components/GameBoard";
 import GameStatus from "../components/GameStatus";
@@ -12,6 +13,12 @@ import useGameLogic from "../hooks/useGameLogic";
 const Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const hasSavedGame = useRef(false);
+
+  const restartGame = () => {
+    hasSavedGame.current = false;
+    handleRestart();
+  }
 
   const gameMode = location.state?.gameMode ?? null;
   const aiDifficulty = location.state?.aiDifficulty ?? null;
@@ -36,12 +43,27 @@ const Game = () => {
     }
   }, [gameMode, currentPlayer, handleAiMove]);
 
- 
+  useEffect(() => {
+    if(!winner && !isDraw ) return;
+    if(hasSavedGame.current) return;
+    hasSavedGame.current = true;
+  }, [winner, isDraw, gameMode, aiDifficulty]);
+
+  const game = {
+    id: crypto.randomUUID(),
+    gameMode,
+    aiDifficulty,
+    winner,
+    isDraw,
+    date: new Date().toISOString(),
+  };
+  saveGameResult(game);
 
   if (gameMode === null) {
     return (
       <GameModeSelector
         onSelectMode={(mode) => {
+          restartGame();
           navigate("/game", {
             state: {
               screen: mode === "ai" ? "difficulty" : "board",
@@ -56,7 +78,14 @@ const Game = () => {
     return (
       <DifficultySelector
         onSelectDifficulty={(difficulty) => {
-          navigate("/game", { state: { screen: "board", gameMode: "ai", aiDifficulty: difficulty } });
+          restartGame();
+          navigate("/game", {
+            state: {
+              screen: "board",
+              gameMode: "ai",
+              aiDifficulty: difficulty,
+            },
+          });
         }}
       />
     );
@@ -89,7 +118,7 @@ const Game = () => {
 
       <div className="flex gap-5">
         <GameControls
-          onRestart={handleRestart}
+          onRestart={restartGame}
           onChangeMode={() => {
             handleRestart();
             navigate(gameMode === "ai" ? -2 : -1);
