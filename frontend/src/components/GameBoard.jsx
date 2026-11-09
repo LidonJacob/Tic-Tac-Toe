@@ -56,7 +56,11 @@ const GameBoard = ({ board, onSquareClick, winningCombination }) => {
     : null;
   return (
     <div className="relative">
-      <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+      <div
+        role="group"
+        aria-label="Tic-Tac-Toe game board"
+        className="grid grid-cols-3 gap-1.5 sm:gap-2"
+      >
         {board.map((value, index) => {
           return (
             <Square
@@ -67,6 +71,7 @@ const GameBoard = ({ board, onSquareClick, winningCombination }) => {
               tabIndex={index === activeSquare ? 0 : -1}
               onKeyDown={(event) => handleKeyDown(event, index)}
               onFocus={() => setActiveSquare(index)}
+              index={index}
             />
           );
         })}

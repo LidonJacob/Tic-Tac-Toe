@@ -1,6 +1,10 @@
 const GameStatus = ({ currentPlayer, winner, isDraw, gameMode }) => {
   return (
-    <div className="text-lg sm:text-xl font-semibold text-white text-center mb-4">
+    <div
+      role="status"
+      aria-live="polite"
+      className="text-lg sm:text-xl font-semibold text-white text-center mb-4"
+    >
       {winner
         ? gameMode === "ai"
           ? winner === "O"

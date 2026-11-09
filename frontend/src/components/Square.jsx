@@ -1,5 +1,6 @@
 const Square = ({
   value,
+  index,
   onClick,
   tabIndex,
   onKeyDown,
@@ -15,6 +16,7 @@ const Square = ({
       tabIndex={tabIndex}
       onKeyDown={onKeyDown}
       onFocus={onFocus}
+      aria-label={`Square ${index+1}: ${value || "empty"}`}
     >
       {value}
     </button>
