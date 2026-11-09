@@ -5,6 +5,11 @@ import GameModeSelector from "./components/GameModeSelector";
 import DifficultySelector from "./components/DifficultySelector";
 import useGameLogic from "./hooks/useGameLogic";
 import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Game from "./pages/Game";
+import History from "./pages/History";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [gameMode, setGameMode] = useState(null);
@@ -20,6 +25,12 @@ function App() {
     handleRestart,
     handleAiMove,
   } = useGameLogic(aiDifficulty);
+
+  const handleChangeMode = () => {
+    handleRestart();
+    setAIDifficulty(null);
+    setGameMode(null);
+  }
 
   useEffect(() => {
     if (gameMode === "ai" && currentPlayer === "O") {
@@ -65,7 +76,7 @@ function App() {
       <div className="flex gap-5">
         <GameControls
           onRestart={handleRestart}
-          onChangeMode={() => setGameMode(null)}
+          onChangeMode={handleChangeMode}
         />
       </div>
     </div>
