@@ -18,7 +18,7 @@ const Game = () => {
   const restartGame = () => {
     hasSavedGame.current = false;
     handleRestart();
-  }
+  };
 
   const gameMode = location.state?.gameMode ?? null;
   const aiDifficulty = location.state?.aiDifficulty ?? null;
@@ -44,20 +44,19 @@ const Game = () => {
   }, [gameMode, currentPlayer, handleAiMove]);
 
   useEffect(() => {
-    if(!winner && !isDraw ) return;
-    if(hasSavedGame.current) return;
+    if (!winner && !isDraw) return;
+    if (hasSavedGame.current) return;
     hasSavedGame.current = true;
+    const game = {
+      id: crypto.randomUUID(),
+      gameMode,
+      aiDifficulty,
+      winner,
+      isDraw,
+      date: new Date().toISOString(),
+    };
+    saveGameResult(game);
   }, [winner, isDraw, gameMode, aiDifficulty]);
-
-  const game = {
-    id: crypto.randomUUID(),
-    gameMode,
-    aiDifficulty,
-    winner,
-    isDraw,
-    date: new Date().toISOString(),
-  };
-  saveGameResult(game);
 
   if (gameMode === null) {
     return (
