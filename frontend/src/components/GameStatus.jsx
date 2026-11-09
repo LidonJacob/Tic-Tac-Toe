@@ -1,11 +1,17 @@
-const GameStatus = ({ currentPlayer, winner, isDraw }) => {
+const GameStatus = ({ currentPlayer, winner, isDraw, gameMode }) => {
   return (
     <div className="text-lg sm:text-xl font-semibold text-white text-center mb-4">
       {winner
-        ? `Player ${winner} wins!`
+        ? gameMode === "ai"
+          ? winner === "O"
+            ? "AI wins!"
+            : "You Win!"
+          : `Player ${winner} wins!`
         : isDraw
           ? "It's a draw!"
-          : `Player ${currentPlayer}'s turn`}
+          : gameMode === "ai" && currentPlayer === "O"
+            ? "AI is thinking..."
+            : `Player ${currentPlayer}'s turn`}
     </div>
   );
 };

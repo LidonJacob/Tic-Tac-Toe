@@ -52,6 +52,7 @@ function App() {
         currentPlayer={currentPlayer}
         winner={winner}
         isDraw={isDraw}
+        gameMode={gameMode}
       />
       <div>
         <GameBoard

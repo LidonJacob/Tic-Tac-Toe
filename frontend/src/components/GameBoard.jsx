@@ -10,8 +10,8 @@ const GameBoard = ({ board, onSquareClick, winningCombination }) => {
     "1,4,7": {x1:150, y1:20, x2:150, y2:280},
     "2,5,8": {x1:250, y1:20, x2:250, y2:280},
 
-    "0,4,8": {x1:50, y1:50, x2:250, y2:250},
-    "2,4,6": {x1:250, y1:50, x2:50, y2:250},
+    "0,4,8": {x1:10, y1:10, x2:290, y2:290},
+    "2,4,6": {x1:290, y1:10, x2:10, y2:290},
   }
   const winningLine = winningCombination ? winningLines[winningCombination.join(",")] : null
   return (
@@ -38,9 +38,12 @@ const GameBoard = ({ board, onSquareClick, winningCombination }) => {
             y1={winningLine.y1}
             x2={winningLine.x2}
             y2={winningLine.y2}
-            stroke="00d4ff"
+            stroke="#00d4ff"
             strokeWidth="7"
-            strokeLineCap="round"
+            strokeLinecap="round"
+            strokeDasharray="420"
+            strokeDashoffset="420"
+            className="animate-drawLine"
           />
         )}
       </svg>
