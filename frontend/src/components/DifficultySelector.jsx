@@ -1,25 +1,25 @@
 const DifficultySelector = ({ onSelectDifficulty }) => {
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6">
-      <h1 className="text-4xl font-bold text-cyan-400">Choose Difficulty</h1>
+    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">Choose Difficulty</h1>
 
       <button
         onClick={() => onSelectDifficulty("easy")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-green-500"
+        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-green-500"
       >
         {" "}
         Easy{" "}
       </button>
       <button
         onClick={() => onSelectDifficulty("medium")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-yellow-500"
+        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-yellow-500"
       >
         {" "}
         Medium{" "}
       </button>
       <button
         onClick={() => onSelectDifficulty("hard")}
-        className="px-6 py-3 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-red-500"
+        className="px-4 py-3 sm:px-6 bg-cyan-500 text-white rounded-lg cursor-pointer hover:bg-red-500"
       >
         {" "}
         Hard{" "}
