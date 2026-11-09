@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import GameBoard from "../components/GameBoard";
@@ -12,9 +12,9 @@ import useGameLogic from "../hooks/useGameLogic";
 const Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [gameMode, setGameMode] = useState(null);
-  const [aiDifficulty, setAIDifficulty] = useState(null);
 
+  const gameMode = location.state?.gameMode ?? null;
+  const aiDifficulty = location.state?.aiDifficulty ?? null;
   const {
     board,
     currentPlayer,
@@ -36,35 +36,31 @@ const Game = () => {
     }
   }, [gameMode, currentPlayer, handleAiMove]);
 
-  useEffect(() => {
-  if (!location.state?.screen) {
-    setGameMode(null);
-    setAIDifficulty(null);
-  } else if (location.state.screen === "difficulty") {
-    setAIDifficulty(null);
-  }
-}, [location.state]);
+ 
 
   if (gameMode === null) {
     return (
       <GameModeSelector
         onSelectMode={(mode) => {
-          setGameMode(mode);
-          navigate("/game", { state: { screen: mode === "ai" ? "difficulty" : "board" } });
+          navigate("/game", {
+            state: {
+              screen: mode === "ai" ? "difficulty" : "board",
+              gameMode: mode,
+            },
+          });
         }}
       />
     );
   }
-if (gameMode === "ai" && aiDifficulty === null) {
-  return (
-    <DifficultySelector
-      onSelectDifficulty={(difficulty) => {
-        setAIDifficulty(difficulty);
-        navigate("/game", { state: { screen: "board" } });
-      }}
-    />
-  );
-}
+  if (gameMode === "ai" && aiDifficulty === null) {
+    return (
+      <DifficultySelector
+        onSelectDifficulty={(difficulty) => {
+          navigate("/game", { state: { screen: "board", gameMode: "ai", aiDifficulty: difficulty } });
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
@@ -94,7 +90,10 @@ if (gameMode === "ai" && aiDifficulty === null) {
       <div className="flex gap-5">
         <GameControls
           onRestart={handleRestart}
-          onChangeMode={() => setGameMode(null)}
+          onChangeMode={() => {
+            handleRestart();
+            navigate(gameMode === "ai" ? -2 : -1);
+          }}
         />
       </div>
     </div>
