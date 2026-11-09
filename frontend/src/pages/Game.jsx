@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import GameBoard from "../components/GameBoard";
 import GameStatus from "../components/GameStatus";
@@ -9,6 +10,8 @@ import DifficultySelector from "../components/DifficultySelector";
 import useGameLogic from "../hooks/useGameLogic";
 
 const Game = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [gameMode, setGameMode] = useState(null);
   const [aiDifficulty, setAIDifficulty] = useState(null);
 
@@ -33,13 +36,35 @@ const Game = () => {
     }
   }, [gameMode, currentPlayer, handleAiMove]);
 
-  if (gameMode === null) {
-    return <GameModeSelector onSelectMode={setGameMode} />;
+  useEffect(() => {
+  if (!location.state?.screen) {
+    setGameMode(null);
+    setAIDifficulty(null);
+  } else if (location.state.screen === "difficulty") {
+    setAIDifficulty(null);
   }
+}, [location.state]);
 
-  if (gameMode === "ai" && aiDifficulty === null) {
-    return <DifficultySelector onSelectDifficulty={setAIDifficulty} />;
+  if (gameMode === null) {
+    return (
+      <GameModeSelector
+        onSelectMode={(mode) => {
+          setGameMode(mode);
+          navigate("/game", { state: { screen: mode === "ai" ? "difficulty" : "board" } });
+        }}
+      />
+    );
   }
+if (gameMode === "ai" && aiDifficulty === null) {
+  return (
+    <DifficultySelector
+      onSelectDifficulty={(difficulty) => {
+        setAIDifficulty(difficulty);
+        navigate("/game", { state: { screen: "board" } });
+      }}
+    />
+  );
+}
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">

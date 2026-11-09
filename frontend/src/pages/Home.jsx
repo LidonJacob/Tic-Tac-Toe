@@ -12,7 +12,7 @@ const Home = () => {
       <button
         onClick={() => navigate("/game")}
         className="bg-cyan-700 hover:bg-cyan-800 text-white font-bold
-px-8 py-3 rounde-lg"
+px-8 py-3 rounded-lg"
       >
         {" "}
         Play Game
