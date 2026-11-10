@@ -93,7 +93,7 @@ const Game = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
       <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
         Tic-Tac-Toe
       </h1>
@@ -109,7 +109,7 @@ const Game = () => {
         gameMode={gameMode}
       />
 
-      <div>
+      <div className="w-full flex justify-center">
         <GameBoard
           board={board}
           onSquareClick={handleClick}
