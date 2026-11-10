@@ -3,10 +3,12 @@ import Home from "./pages/Home";
 import Game from "./pages/Game";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
    <div>
+    <Navbar />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/game" element={<Game />} />

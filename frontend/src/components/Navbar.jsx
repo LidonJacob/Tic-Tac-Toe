@@ -1,19 +1,36 @@
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { House, Gamepad2, History } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <nav>
-        <div className="text-2xl font-bold text-cyan-400"> 
-            Tic-Tac-Toe
-        </div>
-        <div className="flex items-center gap-6">
-            <Link to={'/'}>Home</Link>
-            <Link to={'/history'}>Game</Link>
-        </div>
+    <nav className="bg-gray-950 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+      <div className="text-2xl font-bold text-cyan-400">Tic-Tac-Toe</div>
+      <div className="flex items-center gap-6">
+        <Link
+          to={"/"}
+          className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
+        >
+          <House size={18} />
+          Home
+        </Link>
+
+        <Link
+          to={"/game"}
+          className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
+        >
+          <Gamepad2 size={18} />
+          Play
+        </Link>
+        <Link
+          to={"/history"}
+          className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
+        >
+          <History size={18} />
+          History
+        </Link>
+      </div>
     </nav>
+  );
+};
 
-    
-  )
-}
-
-export default Navbar
+export default Navbar;
