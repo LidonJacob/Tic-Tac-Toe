@@ -45,6 +45,8 @@ const Game = () => {
 
   useEffect(() => {
     if (!winner && !isDraw) return;
+    if(!gameMode) return;
+    console.log("game completed:", { winner, isDraw });
     if (hasSavedGame.current) return;
     hasSavedGame.current = true;
     const game = {
