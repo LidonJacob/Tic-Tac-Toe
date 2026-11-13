@@ -1,7 +1,20 @@
 import { getGameHistory } from "../utils/gameHistory";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 const History = () => {
   const history = getGameHistory();
+  const columns = [{
+     header: "Date",
+    accesorKey: "date",
+    cell: (info) => new Date(info.getValue()).toLocaleString(),
+}];
   return (
     <div>
       <h1>Game History</h1>

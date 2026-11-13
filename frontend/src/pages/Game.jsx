@@ -93,11 +93,7 @@ const Game = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
-      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
-        Tic-Tac-Toe
-      </h1>
-
+    <div className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8">
       <p className="text-lg text-gray-300">
         {gameMode === "player" ? "Player vs Player" : "Player vs AI"}
       </p>

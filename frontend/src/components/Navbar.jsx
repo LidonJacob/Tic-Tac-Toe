@@ -3,9 +3,9 @@ import { House, Gamepad2, History } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-      <div className="text-2xl font-bold text-cyan-400">Tic-Tac-Toe</div>
-      <div className="flex items-center gap-6">
+    <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
+      <div className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400">Tic-Tac-Toe</div>
+      <div className="flex items-center gap-3 sm:gap-6">
         <Link
           to={"/"}
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
