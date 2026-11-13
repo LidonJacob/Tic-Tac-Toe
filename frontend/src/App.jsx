@@ -4,6 +4,7 @@ import Game from "./pages/Game";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/game" element={<Game />} />
       <Route path="/history" element={<History />} />
+      <Route path="/account" element={<Account />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
    </div> 
