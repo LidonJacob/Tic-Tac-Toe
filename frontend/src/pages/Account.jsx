@@ -9,14 +9,13 @@ const Account = () => {
   const passwordsMatch = password === confirmPassword;
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const confirmPassword = formData.get("confirm-password");
-    const rememberMe = formData.get("remember-me") === "on";
-    console.log("Remember Me:", rememberMe);
-  };
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+  const rememberMe = formData.get("remember-me") === "on";
+
+  console.log("Remember Me:", rememberMe);
+};
   return (
     <div
       className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 

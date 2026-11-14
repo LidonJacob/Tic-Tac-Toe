@@ -10,13 +10,13 @@ const Navbar = () => {
           to={"/account"}
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium">
           <UserRound size={18} />
-          Account</Link>
+          <span className="hidden sm:inline">Account </span></Link>
         <Link
           to={"/"}
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
         >
           <House size={18} />
-          Home
+          <span className="hidden sm:inline">Home</span>
         </Link>
 
         <Link
@@ -24,14 +24,14 @@ const Navbar = () => {
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
         >
           <Gamepad2 size={18} />
-          Play
+          <span className="hidden sm:inline">Play</span>
         </Link>
         <Link
           to={"/history"}
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
         >
           <History size={18} />
-          History
+          <span className="hidden sm:inline">History</span>
         </Link>
       </div>
     </nav>

@@ -132,6 +132,9 @@ const useGameLogic = (aiDifficulty) => {
     if (winner || isDraw) {
       return;
     }
+    if (aiDifficulty && currentPlayer === "O") {
+      return;
+    }
 
     if (board[index] !== "") {
       return;
