@@ -36,8 +36,23 @@ const Account = () => {
             Register
           </button>
         </div>
-        <form className="space y-4">
-
+        <form className="space-y-4">
+{activeTab === "login" && (
+   <div>
+    <label htmlFor="login-email" className="block text-sm font-medium
+    text-gray-300 mb-2">Email Address</label>
+    <input
+    type="email"
+    id="login-email"
+    name="email"
+    placeholder="Enter Your Email"
+    autoComplete="email"
+    required
+    className="w-full px-4 py-3 bg-gray-900 border border-gray-700
+    rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
+    transition-colors"/>
+   </div> 
+)}
         </form>
       </div>
     </div>
