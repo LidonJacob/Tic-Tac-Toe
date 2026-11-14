@@ -5,21 +5,31 @@ const Account = () => {
   const [activeTab, setActiveTab] = useState("login");
   const [rememberMe, setRememberMe] = useState(false);
   const [password, setPassword] = useState("");
-  const [comfirmPassword, setConfirmPassword] = useState("");
-  const passwordsMatch = password === comfirmPassword;
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const passwordsMatch = password === confirmPassword;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirm-password");
+    const rememberMe = formData.get("remember-me") === "on";
+    console.log("Remember Me:", rememberMe);
+  };
   return (
     <div
       className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 
-    items-center justify-center px-4 py-8"
+    items-center justify-center px-4 py-3"
     >
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+      <div className="w-full max-w-md ">
+        <div className="text-center mb-4">
           <h1 className="text-3xl font-bold text-white mb-2">
             Welcome to Tic-Tac-Toe
           </h1>
           <p className="text-gray-400"> Login or create an account with us </p>
         </div>
-        <div className="grid grid-cols-2 bg-gray-900 p-1 rounded-xl mb-6">
+        <div className="grid grid-cols-2 bg-gray-900 p-1 rounded-xl mb-4">
           <button
             onClick={() => setActiveTab("login")}
             className={`py-3 rounded-lg font-semibold ${
@@ -41,12 +51,12 @@ const Account = () => {
             Register
           </button>
         </div>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label
               htmlFor="login-email"
               className="block text-sm font-medium
-    text-gray-300 mb-2"
+    text-gray-300 mb-1"
             >
               Email Address
             </label>
@@ -57,7 +67,7 @@ const Account = () => {
               placeholder="me@gmail.com"
               autoComplete="email"
               required
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700
+              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
             />
@@ -66,7 +76,7 @@ const Account = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-300 mb-2"
+              className="block text-sm font-medium text-gray-300 mb-1"
             >
               {activeTab === "login" ? "Password" : "Create Password"}
             </label>
@@ -80,7 +90,7 @@ const Account = () => {
                 activeTab === "login" ? "current-password" : "new-password"
               }
               required
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700
+              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
             />
@@ -89,21 +99,21 @@ const Account = () => {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-gray-300 mb-1"
               >
                 Confirm Password
               </label>
               <input
                 type="password"
-                value={comfirmPassword}
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 id="confirmPassword"
                 name="confirmPassword"
                 autoComplete="new-password"
                 required
-                className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
               />
-              {comfirmPassword && !passwordsMatch && (
+              {confirmPassword && !passwordsMatch && (
                 <p className="text-red-500 text-sm mt-2">
                   Passwords do not match
                 </p>
@@ -115,6 +125,7 @@ const Account = () => {
               <input
                 type="checkbox"
                 id="rememberMe"
+                name="remember-me"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
@@ -125,13 +136,14 @@ const Account = () => {
           )}
           <button
             type="submit"
+            disabled={activeTab === "register" && (!confirmPassword || !passwordsMatch)}
             className="w-full py-3 bg-cyan-500 rounded-lg text-gray-950
-    font-semibold hover:bg-cyan-600 transition-colors"
+    font-semibold hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {activeTab === "login" ? "Login" : "Register"}
           </button>
         </form>
-        <div className="my-6 flex flex-col gap-4">
+        <div className="my-3 flex flex-col gap-3">
           <div className="flex items-center gap-3 w-full">
             <div className="flex-1 h-px bg-gray-700"></div>
             <span className="text-gray-500 text-sm">OR CONTINUE WITH</span>
