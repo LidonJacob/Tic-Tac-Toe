@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState("login");
+  const [rememberMe, setRememberMe] = useState(false);
   return (
     <div
       className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 
@@ -37,41 +38,74 @@ const Account = () => {
           </button>
         </div>
         <form className="space-y-4">
-          {activeTab === "login" && (
-            <div>
-              <label
-                htmlFor="login-email"
-                className="block text-sm font-medium
-    text-gray-300 mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="login-email"
-                name="email"
-                placeholder="Enter Your Email"
-                autoComplete="email"
-                required
-                className="w-full px-4 py-3 bg-gray-900 border border-gray-700
-    rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
-    transition-colors"
-              />
-            </div>
-          )}
           <div>
             <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-300 mb-2">
-              Password
-              </label>
-              <input type="password" id="password" name="password" autoComplete="current-password" required 
+              htmlFor="login-email"
+              className="block text-sm font-medium
+    text-gray-300 mb-2"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              placeholder="me@gmail.com"
+              autoComplete="email"
+              required
               className="w-full px-4 py-3 bg-gray-900 border border-gray-700
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
-    transition-colors"/>
-            
+    transition-colors"
+            />
           </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
+              {activeTab === "login" ? "Password" : "Create Password"}
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autoComplete={
+                activeTab === "login" ? "current-password" : "new-password"
+              }
+              required
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700
+    rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
+    transition-colors"
+            />
+          </div>
+          {activeTab === "login" && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label htmlFor="rememberMe" className="text-gray-300 text-sm">
+                Remember Me
+              </label>
+            </div>
+          )}
         </form>
+        <div className="my-6 flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-700"></div>
+          <span className="text-gray-500 text-sm">OR CONTINUE WITH</span>
+          <div className="flex-1 h-px bg-gray-700"></div>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center
+gap-3 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white hover:bg-gray-800 transition-colors"
+          >
+            {" "}
+            <span> Continue with Google </span>
+          </button>
+        </div>
       </div>
     </div>
   );
