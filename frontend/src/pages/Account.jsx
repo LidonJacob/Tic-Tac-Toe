@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { uploadAvatar } from "../services/cloudinary";
+import api from "../services/api";
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -8,15 +10,71 @@ const Account = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const passwordsMatch = password === confirmPassword;
   const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+    const username = formData.get("username");
+    const password = formData.get("password");
     const rememberMe = formData.get("remember-me") === "on";
 
     console.log("Remember Me:", rememberMe);
+    try {
+      if (activeTab === "register") {
+        let avatarUrl = "";
+
+        const response = await api.post("/auth/register", {
+          email,
+          username,
+          password,
+          avatarUrl,
+        });
+
+        if (avatar) {
+          avatarUrl = await uploadAvatar(avatar);
+        }
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      alert("something went wrong please try again");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const handleAvatarChange = (e) => {
+    const selectedImage = e.target.files[0];
+
+    if (!selectedImage) {
+      return;
+    }
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(selectedImage.type)) {
+      alert("Please select a valid image file");
+      return;
+    }
+
+    if (selectedImage.size > 5 * 1024 * 1024) {
+      alert("Image size should not exceed 5MB");
+      return;
+    }
+
+    setAvatar(selectedImage);
+    setAvatarPreview(URL.createObjectURL(selectedImage));
+  };
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
   return (
     <div
       className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 
@@ -53,7 +111,7 @@ const Account = () => {
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
           {activeTab === "register" && (
-            <div>
+            <div className="flex flex-col items-center gap-3">
               <label
                 htmlFor="avatar"
                 className="block text-sm font-medium text-gray-300 mb-1"
@@ -66,8 +124,30 @@ const Account = () => {
                 id="avatar"
                 name="avatar"
                 accept="image/*"
-                onChange={(e) => setAvatar(e.target.files[0])}
+                className="hidden"
+                onChange={handleAvatarChange}
               />
+              <label htmlFor="avatar" className="cursor-pointer">
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Profile preview"
+                    className="w-28 h-28 rounded-full object-cover border-2 border-cyan-500"
+                  />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-gray-900 border-2 border-gray-700 flex items-center justify-center">
+                    <span className="text-gray-500 text-3xl">?</span>
+                  </div>
+                )}
+              </label>
+              <label
+                htmlFor="avatar"
+                className="px-4 py-2 bg-cyan-500 text-gray-950 text-sm font-semibold
+    rounded-lg cursor-pointer hover:bg-cyan-600 transition-colors"
+              >
+                choose photo
+              </label>
+              <p className="text-xs text-gray-500">JPG, PNG or WEBP</p>
             </div>
           )}
           <div>
