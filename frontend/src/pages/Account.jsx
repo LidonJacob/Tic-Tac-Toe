@@ -7,6 +7,7 @@ const Account = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const passwordsMatch = password === confirmPassword;
+  const [avatar, setAvatar] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +52,24 @@ const Account = () => {
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
+          {activeTab === "register" && (
+            <div>
+              <label
+                htmlFor="avatar"
+                className="block text-sm font-medium text-gray-300 mb-1"
+              >
+                Profile Picture
+              </label>
+
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                onChange={(e) => setAvatar(e.target.files[0])}
+              />
+            </div>
+          )}
           <div>
             <label
               htmlFor="login-email"
@@ -71,25 +90,26 @@ const Account = () => {
     transition-colors"
             />
           </div>
-
-          <div>
-            <label
-              htmlFor="username"
-              
-              
-              className="block text-sm font-medium text-gray-300 mb-1"
-            > Username 
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
+          {activeTab === "register" && (
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-300 mb-1"
+              >
+                {" "}
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
+                required
               />
-          </div>
-
+            </div>
+          )}
           <div>
             <label
               htmlFor="password"
