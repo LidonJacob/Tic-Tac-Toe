@@ -9,13 +9,13 @@ const Account = () => {
   const passwordsMatch = password === confirmPassword;
 
   const handleSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const formData = new FormData(e.currentTarget);
-  const rememberMe = formData.get("remember-me") === "on";
+    const formData = new FormData(e.currentTarget);
+    const rememberMe = formData.get("remember-me") === "on";
 
-  console.log("Remember Me:", rememberMe);
-};
+    console.log("Remember Me:", rememberMe);
+  };
   return (
     <div
       className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 
@@ -70,6 +70,24 @@ const Account = () => {
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="username"
+              
+              
+              className="block text-sm font-medium text-gray-300 mb-1"
+            > Username 
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
+    rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
+    transition-colors"
+              />
           </div>
 
           <div>
@@ -135,7 +153,9 @@ const Account = () => {
           )}
           <button
             type="submit"
-            disabled={activeTab === "register" && (!confirmPassword || !passwordsMatch)}
+            disabled={
+              activeTab === "register" && (!confirmPassword || !passwordsMatch)
+            }
             className="w-full py-3 bg-cyan-500 rounded-lg text-gray-950
     font-semibold hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
