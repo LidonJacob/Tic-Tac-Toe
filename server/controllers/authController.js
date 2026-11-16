@@ -2,6 +2,13 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, avatar } = req.body;
@@ -26,10 +33,10 @@ export const registerUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+    res.cookie("token", token, cookieOptions);
 
     res.status(201).json({
       message: "User registered successfully",
-      token,
       user: {
         id: user._id,
         username: user.username,
@@ -67,10 +74,10 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
       message: "login successful",
-      token,
       user: {
         id: user._id,
         username: user.username,
