@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { House, Gamepad2, History, UserRound } from "lucide-react";
+import { useAuth } from "../context/useAuth";
 
 const Navbar = () => {
+  const {user, loading} = useAuth();
   return (
     <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
       <div className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400">Tic-Tac-Toe</div>
