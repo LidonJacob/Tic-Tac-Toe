@@ -38,6 +38,13 @@ const Account = () => {
         if (avatar) {
           avatarUrl = await uploadAvatar(avatar);
         }
+      } else {
+        const response = await api.post("/auth/login", {
+          email,
+          password,
+        });
+
+        const profileResponse = await api.get("/users/profile");
       }
     } catch (error) {
       console.error("Authentication error:", error);
