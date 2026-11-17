@@ -19,16 +19,16 @@ const Account = () => {
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
-    const username = formData.get("username");
+  
     const password = formData.get("password");
-    const rememberMe = formData.get("remember-me") === "on";
+    
 
-    console.log("Remember Me:", rememberMe);
+    
     try {
       if (activeTab === "register") {
         let avatarUrl = "";
 
-        const response = await api.post("/auth/register", {
+        await api.post("/auth/register", {
           email,
           username,
           password,
@@ -39,12 +39,12 @@ const Account = () => {
           avatarUrl = await uploadAvatar(avatar);
         }
       } else {
-        const response = await api.post("/auth/login", {
+        await api.post("/auth/login", {
           email,
           password,
         });
 
-        const profileResponse = await api.get("/users/profile");
+        
       }
     } catch (error) {
       console.error("Authentication error:", error);
