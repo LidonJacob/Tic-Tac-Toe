@@ -19,14 +19,16 @@ const Account = () => {
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
-  
+    const username = formData.get("username");
     const password = formData.get("password");
-    
 
-    
     try {
       if (activeTab === "register") {
         let avatarUrl = "";
+
+         if (avatar) {
+          avatarUrl = await uploadAvatar(avatar);
+        }
 
         await api.post("/auth/register", {
           email,
@@ -35,16 +37,12 @@ const Account = () => {
           avatarUrl,
         });
 
-        if (avatar) {
-          avatarUrl = await uploadAvatar(avatar);
-        }
+       
       } else {
         await api.post("/auth/login", {
           email,
           password,
         });
-
-        
       }
     } catch (error) {
       console.error("Authentication error:", error);
@@ -261,12 +259,20 @@ const Account = () => {
           <button
             type="submit"
             disabled={
-              activeTab === "register" && (!confirmPassword || !passwordsMatch)
+              isSubmitting ||
+              (activeTab === "register" &&
+                (!confirmPassword || !passwordsMatch))
             }
             className="w-full py-3 bg-cyan-500 rounded-lg text-gray-950
     font-semibold hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {activeTab === "login" ? "Login" : "Register"}
+            {isSubmitting
+              ? activeTab === "login"
+                ? "Logging in..."
+                : "Creating Account"
+              : activeTab === "login"
+                ? "Login"
+                : "Register"}
           </button>
         </form>
         <div className="my-3 flex flex-col gap-3">
