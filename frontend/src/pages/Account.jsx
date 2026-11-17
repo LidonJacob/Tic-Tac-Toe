@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { uploadAvatar } from "../services/cloudinary";
 import api from "../services/api";
+import { toast } from "react-toastify";
 
 const Account = () => {
+
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("login");
   const [rememberMe, setRememberMe] = useState(false);
   const [password, setPassword] = useState("");
@@ -30,23 +35,28 @@ const Account = () => {
           avatarUrl = await uploadAvatar(avatar);
         }
 
-        await api.post("/auth/register", {
+        const response = await api.post("/auth/register", {
           email,
           username,
           password,
-          avatarUrl,
+          avatar: avatarUrl,
         });
+
+        toast.success(response.data.message);
+        navigate("/");
 
        
       } else {
-        await api.post("/auth/login", {
+        const response =await api.post("/auth/login", {
           email,
           password,
         });
+        toast.success(response.data.message);
+        navigate("/");
       }
     } catch (error) {
       console.error("Authentication error:", error);
-      alert("something went wrong please try again");
+      toast.error(error.response?.data.message || "Something went wrong please try again");
     } finally {
       setIsSubmitting(false);
     }
