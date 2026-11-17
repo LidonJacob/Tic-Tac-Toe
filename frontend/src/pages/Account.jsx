@@ -92,7 +92,7 @@ const Account = () => {
   }, [avatarPreview]);
   return (
     <div
-      className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col 
+      className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col 
     items-center justify-center px-4 py-3"
     >
       <div className="w-full max-w-md ">

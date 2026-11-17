@@ -7,12 +7,12 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
       {!loading && user ? (
-        <Link to="/profile" title="View Profile">
+        <Link to="/profile" title="View Profile" className="flex items-center gap-2">
           {user.avatar ? (
             <img
               src={user.avatar}
               alt="Profile"
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="w-10 h-10 rounded-full object-cover border-2 border-cyan-400"
             />
           ) : (
             <UserRound size={28} className="text-cyan-400" />

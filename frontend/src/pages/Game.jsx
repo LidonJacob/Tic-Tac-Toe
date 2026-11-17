@@ -93,7 +93,7 @@ const Game = () => {
   }
 
   return (
-    <div className="min-h-[calc(100dvh-4rem)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-4">
+    <div className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-4">
       <p className="text-lg text-gray-300">
         {gameMode === "player" ? "Player vs Player" : "Player vs AI"}
       </p>
