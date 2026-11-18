@@ -60,7 +60,7 @@ const Account = () => {
     } catch (error) {
       console.error("Authentication error:", error);
       toast.error(
-        error.response?.data.message || "Something went wrong please try again",
+        error.response?.data?.message || "Something went wrong please try again",
       );
     } finally {
       setIsSubmitting(false);
@@ -75,12 +75,12 @@ const Account = () => {
     }
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(selectedImage.type)) {
-      alert("Please select a valid image file");
+      toast.error("Please select a valid image file");
       return;
     }
 
     if (selectedImage.size > 5 * 1024 * 1024) {
-      alert("Image size should not exceed 5MB");
+      toast.error("Image size should not exceed 5MB");
       return;
     }
 

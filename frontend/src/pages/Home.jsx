@@ -76,7 +76,7 @@ const Home = () => {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">
               {" "}
-              Adjustble Difficulty
+              Adjustable Difficulty
             </h3>
             <p className="text-gray-400 leading-relaxed">
               {" "}

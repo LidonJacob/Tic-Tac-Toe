@@ -80,6 +80,14 @@ const Profile = () => {
   if (!user) {
     return <p>Please Log in to view your profile</p>;
   }
+
+  const handleCancel = () => {
+    setUsername(user.username);
+    setEmail(user.email);
+    setAvatar(null);
+    setAvatarPreview(user.avatar || "");
+    setIsEditing(false);
+  };
   return (
     <div className="min-h-[calc(100dvh-73px)] bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
       <div
@@ -154,7 +162,7 @@ const Profile = () => {
                   {isSaving ? "Saving..." : "Save Changes"}
                 </button>
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={handleCancel}
                   className="px-4 py-2 bg-gray-700
             text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >

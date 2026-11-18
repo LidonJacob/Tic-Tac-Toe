@@ -1,128 +1,184 @@
 Tic-Tac-Toe — Project Status
 
-Project Overview
+Repository: "LidonJacob/Tic-Tac-Toe"
+Branch: "main"
+Frontend: React, Vite, Tailwind CSS v4
+Backend: Node.js, Express.js, MongoDB, Mongoose
+Authentication: JWT with HTTP-only cookies
 
-A React-based Tic-Tac-Toe application built with Vite and Tailwind CSS v4.
+---
 
-The goal is to develop a polished, production-ready application that real users can enjoy.
+1. Current Project Status
 
-Technology Stack
+We are building a full-stack Tic-Tac-Toe application with:
 
-- React
-- Vite
-- JavaScript
-- Tailwind CSS v4
-- Future backend: Node.js, Express and MongoDB
-- Future online multiplayer: Socket.IO
+- User registration and login.
+- Persistent authentication.
+- User profiles and avatar uploads.
+- Game management and match history.
+- Game statistics.
+- Online multiplayer using Socket.IO.
 
-Completed Features
+Completed functionality
 
-Gameplay
+- [x] React/Vite frontend setup.
+- [x] Tailwind CSS v4 setup.
+- [x] Player vs Player gameplay.
+- [x] Easy, Medium and Hard AI implementation.
+- [x] Game history on the frontend using local storage.
+- [x] Responsive navigation.
+- [x] MongoDB database integration.
+- [x] User registration.
+- [x] User login.
+- [x] Password hashing with bcrypt.
+- [x] JWT authentication using HTTP-only cookies.
+- [x] Authentication middleware.
+- [x] Frontend authentication context.
+- [x] Authentication persistence using the existing profile endpoint.
+- [x] Dynamic navbar with the logged-in user's avatar.
+- [x] Profile page and "/profile" route.
+- [x] Display account details.
+- [x] Edit username and email.
+- [x] Update profile avatar using Cloudinary.
+- [x] Image compression before avatar upload.
 
-- Player vs Player
-- Player vs AI
-- Game restart
-- Winner detection
-- Draw detection
-- Current-player tracking
+---
 
-AI
+2. Current Working Stage
 
-- Easy AI: Random legal moves
-- AI delay: At least 600 ms
-- AI win detection
-- Medium AI:
-  1. Take an immediate winning move.
-  2. Block the opponent's immediate winning move.
-  3. Otherwise, choose a random legal move.
+Frontend production-readiness pass
 
-Architecture
+We are checking critical functionality, responsiveness and obvious bugs without redesigning working pages.
 
-- Reusable React components.
-- Game state and logic managed through "useGameLogic".
-- Helper functions for winner detection and AI decisions.
+Recently completed:
 
-Current Development Position
+- [x] Corrected the Home page difficulty-label typo.
+- [x] Replaced avatar-validation alerts with toast notifications.
+- [x] Improved error handling in Account.jsx.
+- [x] Fixed Profile page cancellation so unsaved changes, including avatar selections, are discarded.
 
-Last completed milestone: Medium AI.
+Still to do:
 
-Next task: Implement Hard AI using the Minimax algorithm.
+- [ ] Finish the quick production-readiness review.
+- [ ] Review the Account page's Remember Me functionality.
+- [ ] Review the Google login button and plan its real OAuth integration.
 
-Planned Roadmap
+---
 
-1. Implement Hard AI using Minimax.
-2. Improve frontend design and user experience.
-3. Make the application responsive and production-ready.
-4. Introduce React Router and application pages:
-   - Home
-   - Game
-   - History
-   - NotFound
-5. Introduce additional real-user features.
-6. Develop backend APIs using Node.js and Express.
-7. Introduce MongoDB for persistence.
-8. Explore Socket.IO for online multiplayer.
+3. Development Roadmap
 
-Development Rules
+Milestone 1 — Complete the Profile Experience
 
-- Work incrementally.
-- Explain concepts before implementation.
-- Complete one task at a time.
-- Test features before moving forward.
-- Update this document at the end of every coding session.
-- Commit working milestones to GitHub.
+- [x] Create the Profile page.
+- [x] Add the "/profile" route.
+- [x] Display account details.
+- [x] Implement profile editing.
+- [x] Implement avatar updates.
+- [ ] Complete any remaining profile-related polish.
 
-Important Learning Preference
+Milestone 2 — Implement Logout
 
-The developer is learning React and JavaScript.
+- [ ] Add backend logout functionality.
+- [ ] Clear the authentication cookie securely.
+- [ ] Connect logout to the frontend authentication context.
+- [ ] Add logout functionality to the user interface.
+- [ ] Verify that users are logged out correctly.
 
-Use beginner-friendly explanations, explain why changes are made, ask short understanding questions and wait for confirmation before proceeding.
+Milestone 3 — Backend Game Management
 
-Never unnecessarily repeat completed work or request code that is already available in the current project context.
+- [ ] Create game models.
+- [ ] Create game APIs.
+- [ ] Save persistent match records.
+- [ ] Record player moves.
+- [ ] Track wins, losses and draws.
+- [ ] Associate games with authenticated users.
 
-Current Development Position — November 8, 2026
+Milestone 4 — Game Statistics
 
-Current priority: Frontend production-readiness.
+- [ ] Connect wins, losses and draws to authenticated users.
+- [ ] Connect match history to the backend.
+- [ ] Display user game statistics.
+- [ ] Ensure statistics update correctly after games.
 
-Completed
+Milestone 5 — Online Multiplayer with Socket.IO
 
-- Player vs Player and Player vs AI.
-- Easy, Medium and Hard AI.
-- Hard AI using depth-aware Minimax.
-- All three difficulty levels tested.
-- Updated "frontend/index.html" with:
-  - Page title.
-  - Meta description.
-  - Theme color.
-  - Open Graph metadata.
-  - Viewport meta tag.
-- Changes pushed and verified on GitHub "main".
+- [ ] Implement matchmaking.
+- [ ] Create and join game rooms.
+- [ ] Implement real-time gameplay.
+- [ ] Handle opponent disconnections.
+- [ ] Implement reconnection functionality.
 
-Exact next task
+Milestone 6 — Final Integration and Testing
 
-Begin responsive design.
+- [ ] Test authentication.
+- [ ] Test gameplay.
+- [ ] Test backend game management.
+- [ ] Test statistics and history.
+- [ ] Test online multiplayer.
+- [ ] Test the complete application.
 
-First task: Make the Tic-Tac-Toe board responsive on small phone screens while remaining comfortable on larger screens.
+---
 
-Files inspected:
+4. Original Backend Development Order
 
-- "frontend/src/components/Square.jsx" — fixed "w-24 h-24" dimensions.
-- "frontend/src/components/GameBoard.jsx" — "grid grid-cols-3 gap-2".
-- "frontend/src/index.css" — currently only imports Tailwind.
-- "frontend/src/App.jsx" — dark background and centered layout.
-- "frontend/src/components/GameControls.jsx" — horizontal controls.
+Use this sequence when implementing backend functionality:
 
-Start with square and board sizing only. Do not change game logic or AI.
+1. Database setup — MongoDB
+   
+   - Connect Express to MongoDB using Mongoose.
 
-Teaching preferences
+2. User management
+   
+   - Registration.
+   - Login and authentication.
+   - User profiles.
 
-- Beginner-friendly explanations.
-- One task at a time.
-- Explain why each change is needed.
-- Wait for confirmation before proceeding.
-- Use GitHub as the source of truth; inspect the latest pushed code.
-- Never unnecessarily ask for code that can be fetched from GitHub.
+3. Game management
+   
+   - Create games.
+   - Record moves.
+   - Track wins, losses and draws.
+   - Save game history.
 
-Deferred
+4. Online multiplayer — Socket.IO
+   
+   - Matchmaking.
+   - Creating and joining rooms.
+   - Real-time moves.
+   - Opponent disconnections and reconnections.
 
-Alpha-Beta Pruning. Not part of the current priority.
+5. Frontend integration and testing
+   
+   - Connect React to the backend.
+   - Test the complete application.
+
+---
+
+5. Important Development Rules
+
+- Teach one implementation step at a time.
+- Explain why each change is necessary.
+- Never paste entire files or components when a small snippet will do.
+- Check the latest GitHub code when reviewing existing implementations.
+- Do not repeat completed features.
+- Do not skip roadmap milestones without discussing it first.
+- Prefer clean architecture and separation of concerns.
+- Use appropriate packages and tools when they genuinely help.
+- Test meaningful functionality, but avoid unnecessary testing detours.
+- Protect environment variables and sensitive credentials.
+- Keep the application responsive on mobile and desktop.
+
+---
+
+6. How to Resume in a New Chat
+
+When continuing this project, first read this document and identify:
+
+1. What has already been completed.
+2. What we are currently implementing.
+3. The next unfinished task.
+4. Any existing code or architectural decisions that must be preserved.
+
+Current checkpoint: Finish the frontend production-readiness pass, then proceed to Milestone 2 — Implement Logout.
+
+Do not restart the project or repeat completed implementation work.
