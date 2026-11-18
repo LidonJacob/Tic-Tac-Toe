@@ -1,13 +1,27 @@
-import { Link } from "react-router-dom";
-import { House, Gamepad2, History, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { House, Gamepad2, History, UserRound, LogOut } from "lucide-react";
 import { useAuth } from "../context/useAuth";
 
 const Navbar = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
   return (
     <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
       {!loading && user ? (
-        <Link to="/profile" title="View Profile" className="flex items-center gap-2">
+        <Link
+          to="/profile"
+          title="View Profile"
+          className="flex items-center gap-2"
+        >
           {user.avatar ? (
             <img
               src={user.avatar}
@@ -17,7 +31,9 @@ const Navbar = () => {
           ) : (
             <UserRound size={28} className="text-cyan-400" />
           )}
-          <span className="text-white font-medium hidden sm:inline">{user.username}</span>
+          <span className="text-white font-medium hidden sm:inline">
+            {user.username}
+          </span>
         </Link>
       ) : (
         <div className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400">
@@ -54,6 +70,15 @@ const Navbar = () => {
           <History size={18} />
           <span className="hidden sm:inline">History</span>
         </Link>
+        {!loading && user && (
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
+          >
+            <LogOut size={18} />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
+        )}
       </div>
     </nav>
   );
