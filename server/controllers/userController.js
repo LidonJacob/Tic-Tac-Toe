@@ -19,6 +19,18 @@ export const updateUserProfile = async (req, res) => {
 
       user.username = req.body.username.trim();
     }
+    if (req.body.email !== undefined) {
+      const email = req.body.email.trim().toLowerCase();
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({
+          message: "Please provide a valid email address",
+        });
+      }
+
+      user.email = email;
+    }
+
     if (req.body.avatar) {
       user.avatar = req.body.avatar;
     }
@@ -35,7 +47,15 @@ export const updateUserProfile = async (req, res) => {
   } catch (error) {
     console.error("Update user profile error:", error.message);
     if (error.code === 11000) {
-      return res.status(409).json({ message: "Username already exists" });
+      if (error.keyPattern?.email) {
+        return res.status(409).json({
+          message: "Email is already registered",
+        });
+      }
+
+      return res.status(409).json({
+        message: "Username already exists",
+      });
     }
     res.status(500).json({ message: "server error while updating user" });
   }

@@ -1,9 +1,53 @@
 import { useAuth } from "../context/useAuth";
 import { useState } from "react";
+import api from "../services/api";
+import { toast } from "react-toastify";
+import { uploadAvatar } from "../services/cloudinary";
+import compressImage from "../utils/compressImage";
+
 const Profile = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+
+  const handleAvatarChange = (e) => {
+    const selectedImage = e.target.files[0];
+
+    if (!selectedImage) {
+      return;
+    }
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(selectedImage.type)) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+
+    if (selectedImage.size > 5 * 1024 * 1024) {
+      toast.error("Image size should not exceed 5MB");
+      return;
+    }
+
+    setAvatar(selectedImage);
+    setAvatarPreview(URL.createObjectURL(selectedImage));
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await api.patch("/users/profile", {
+        username,
+        email,
+      });
+
+      setUser(response.data.user);
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "failed to update profile");
+    }
+  };
 
   if (loading) {
     return <p>Loading profile...</p>;
@@ -15,48 +59,99 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <h1 className="text-3xl font-bold mb-6">My Profile</h1>
       <div className="space-y-2">
-        {user.avatar ? (
+        {avatarPreview || user.avatar ? (
           <img
-            src={user.avatar}
+            src={avatarPreview || user.avatar}
             alt="Profile avatar"
             className="w-28 h-28 rounded-full object-cover"
           />
+          
         ) : (
           <div className="w-28 h-28 rounded-full bg-gray-700 flex items-center justify-center">
             <span className="text-3xl font-bold">
               {user.username.charAt(0).toUpperCase()}
             </span>
           </div>
+          
         )}
         {isEditing && (
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="enter Username"
-          />
+          <>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-300">
+                  {" "}
+                  UserName{" "}
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="enter Username"
+                  className="w-full max-w-sm px-4 py-2 bg-gray-800 border border-cyan-500 rounded-lg
+             text-white outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-300">
+                  {" "}
+                  Email{" "}
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="enter Email"
+                  className="w-full max-w-sm px-4 py-2 bg-gray-800 border border-cyan-500 rounded-lg
+             text-white outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors"
+              >
+                Save Changes{" "}
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 bg-gray-700
+            text-white rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
         )}
 
-        <p className="text-lg">
-          {" "}
-          <strong>Username: </strong> {user.username}
-        </p>
-        <p className="text-lg">
-          {" "}
-          <strong>Email: </strong> {user.email}
-        </p>
+        {!isEditing && (
+          <p className="text-lg">
+            {" "}
+            <strong>Username: </strong> {user.username}
+          </p>
+        )}
+
+        {!isEditing && (
+          <p className="text-lg">
+            {" "}
+            <strong>Email: </strong> {user.email}
+          </p>
+        )}
       </div>
-      <button
-        onClick={() => {
-          setUsername(user.username);
-          setIsEditing(true);
-        }}
-        className="mt-4 px-5 py-2
+      {!isEditing && (
+        <button
+          onClick={() => {
+            setUsername(user.username);
+            setEmail(user.email);
+            setIsEditing(true);
+          }}
+          className="mt-4 px-5 py-2
       bg-cyan-500 rounded-lg hover:bg-cyan-600"
-      >
-        {" "}
-        Edit Profile{" "}
-      </button>
+        >
+          {" "}
+          Edit Profile{" "}
+        </button>
+      )}
     </div>
   );
 };
