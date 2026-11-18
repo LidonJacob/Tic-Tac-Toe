@@ -5,7 +5,11 @@ const compressImage = async (imageFile) => {
 
   const maxDimension = 1200;
 
-  const scale = Math.min(maxDimension / bitmap.width, maxDimension / bitmap.height, 1);
+  const scale = Math.min(
+    maxDimension / bitmap.width,
+    maxDimension / bitmap.height,
+    1,
+  );
 
   const newWidth = Math.round(bitmap.width * scale);
   const newHeight = Math.round(bitmap.height * scale);
@@ -14,8 +18,6 @@ const compressImage = async (imageFile) => {
   canvas.height = newHeight;
 
   ctx.drawImage(bitmap, 0, 0, newWidth, newHeight);
-
-  canvas.toBlob();
 
   const compressedBlob = await new Promise((resolve) => {
     canvas.toBlob(resolve, "image/webp", 0.8);
