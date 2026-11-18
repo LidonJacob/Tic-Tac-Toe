@@ -81,10 +81,10 @@ const Profile = () => {
     return <p>Please Log in to view your profile</p>;
   }
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
+    <div className="min-h-[calc(100dvh-73px)] bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
       <div
         className="w-full max-w-lg bg-gray-900 border
-        bprder-gray-800 rounded-2xl p-5 sm:p-8 shadow-xl"
+        border-gray-800 rounded-2xl p-5 sm:p-8 shadow-xl"
       >
         <h1 className="text-3xl font-bold mb-6 text-center">My Profile</h1>
         <div className="flex flex-col items-center gap-4">
