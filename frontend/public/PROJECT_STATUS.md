@@ -60,7 +60,7 @@ Recently completed:
 Still to do:
 
 - [ ] Finish the quick production-readiness review.
-- [ ] Review the Account page's Remember Me functionality.
+- [x] Review the Account page's Remember Me functionality.
 - [ ] Review the Google login button and plan its real OAuth integration.
 
 ---
