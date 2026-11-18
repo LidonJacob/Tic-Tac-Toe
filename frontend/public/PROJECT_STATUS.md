@@ -78,11 +78,11 @@ Milestone 1 — Complete the Profile Experience
 
 Milestone 2 — Implement Logout
 
-- [ ] Add backend logout functionality.
-- [ ] Clear the authentication cookie securely.
-- [ ] Connect logout to the frontend authentication context.
-- [ ] Add logout functionality to the user interface.
-- [ ] Verify that users are logged out correctly.
+- [x] Add backend logout functionality.
+- [x] Clear the authentication cookie securely.
+- [x] Connect logout to the frontend authentication context.
+- [x] Add logout functionality to the user interface.
+- [x] Verify that users are logged out correctly.
 
 Milestone 3 — Backend Game Management
 
