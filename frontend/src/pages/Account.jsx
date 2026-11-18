@@ -5,6 +5,7 @@ import { uploadAvatar } from "../services/cloudinary";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
+import compressImage from "../utils/compressImage";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -33,7 +34,8 @@ const Account = () => {
         let avatarUrl = "";
 
         if (avatar) {
-          avatarUrl = await uploadAvatar(avatar);
+          const compressedAvatar = await compressImage(avatar);
+          avatarUrl = await uploadAvatar(compressedAvatar);
         }
 
         const response = await api.post("/auth/register", {
