@@ -1,5 +1,5 @@
 import { useAuth } from "../context/useAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
@@ -34,15 +34,33 @@ const Profile = () => {
     setAvatarPreview(URL.createObjectURL(selectedImage));
   };
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
   const handleSave = async () => {
     try {
-      const response = await api.patch("/users/profile", {
+      let avatarUrl = user.avatar;
+
+      if (avatar) {
+        const compressedAvatar = await compressImage(avatar);
+        avatarUrl = await uploadAvatar(compressedAvatar);
+      }
+
+      const response = await api.put("/users/profile", {
         username,
         email,
+        avatar: avatarUrl,
       });
 
       setUser(response.data.user);
       setIsEditing(false);
+      setAvatar(null);
+      setAvatarPreview(null);
+
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response?.data?.message || "failed to update profile");
@@ -65,14 +83,23 @@ const Profile = () => {
             alt="Profile avatar"
             className="w-28 h-28 rounded-full object-cover"
           />
-          
         ) : (
           <div className="w-28 h-28 rounded-full bg-gray-700 flex items-center justify-center">
             <span className="text-3xl font-bold">
               {user.username.charAt(0).toUpperCase()}
             </span>
           </div>
-          
+        )}
+        {isEditing && (
+          <label className="inline-block cursor-pointer px-4 py-2 bg-gray-800 border border-cyan-500 rounded-lg hover:bg-gray-700 transition-colors">
+            Choose Avatar
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+          </label>
         )}
         {isEditing && (
           <>
