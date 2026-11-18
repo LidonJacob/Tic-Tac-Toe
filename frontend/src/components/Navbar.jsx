@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { House, Gamepad2, History, UserRound, LogOut } from "lucide-react";
+import { House, Gamepad2, History, UserRound, LogOut, LogIn } from "lucide-react";
 import { useAuth } from "../context/useAuth";
+import {toast} from "react-toastify";
 
 const Navbar = () => {
   const { user, loading, logout } = useAuth();
@@ -9,9 +10,11 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      toast.success("Logged out successfully");
       navigate("/");
     } catch (error) {
       console.error("Logout failed", error);
+      toast.error("Logout failed, please try again");
     }
   };
   return (
@@ -70,15 +73,24 @@ const Navbar = () => {
           <History size={18} />
           <span className="hidden sm:inline">History</span>
         </Link>
-        {!loading && user && (
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
-          >
-            <LogOut size={18} />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
-        )}
+        {!loading &&
+          (user ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-gray-300 hover:text-red-400 transition-colors duration-200 font-medium"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          ) : (
+            <Link
+              to="/account"
+              className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
+            >
+              <LogIn size={18} />
+              <span className="hidden sm:inline">Login</span>
+            </Link>
+          ))}
       </div>
     </nav>
   );

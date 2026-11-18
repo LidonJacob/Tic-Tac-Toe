@@ -52,6 +52,7 @@ const Account = () => {
         const response = await api.post("/auth/login", {
           email,
           password,
+          rememberMe,
         });
         toast.success(response.data.message);
         setUser(response.data.user);
