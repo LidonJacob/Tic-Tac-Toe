@@ -231,3 +231,26 @@ export const updateGame = async (req, res) => {
       .json({ message: "server error while updating game" });
   }
 };
+
+export const deleteGame = async (req, res) => {
+  try {
+    const game = await Game.findOneAndDelete({
+      _id: req.params.id,
+      "players.user": req.user._id,
+      status: "ongoing",
+    });
+
+    if (!game) {
+      return res.status(404).json({ message: "Ongoing game not found" });
+    }
+
+    return res.status(200).json({
+      message: "Game deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting game:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error while deleting game" });
+  }
+};

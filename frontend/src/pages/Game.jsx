@@ -23,13 +23,24 @@ const Game = () => {
   const [createAttempt, setCreateAttempt] = useState(0);
   const { user, loading } = useAuth();
 
-  const restartGame = () => {
+  const restartGame = async () => {
     if (isCreatingGame.current || isSavingGame.current) return;
+
+    // Delete the unfinished game from MongoDB
+    if (user && gameId && !hasSavedGame.current) {
+      try {
+        await api.delete(`/games/${gameId}`);
+      } catch (error) {
+        console.error("Failed to delete unfinished game:", error);
+        return;
+      }
+    }
+
     setCreateError(false);
     setSaveError(false);
+    setCreateAttempt((prev) => prev + 1);
     hasSavedGame.current = false;
     setGameId(null);
-    isSavingGame.current = false;
     handleRestart();
   };
 
