@@ -61,7 +61,7 @@ Still to do:
 
 - [x] Finish the quick production-readiness review.
 - [x] Review the Account page's Remember Me functionality.
-- [ ] Review the Google login button and plan its real OAuth integration.
+- [x] Review the Google login button and plan its real OAuth integration.
 
 ---
 
