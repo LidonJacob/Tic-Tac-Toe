@@ -6,6 +6,7 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
 import compressImage from "../utils/compressImage";
+import {GoogleLogin} from "@react-oauth/google";
 
 const Account = () => {
   const navigate = useNavigate();
