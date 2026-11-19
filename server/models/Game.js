@@ -40,8 +40,8 @@ const gameSchema = new mongoose.Schema(
       default: "ongoing",
     },
     winner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
+      enum: ["X", "O"],
       default: null,
     },
     currentPlayer: {
@@ -50,9 +50,9 @@ const gameSchema = new mongoose.Schema(
       default: "X",
     },
     gameMode: {
-        type: String,
-        enum: ["player", "ai"],
-        required: true,
+      type: String,
+      enum: ["player", "ai"],
+      required: true,
     },
     aiDifficulty: {
       type: String,
