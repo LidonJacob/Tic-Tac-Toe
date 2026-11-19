@@ -139,11 +139,11 @@ export const updateGame = async (req, res) => {
         .json({ message: "Duplicate moves are not allowed" });
     }
 
-    if (moves.lenth > 9) {
+    if (moves.length > 9) {
       return res.status(400).json({ message: "Too many moves" });
     }
 
-    const occupiedSquares = board.filter((sqaure) => sqaure !== "").length;
+    const occupiedSquares = board.filter((square) => square !== "").length;
 
     if (occupiedSquares !== moves.length) {
       return res.status(400).json({ message: "Invalid moves" });
