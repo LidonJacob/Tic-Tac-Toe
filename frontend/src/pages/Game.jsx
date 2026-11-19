@@ -73,6 +73,7 @@ const Game = () => {
   useEffect(() => {
     if (loading || !user || !gameMode) return;
     if (gameMode === "ai" && !aiDifficulty) return;
+    if (moves.length === 0) return;
 
     if (gameId || isCreatingGame.current) return;
 
@@ -96,7 +97,7 @@ const Game = () => {
     };
 
     createGame();
-  }, [loading, user, gameMode, aiDifficulty, gameId, createAttempt]);
+  }, [loading, user, gameMode, aiDifficulty, gameId, createAttempt, moves.length]);
 
   useEffect(() => {
     if (!winner && !isDraw) return;
