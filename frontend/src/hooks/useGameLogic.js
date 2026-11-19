@@ -123,6 +123,7 @@ const getBestMove = (board) => {
 
 const useGameLogic = (aiDifficulty) => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [moves, setMoves] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [winner, setWinner] = useState(null);
   const [isDraw, setIsDraw] = useState(false);
@@ -143,6 +144,10 @@ const useGameLogic = (aiDifficulty) => {
 
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
+    setMoves((prevMoves) => [
+      ...prevMoves,
+      { player: currentPlayer, position: index },
+    ]);
     const result = checkWinner(newBoard);
 
     if (result) {
@@ -186,6 +191,7 @@ const useGameLogic = (aiDifficulty) => {
 
     const newBoard = [...board];
     newBoard[aiMove] = "O";
+    setMoves((prevMoves) => [...prevMoves, { player: "O", position: aiMove }]);
     const result = checkWinner(newBoard);
 
     if (result) {
@@ -207,6 +213,7 @@ const useGameLogic = (aiDifficulty) => {
 
   const handleRestart = () => {
     setBoard(["", "", "", "", "", "", "", "", ""]);
+    setMoves([]);
     setCurrentPlayer("X");
     setWinner(null);
     setIsDraw(false);
@@ -222,6 +229,7 @@ const useGameLogic = (aiDifficulty) => {
     handleClick,
     handleRestart,
     handleAiMove,
+    moves,
   };
 };
 

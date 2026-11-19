@@ -1,22 +1,28 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveGameResult } from "../utils/gameHistory";
-
 import GameBoard from "../components/GameBoard";
 import GameStatus from "../components/GameStatus";
 import GameControls from "../components/GameControls";
 import GameModeSelector from "../components/GameModeSelector";
 import DifficultySelector from "../components/DifficultySelector";
-
 import useGameLogic from "../hooks/useGameLogic";
+import { useAuth } from "../context/useAuth";
+import api from "../services/api";
 
 const Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const hasSavedGame = useRef(false);
+  const [gameId, setGameId] = useState(null);
+  const isCreatingGame = useRef(false);
+  const isSavingGame = useRef(false);
+  const { user, loading } = useAuth();
 
   const restartGame = () => {
     hasSavedGame.current = false;
+    setGameId(null);
+    isSavingGame.current = false;
     handleRestart();
   };
 
@@ -31,6 +37,7 @@ const Game = () => {
     handleClick,
     handleRestart,
     handleAiMove,
+    moves,
   } = useGameLogic(aiDifficulty);
 
   useEffect(() => {
@@ -44,11 +51,41 @@ const Game = () => {
   }, [gameMode, currentPlayer, handleAiMove]);
 
   useEffect(() => {
+    if (loading || !user || !gameMode) return;
+    if (gameMode === "ai" && !aiDifficulty) return;
+
+    if (gameId || isCreatingGame.current) return;
+
+    const createGame = async () => {
+      isCreatingGame.current = true;
+
+      try {
+        const response = await api.post("/games", {
+          gameMode,
+          aiDifficulty: gameMode === "ai" ? aiDifficulty : null,
+        });
+
+        setGameId(response.data.game._id);
+      } catch (error) {
+        console.error("Failed to create game", error);
+        isCreatingGame.current = false;
+      } finally {
+        isCreatingGame.current = false;
+      }
+    };
+
+    createGame();
+  }, [loading, user, gameMode, aiDifficulty, gameId]);
+
+  useEffect(() => {
     if (!winner && !isDraw) return;
+    if (!user && loading) return;
+    if (user && !gameId) return;
+    if (loading) return;
     if (!gameMode) return;
 
     if (hasSavedGame.current) return;
-    hasSavedGame.current = true;
+
     const game = {
       id: crypto.randomUUID(),
       gameMode,
@@ -57,8 +94,42 @@ const Game = () => {
       isDraw,
       date: new Date().toISOString(),
     };
-    saveGameResult(game);
-  }, [winner, isDraw, gameMode, aiDifficulty]);
+    if (!user) {
+      hasSavedGame.current = true;
+      saveGameResult(game);
+    } else {
+      if (isSavingGame.current) return;
+      isSavingGame.current = true;
+      api
+        .patch(`/games/${gameId}`, {
+          board,
+          moves,
+          status: winner ? "won" : "draw",
+          winner,
+          currentPlayer,
+        })
+        .then(() => {
+          hasSavedGame.current = true;
+        })
+        .catch((error) => {
+          console.error("Failed to save game", error);
+        })
+        .finally(() => {
+          isSavingGame.current = false;
+        });
+    }
+  }, [
+    winner,
+    isDraw,
+    gameMode,
+    aiDifficulty,
+    user,
+    loading,
+    gameId,
+    board,
+    moves,
+    currentPlayer,
+  ]);
 
   if (gameMode === null) {
     return (
