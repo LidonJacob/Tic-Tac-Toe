@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
 import { uploadAvatar } from "../services/cloudinary";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/useAuth";
 import compressImage from "../utils/compressImage";
-import {GoogleLogin} from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -21,6 +20,19 @@ const Account = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await api.post("/auth/google", {
+        credential: credentialResponse.credential,
+      });
+      setUser(response.data.user);
+      toast.success(response.data.message);
+      navigate("/");
+    } catch (error) {
+      console.error("Google Authentication error:", error);
+      toast.error(error.response?.data?.message || "Google Login Failed");
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -62,7 +74,8 @@ const Account = () => {
     } catch (error) {
       console.error("Authentication error:", error);
       toast.error(
-        error.response?.data?.message || "Something went wrong please try again",
+        error.response?.data?.message ||
+          "Something went wrong please try again",
       );
     } finally {
       setIsSubmitting(false);
@@ -299,15 +312,10 @@ const Account = () => {
             <div className="flex-1 h-px bg-gray-700"></div>
           </div>
 
-          <button
-            type="button"
-            className="w-full flex items-center justify-center
-gap-3 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white hover:bg-gray-800 transition-colors"
-          >
-            {" "}
-            <FcGoogle />
-            <span> Continue with Google </span>
-          </button>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error("Google login failed")}
+          />
         </div>
       </div>
     </div>

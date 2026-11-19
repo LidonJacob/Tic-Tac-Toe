@@ -128,9 +128,10 @@ export const googleAuth = async (req, res) => {
     let user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      const baseUsername = (name || normalizedEmail.split("@")[0])
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "" || "googleuser");
+      const baseUsername =
+        (name || normalizedEmail.split("@")[0])
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "") || "googleuser";
       let username = baseUsername;
       let counter = 1;
 
