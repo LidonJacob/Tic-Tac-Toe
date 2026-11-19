@@ -1,7 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { House, Gamepad2, History, UserRound, LogOut, LogIn } from "lucide-react";
+import {
+  House,
+  Gamepad2,
+  History,
+  UserRound,
+  LogOut,
+  LogIn,
+} from "lucide-react";
 import { useAuth } from "../context/useAuth";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { user, loading, logout } = useAuth();
@@ -44,13 +51,6 @@ const Navbar = () => {
         </div>
       )}
       <div className="flex items-center gap-3 sm:gap-6">
-        <Link
-          to={"/account"}
-          className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
-        >
-          <UserRound size={18} />
-          <span className="hidden sm:inline">Account </span>
-        </Link>
         <Link
           to={"/"}
           className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-200 font-medium"
