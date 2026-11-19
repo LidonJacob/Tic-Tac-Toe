@@ -24,7 +24,7 @@ const Game = () => {
   const { user, loading } = useAuth();
 
   const restartGame = async () => {
-    if (isCreatingGame.current || isSavingGame.current) return;
+    if (isCreatingGame.current || isSavingGame.current) return false;
 
     // Delete the unfinished game from MongoDB
     if (user && gameId && !hasSavedGame.current) {
@@ -32,7 +32,7 @@ const Game = () => {
         await api.delete(`/games/${gameId}`);
       } catch (error) {
         console.error("Failed to delete unfinished game:", error);
-        return;
+        return false;
       }
     }
 
@@ -42,6 +42,8 @@ const Game = () => {
     hasSavedGame.current = false;
     setGameId(null);
     handleRestart();
+
+    return true;
   };
 
   const gameMode = location.state?.gameMode ?? null;
@@ -155,8 +157,9 @@ const Game = () => {
   if (gameMode === null) {
     return (
       <GameModeSelector
-        onSelectMode={(mode) => {
-          restartGame();
+        onSelectMode={async (mode) => {
+          const success = await restartGame();
+          if (!success) return;
           navigate("/game", {
             state: {
               screen: mode === "ai" ? "difficulty" : "board",
@@ -170,8 +173,9 @@ const Game = () => {
   if (gameMode === "ai" && aiDifficulty === null) {
     return (
       <DifficultySelector
-        onSelectDifficulty={(difficulty) => {
-          restartGame();
+        onSelectDifficulty={async (difficulty) => {
+          const success = await restartGame();
+          if (!success) return;
           navigate("/game", {
             state: {
               screen: "board",
@@ -209,8 +213,11 @@ const Game = () => {
         <GameControls
           onRestart={restartGame}
           onChangeMode={() => {
-            handleRestart();
-            navigate(gameMode === "ai" ? -2 : -1);
+            restartGame().then((success) => {
+              if (success) {
+                navigate(gameMode === "ai" ? -2 : -1);
+              }
+            });
           }}
           gameMode={gameMode}
           onChangeDifficulty={() => {
