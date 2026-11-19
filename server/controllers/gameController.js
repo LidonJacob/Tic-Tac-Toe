@@ -83,6 +83,15 @@ export const updateGame = async (req, res) => {
     const userId = req.user._id;
     const { board, moves, status, winner, currentPlayer } = req.body;
 
+    const game = await Game.findOne({
+      _id: id,
+      "players.user": userId,
+    });
+
+    if (!game) {
+      return res.status(404).json({ message: "Game not found" });
+    }
+
     if (!["won", "draw"].includes(status)) {
       return res.status(400).json({ message: "Invalid game status" });
     }
@@ -123,6 +132,84 @@ export const updateGame = async (req, res) => {
       return res.status(400).json({ message: "Invalid moves" });
     }
 
+    const positions = moves.map((move) => move.position);
+    if (new Set(positions).size !== positions.length) {
+      return res
+        .status(400)
+        .json({ message: "Duplicate moves are not allowed" });
+    }
+
+    if (moves.lenth > 9) {
+      return res.status(400).json({ message: "Too many moves" });
+    }
+
+    const occupiedSquares = board.filter((sqaure) => sqaure !== "").length;
+
+    if (occupiedSquares !== moves.length) {
+      return res.status(400).json({ message: "Invalid moves" });
+    }
+
+    const validTurnOrder = moves.every((move, index) => {
+      const expectedPlayer = index % 2 === 0 ? "X" : "O";
+      return move.player === expectedPlayer;
+    });
+
+    if (!validTurnOrder) {
+      return res.status(400).json({ message: "Invalid turn order" });
+    }
+
+    const reconstructedBoard = Array(9).fill("");
+
+    moves.forEach((move) => {
+      reconstructedBoard[move.position] = move.player;
+    });
+
+    if (!reconstructedBoard.every((square, index) => square === board[index])) {
+      return res
+        .status(400)
+        .json({ message: "Board Moves do not match recored moves" });
+    }
+
+    const winningCombinations = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    const actualWinner =
+      winningCombinations
+        .map(([a, b, c]) =>
+          board[a] && board[a] === board[b] && board[a] === board[c]
+            ? board[a]
+            : null,
+        )
+        .find(Boolean) || null;
+
+    if (status === "won" && actualWinner !== winner) {
+      return res
+        .status(400)
+        .json({ message: "Declared winner does not match actual winner" });
+    }
+
+    if (status === "won" && actualWinner === null) {
+      return res.status(400).json({ message: "No winning combination" });
+    }
+
+    if (status === "draw" && actualWinner !== null) {
+      return res.status(400).json({ message: "A draw cannot have a winner" });
+    }
+
+    if (status === "draw" && board.some((square) => square === "")) {
+      return res
+        .status(400)
+        .json({ message: "A draw cannot have empty squares" });
+    }
+
     if (game.status !== "ongoing") {
       return res.status(409).json({ message: "This game has ended" });
     }
@@ -136,15 +223,6 @@ export const updateGame = async (req, res) => {
     await game.save();
 
     return res.status(200).json({ message: "Game updated successfully", game });
-
-    const game = await Game.findOne({
-      _id: id,
-      "players.user": userId,
-    });
-
-    if (!game) {
-      return res.status(404).json({ message: "Game not found" });
-    }
   } catch (error) {
     console.error("Error updating game:", error);
 
