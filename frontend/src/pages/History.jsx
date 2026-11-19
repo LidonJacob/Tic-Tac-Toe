@@ -66,7 +66,7 @@ const History = () => {
     {
       header: "Winner",
       accessorFn: (row) =>
-        row.winner || (row.isDraw || row.status === "draw" ? "draw" : "uknown"),
+        row.winner || (row.isDraw || row.status === "draw" ? "Draw" : "Uknown"),
     },
     {
       header: "AI Difficulty",
