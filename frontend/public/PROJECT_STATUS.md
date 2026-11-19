@@ -98,7 +98,7 @@ Milestone 4 — Game Statistics
 - [x] Connect wins, losses and draws to authenticated users.
 - [x] Connect match history to the backend.
 - [x] Display user game statistics.
-- [ ] Ensure statistics update correctly after games.
+- [x] Ensure statistics update correctly after games.
 
 Milestone 5 — Online Multiplayer with Socket.IO
 
