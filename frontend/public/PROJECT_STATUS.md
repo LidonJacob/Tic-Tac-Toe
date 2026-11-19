@@ -86,18 +86,18 @@ Milestone 2 — Implement Logout
 
 Milestone 3 — Backend Game Management
 
-- [ ] Create game models.
-- [ ] Create game APIs.
-- [ ] Save persistent match records.
-- [ ] Record player moves.
-- [ ] Track wins, losses and draws.
-- [ ] Associate games with authenticated users.
+- [x] Create game models.
+- [x] Create game APIs.
+- [x] Save persistent match records.
+- [x] Record player moves.
+- [x] Track wins, losses and draws.
+- [x] Associate games with authenticated users.
 
 Milestone 4 — Game Statistics
 
-- [ ] Connect wins, losses and draws to authenticated users.
-- [ ] Connect match history to the backend.
-- [ ] Display user game statistics.
+- [x] Connect wins, losses and draws to authenticated users.
+- [x] Connect match history to the backend.
+- [x] Display user game statistics.
 - [ ] Ensure statistics update correctly after games.
 
 Milestone 5 — Online Multiplayer with Socket.IO
