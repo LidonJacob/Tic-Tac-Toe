@@ -54,7 +54,7 @@ const History = () => {
     {
       header: "Date",
       id: "date",
-      accesorFn: (row) => row.date || row.createdAt,
+      accessorFn: (row) => row.date || row.createdAt,
       cell: (info) => new Date(info.getValue()).toLocaleString(),
     },
     {
