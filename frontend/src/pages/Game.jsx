@@ -220,8 +220,9 @@ const Game = () => {
             });
           }}
           gameMode={gameMode}
-          onChangeDifficulty={() => {
-            restartGame();
+          onChangeDifficulty={async () => {
+            const success = await restartGame();
+            if (!success) return;
             navigate("/game", {
               state: {
                 screen: "difficulty",
