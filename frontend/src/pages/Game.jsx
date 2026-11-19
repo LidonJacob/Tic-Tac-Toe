@@ -17,9 +17,16 @@ const Game = () => {
   const [gameId, setGameId] = useState(null);
   const isCreatingGame = useRef(false);
   const isSavingGame = useRef(false);
+  const [saveAttempt, setSaveAttempt] = useState(0);
+  const [saveError, setSaveError] = useState(false);
+  const [createError, setCreateError] = useState(false);
+  const [createAttempt, setCreateAttempt] = useState(0);
   const { user, loading } = useAuth();
 
   const restartGame = () => {
+    if (isCreatingGame.current || isSavingGame.current) return;
+    setCreateError(false);
+    setSaveError(false);
     hasSavedGame.current = false;
     setGameId(null);
     isSavingGame.current = false;
@@ -66,20 +73,20 @@ const Game = () => {
         });
 
         setGameId(response.data.game._id);
+        setCreateError(false);
       } catch (error) {
         console.error("Failed to create game", error);
-        isCreatingGame.current = false;
+        setCreateError(true);
       } finally {
         isCreatingGame.current = false;
       }
     };
 
     createGame();
-  }, [loading, user, gameMode, aiDifficulty, gameId]);
+  }, [loading, user, gameMode, aiDifficulty, gameId, createAttempt]);
 
   useEffect(() => {
     if (!winner && !isDraw) return;
-    if (!user && loading) return;
     if (user && !gameId) return;
     if (loading) return;
     if (!gameMode) return;
@@ -110,15 +117,18 @@ const Game = () => {
         })
         .then(() => {
           hasSavedGame.current = true;
+          setSaveError(false);
         })
         .catch((error) => {
           console.error("Failed to save game", error);
+          setSaveError(true);
         })
         .finally(() => {
           isSavingGame.current = false;
         });
     }
   }, [
+    saveAttempt,
     winner,
     isDraw,
     gameMode,
@@ -203,6 +213,29 @@ const Game = () => {
           }}
         />
       </div>
+      {createError && user && (
+        <button
+          onClick={() => {
+            setCreateError(false);
+            setCreateAttempt((prev) => prev + 1);
+          }}
+          className="px-5 py-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded-lg"
+        >
+          Retry Creating Game
+        </button>
+      )}
+
+      {saveError && user && (
+        <button
+          onClick={() => {
+            setSaveError(false);
+            setSaveAttempt((prev) => prev + 1);
+          }}
+          className="px-5 py-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded-lg"
+        >
+          Retry Saving Game
+        </button>
+      )}
     </div>
   );
 };
