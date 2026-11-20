@@ -14,7 +14,7 @@ function App() {
   return (
     <div>
       <Navbar />
-      <ToastContainer position="top-right" autoClose={2000} theme="dark" />
+      <ToastContainer position="top-right" autoClose={10000} theme="dark" />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/game" element={<Game />} />

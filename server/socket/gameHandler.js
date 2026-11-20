@@ -66,3 +66,50 @@ export const handleMakeMove = (io, socket, { roomId, index }) => {
     isDraw: game.isDraw,
   });
 };
+
+export const handleRematchRequest = (io, socket, roomId) => {
+  const game = activeGames.get(roomId);
+
+  if (!game) return;
+
+  const player = game.players.find(
+    (player) => player.userId === socket.user._id.toString(),
+  );
+
+  if (!player) return;
+
+  if (game.status !== "finished") return;
+
+  if (!game.rematchRequests.includes(player.userId)) {
+    game.rematchRequests.push(player.userId);
+  }
+
+  if (game.rematchRequests.length < 2) {
+    socket.emit("waiting-for-rematch");
+    socket.to(roomId).emit("rematch-requsted");
+    return;
+  }
+
+  game.board = Array(9).fill("");
+  game.currentPlayer = "X";
+  game.status = "active";
+  game.winner = null;
+  game.isDraw = false;
+
+  game.players.forEach((player) => {
+    player.symbol = player.symbol === "X" ? "O" : "X";
+  });
+
+  game.rematchRequests = [];
+
+  io.to(roomId).emit("rematch-started", {
+    roomId,
+    board: game.board,
+    currentPlayer: game.currentPlayer,
+    status: game.status,
+    players: game.players.map(({ userId, symbol }) => ({
+      userId,
+      symbol,
+    })),
+  });
+};

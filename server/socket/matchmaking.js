@@ -50,6 +50,7 @@ export const handleMatchMaking = (io, socket) => {
     winner: null,
     isDraw: false,
     status: "active",
+    rematchRequests: [],
   });
 
   const game = activeGames.get(roomId);

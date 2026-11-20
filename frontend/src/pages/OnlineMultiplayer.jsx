@@ -13,6 +13,7 @@ const OnlineMultiplayer = () => {
   const matchRef = useRef(null);
   const completedMatchRef = useRef(false);
   const [completedMatch, setCompletedMatch] = useState(null);
+  const [rematchStatus, setRematchStatus] = useState("");
 
   const findMatch = () => {
     socket.emit("find-match");
@@ -39,7 +40,14 @@ const OnlineMultiplayer = () => {
   const returnToLobby = () => {
     setMatch(null);
     matchRef.current = null;
-    setCompletedMatch(null);
+  };
+
+  const requestRematch = () => {
+    socket.emit("request-rematch", {
+      roomId: completedMatch.roomId,
+    });
+
+    setRematchStatus("Waiting for your opponent...");
   };
 
   useEffect(() => {
@@ -51,6 +59,22 @@ const OnlineMultiplayer = () => {
       setMatch(matchData);
       setCompletedMatch(null);
       setIsSearching(false);
+    });
+
+    socket.on("rematch-started", (matchData) => {
+      completedMatchRef.current = false;
+      matchRef.current = matchData;
+      setMatch(matchData);
+      setCompletedMatch(null);
+      setRematchStatus("");
+    });
+
+    socket.on("waiting-for-rematch", () => {
+      setRematchStatus("Waiting for your opponent to accept...");
+    });
+
+    socket.on("rematch-requested", () => {
+      setRematchStatus("Your opponent has requested a rematch!");
     });
 
     socket.on("game-updated", (gameData) => {
@@ -121,6 +145,19 @@ const OnlineMultiplayer = () => {
             Find Match
           </button>
         )}
+
+      {completedMatch && (
+        <button
+          onClick={requestRematch}
+          className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors"
+        >
+          Play Again
+        </button>
+      )}
+
+      {rematchStatus && (
+        <p className="text-cyan-400 font-semibold">{rematchStatus}</p>
+      )}
 
       {isSearching && !match && (
         <div className="flex flex-col items-center gap-4">
