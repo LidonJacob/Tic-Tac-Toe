@@ -61,12 +61,13 @@ const OnlineMultiplayer = () => {
       if (updatedMatch.status === "finished" && !completedMatchRef.current) {
         completedMatchRef.current = true;
         setCompletedMatch(updatedMatch);
+
         if (updatedMatch.isDraw) {
-          toast.info("The match ended in a draw", {
+          toast.info("The match ended in a draw!", {
             onClose: returnToLobby,
           });
         } else {
-          toast.success(`player ${updatedMatch.winner} won the match`, {
+          toast.success(`Player ${updatedMatch.winner} wins!`, {
             onClose: returnToLobby,
           });
         }
