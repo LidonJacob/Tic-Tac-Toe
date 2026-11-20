@@ -148,26 +148,26 @@ Milestone 4 — Game Statistics and History
 
 Milestone 5 — Online Multiplayer with Socket.IO
 
-- [ ] Understand Socket.IO and its integration with the existing application.
-- [ ] Set up Socket.IO on the backend.
-- [ ] Connect the React frontend to the Socket.IO server.
-- [ ] Implement matchmaking.
-- [ ] Create and join game rooms.
-- [ ] Implement real-time gameplay.
-- [ ] Synchronize moves between players.
-- [ ] Handle opponent disconnections.
-- [ ] Implement reconnection functionality.
-- [ ] Handle completed online matches correctly.
+- [x] Understand Socket.IO and its integration with the existing application.
+- [x] Set up Socket.IO on the backend.
+- [x] Connect the React frontend to the Socket.IO server.
+- [x] Implement matchmaking.
+- [x] Create and join game rooms.
+- [x] Implement real-time gameplay.
+- [x] Synchronize moves between players.
+- [x] Handle opponent disconnections.
+- [x] Implement reconnection functionality.
+- [x] Handle completed online matches correctly.
 
 Milestone 6 — Final Integration and Testing
 
 - [ ] Test authentication.
-- [ ] Test guest gameplay.
-- [ ] Test registered-user gameplay.
-- [ ] Test AI difficulty levels.
+- [x] Test guest gameplay.
+- [x] Test registered-user gameplay.
+- [x] Test AI difficulty levels.
 - [ ] Test backend game management.
-- [ ] Test game statistics and history.
-- [ ] Test online multiplayer.
+- [x] Test game statistics and history.
+- [x] Test online multiplayer.
 - [ ] Test disconnections and reconnections.
 - [ ] Test the complete application.
 
