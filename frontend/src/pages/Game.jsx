@@ -10,6 +10,7 @@ import useGameLogic from "../hooks/useGameLogic";
 import { useAuth } from "../context/useAuth";
 import api from "../services/api";
 
+
 const Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
