@@ -5,6 +5,7 @@ import { useAuth } from "../context/useAuth";
 const OnlineMultiplayer = () => {
   const { user, loading } = useAuth();
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     if (loading || !user) return;
@@ -16,7 +17,7 @@ const OnlineMultiplayer = () => {
     });
 
     socket.on("connect_error", () => {
-      setConnectionStatus("disconnected");
+      setConnectionStatus("error");
     });
 
     return () => {
@@ -26,8 +27,8 @@ const OnlineMultiplayer = () => {
     };
   }, [user, loading]);
   return (
-    <div>
-      <h1>Online Multiplayer</h1>
+    <div className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8 text-white">
+      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">Online Multiplayer</h1>
       {loading && <p>Checking Authentication...</p>}
 
       {!loading && !user && <p> please login to play online</p>}

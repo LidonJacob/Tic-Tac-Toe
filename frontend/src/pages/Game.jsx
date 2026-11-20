@@ -10,7 +10,6 @@ import useGameLogic from "../hooks/useGameLogic";
 import { useAuth } from "../context/useAuth";
 import api from "../services/api";
 
-
 const Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -98,7 +97,15 @@ const Game = () => {
     };
 
     createGame();
-  }, [loading, user, gameMode, aiDifficulty, gameId, createAttempt, moves.length]);
+  }, [
+    loading,
+    user,
+    gameMode,
+    aiDifficulty,
+    gameId,
+    createAttempt,
+    moves.length,
+  ]);
 
   useEffect(() => {
     if (!winner && !isDraw) return;
@@ -159,6 +166,7 @@ const Game = () => {
   if (gameMode === null) {
     return (
       <GameModeSelector
+        onSelectOnline={() => navigate("/online")}
         onSelectMode={async (mode) => {
           const success = await restartGame();
           if (!success) return;
