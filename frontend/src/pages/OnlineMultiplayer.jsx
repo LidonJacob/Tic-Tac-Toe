@@ -9,9 +9,11 @@ const OnlineMultiplayer = () => {
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const [isSearching, setIsSearching] = useState(false);
   const [match, setMatch] = useState(null);
+  const [completedMatch, setCompletedMatch] = useState(null);
 
   const findMatch = () => {
     socket.emit("find-match");
+    console.log("find match event emmited");
     setIsSearching(true);
   };
 
@@ -64,6 +66,12 @@ const OnlineMultiplayer = () => {
       socket.disconnect();
     };
   }, [user, loading]);
+
+  useEffect(() => {
+    if (match?.status === "finished") {
+      setCompletedMatch(match);
+    }
+  }, [match]);
   return (
     <div className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8 text-white">
       <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
@@ -80,16 +88,20 @@ const OnlineMultiplayer = () => {
       {!loading && user && connectionStatus === "connected" && (
         <p>Connected to the game server</p>
       )}
-      {!loading && user && connectionStatus === "connected" && !isSearching && (
-        <button
-          onClick={findMatch}
-          className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition-colors"
-        >
-          Find Match
-        </button>
-      )}
+      {!loading &&
+        user &&
+        connectionStatus === "connected" &&
+        !isSearching &&
+        !match && (
+          <button
+            onClick={findMatch}
+            className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition-colors"
+          >
+            Find Match
+          </button>
+        )}
 
-      {isSearching && (
+      {isSearching && !match && (
         <div className="flex flex-col items-center gap-4">
           <div className="relative flex items-center justify-center w-20 h-20">
             <div className="absolute w-full h-full rounded-full bg-cyan-500/20 animate-ping" />
