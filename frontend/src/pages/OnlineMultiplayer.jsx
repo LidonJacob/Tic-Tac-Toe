@@ -5,6 +5,7 @@ import GameBoard from "../components/GameBoard";
 
 const OnlineMultiplayer = () => {
   const { user, loading } = useAuth();
+  const currentUserId = user?._id || user?.id;
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const [isSearching, setIsSearching] = useState(false);
   const [match, setMatch] = useState(null);
@@ -19,7 +20,7 @@ const OnlineMultiplayer = () => {
 
     if (
       match.currentPlayer !==
-      match.players.find((player) => player.userId === user._id)?.symbol
+      match.players.find((player) => player.userId === currentUserId)?.symbol
     )
       return;
 
@@ -105,7 +106,10 @@ const OnlineMultiplayer = () => {
         <div className="flex flex-col items-center gap-4">
           <p className="text-green-400 font-semibold">
             Opponent found! You are{" "}
-            {match.players.find((player) => player.userId === user._id)?.symbol}
+            {
+              match.players.find((player) => player.userId === currentUserId)
+                ?.symbol
+            }
           </p>
           <p className="text-xl font-semibold text-white">
             {match.winner
