@@ -2,6 +2,8 @@ import { randomUUID } from "crypto";
 
 const waitingPlayers = [];
 
+export const activeGames = new Map();
+
 export const handleMatchMaking = (io, socket) => {
   if (
     waitingPlayers.some(
@@ -37,9 +39,28 @@ export const handleMatchMaking = (io, socket) => {
   opponentSocket.join(roomId);
   socket.join(roomId);
 
+  activeGames.set(roomId, {
+    board: Array(9).fill(""),
+    currentPlayer: "X",
+    players: [
+      { ...opponent, symbol: "X" },
+      { ...player, symbol: "O" },
+    ],
+    winner:null,
+    isDraw:false,
+    status: "active",
+  });
+
+  const game = activeGames.get(roomId);
+
   io.to(roomId).emit("match-found", {
     roomId,
-    players: [opponent.userId, player.userId],
+    board: game.board,
+    currentPlayer: game.currentPlayer,
+    players: game.players.map(({ userId, symbol }) => ({
+      userId,
+      symbol,
+    })),
   });
 };
 

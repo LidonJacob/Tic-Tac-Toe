@@ -8,6 +8,7 @@ import {
   handleMatchMaking,
   removeWaitingPlayer,
 } from "./socket/matchmaking.js";
+import { handleMakeMove } from "./socket/gameHandler.js";
 
 const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
@@ -29,6 +30,10 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     removeWaitingPlayer(socket);
+  });
+
+  socket.on("make-move", (moveData) => {
+    handleMakeMove(io, socket, moveData);
   });
 });
 

@@ -6,6 +6,7 @@ const OnlineMultiplayer = () => {
   const { user, loading } = useAuth();
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const [isSearching, setIsSearching] = useState(false);
+  const [match, setMatch] = useState(null);
 
   const findMatch = () => {
     socket.emit("find-match");
@@ -14,6 +15,11 @@ const OnlineMultiplayer = () => {
 
   useEffect(() => {
     if (loading || !user) return;
+
+    socket.on("match-found", (matchData) => {
+      setMatch(matchData);
+      setIsSearching(false);
+    });
 
     socket.connect();
 
@@ -26,6 +32,7 @@ const OnlineMultiplayer = () => {
     });
 
     return () => {
+      socket.off("match-found");
       socket.off("connect");
       socket.off("connect_error");
       socket.disconnect();
@@ -47,13 +54,32 @@ const OnlineMultiplayer = () => {
       {!loading && user && connectionStatus === "connected" && (
         <p>Connected to the game server</p>
       )}
-      {!isSearching && (
+      {!loading && user && connectionStatus === "connected" && (
         <button
           onClick={findMatch}
           className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition-colors"
         >
           Find Match
         </button>
+      )}
+
+      {isSearching && (
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative flex items-center justify-center w-20 h-20">
+            <div className="absolute w-full h-full rounded-full bg-cyan-500/20 animate-ping" />
+            <div className="w-5 h-5 rounded-full bg-cyan-400" />
+          </div>
+
+          <p className="text-cyan-400 font-semibold animate-pulse">
+            Searching for an opponent...
+          </p>
+        </div>
+      )}
+
+      {match && (
+        <p className="text-green-400 font-semibold">
+          Opponent found! Preparing your game...
+        </p>
       )}
 
       {!loading && user && connectionStatus === "error" && (
