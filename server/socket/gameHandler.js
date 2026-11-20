@@ -20,6 +20,17 @@ const checkWinner = (board) => {
   return null;
 };
 
+const getWinningCombination = (board) => {
+  for (const combination of winningCombinations) {
+    const [a, b, c] = combination;
+
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      return combination;
+    }
+  }
+  return null;
+};
+
 export const handleMakeMove = (io, socket, { roomId, index }) => {
   const game = activeGames.get(roomId);
 
@@ -46,6 +57,7 @@ export const handleMakeMove = (io, socket, { roomId, index }) => {
   if (winner) {
     game.status = "finished";
     game.winner = winner;
+    game.winningCombination = getWinningCombination(game.board);
   }
 
   if (!winner && game.board.every((square) => square !== "")) {
@@ -64,6 +76,7 @@ export const handleMakeMove = (io, socket, { roomId, index }) => {
     status: game.status,
     winner: game.winner,
     isDraw: game.isDraw,
+    winningCombination: game.winningCombination,
   });
 };
 
@@ -86,7 +99,7 @@ export const handleRematchRequest = (io, socket, roomId) => {
 
   if (game.rematchRequests.length < 2) {
     socket.emit("waiting-for-rematch");
-    socket.to(roomId).emit("rematch-requsted");
+    socket.to(roomId).emit("rematch-requested");
     return;
   }
 
@@ -95,6 +108,7 @@ export const handleRematchRequest = (io, socket, roomId) => {
   game.status = "active";
   game.winner = null;
   game.isDraw = false;
+  game.winningCombination = null;
 
   game.players.forEach((player) => {
     player.symbol = player.symbol === "X" ? "O" : "X";

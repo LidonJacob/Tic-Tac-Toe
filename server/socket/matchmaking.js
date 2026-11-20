@@ -49,6 +49,7 @@ export const handleMatchMaking = (io, socket) => {
     ],
     winner: null,
     isDraw: false,
+    winningCombination: null,
     status: "active",
     rematchRequests: [],
   });

@@ -188,7 +188,7 @@ const OnlineMultiplayer = () => {
                 ? "It's a draw!"
                 : `Player ${match.currentPlayer}'s turn`}
           </p>
-          <GameBoard board={match.board} onSquareClick={makeMove} />
+          <GameBoard board={match.board} onSquareClick={makeMove} winningCombination={match.winningCombination} />
         </div>
       )}
 
