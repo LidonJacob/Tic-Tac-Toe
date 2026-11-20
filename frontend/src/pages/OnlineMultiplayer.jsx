@@ -2,6 +2,7 @@ import { socket } from "../socket/socket";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/useAuth";
 import GameBoard from "../components/GameBoard";
+import { toast } from "react-toastify";
 
 const OnlineMultiplayer = () => {
   const { user, loading } = useAuth();
@@ -35,25 +36,40 @@ const OnlineMultiplayer = () => {
     });
   };
 
+  const returnToLobby = () => {
+    setMatch(null);
+    matchRef.current = null;
+    setCompletedMatch(null);
+  };
+
   useEffect(() => {
     if (loading || !user) return;
 
     socket.on("match-found", (matchData) => {
       completedMatchRef.current = false;
-      matchRef.currentMatch = matchData;
+      matchRef.current = matchData;
       setMatch(matchData);
       setCompletedMatch(null);
       setIsSearching(false);
     });
 
     socket.on("game-updated", (gameData) => {
-      const updatedMatch = { ...matchRef.currentMatch, ...gameData };
-      matchRef.currentMatch = updatedMatch;
+      const updatedMatch = { ...matchRef.current, ...gameData };
+      matchRef.current = updatedMatch;
       setMatch(updatedMatch);
 
       if (updatedMatch.status === "finished" && !completedMatchRef.current) {
         completedMatchRef.current = true;
         setCompletedMatch(updatedMatch);
+      }
+      if (updatedMatch.isDraw) {
+        toast.info("The match ended in a draw", {
+          onClose: returnToLobby,
+        });
+      } else {
+        toast.success(`player ${updatedMatch.winner} won the match`, {
+          onClose: returnToLobby,
+        });
       }
     });
 
