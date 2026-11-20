@@ -1,5 +1,5 @@
 import { socket } from "../socket/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/useAuth";
 import GameBoard from "../components/GameBoard";
 
@@ -9,6 +9,8 @@ const OnlineMultiplayer = () => {
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const [isSearching, setIsSearching] = useState(false);
   const [match, setMatch] = useState(null);
+  const matchRef = useRef(null);
+  const completedMatchRef = useRef(false);
   const [completedMatch, setCompletedMatch] = useState(null);
 
   const findMatch = () => {
@@ -37,14 +39,22 @@ const OnlineMultiplayer = () => {
     if (loading || !user) return;
 
     socket.on("match-found", (matchData) => {
+      completedMatchRef.current = false;
+      matchRef.currentMatch = matchData;
       setMatch(matchData);
+      setCompletedMatch(null);
       setIsSearching(false);
     });
 
     socket.on("game-updated", (gameData) => {
-      setMatch((currentMatch) =>
-        currentMatch ? { ...currentMatch, ...gameData } : currentMatch,
-      );
+      const updatedMatch = { ...matchRef.currentMatch, ...gameData };
+      matchRef.currentMatch = updatedMatch;
+      setMatch(updatedMatch);
+
+      if (updatedMatch.status === "finished" && !completedMatchRef.current) {
+        completedMatchRef.current = true;
+        setCompletedMatch(updatedMatch);
+      }
     });
 
     socket.connect();
