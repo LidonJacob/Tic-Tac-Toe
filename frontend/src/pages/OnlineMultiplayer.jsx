@@ -13,7 +13,6 @@ const OnlineMultiplayer = () => {
 
   const findMatch = () => {
     socket.emit("find-match");
-    console.log("find match event emmited");
     setIsSearching(true);
   };
 
@@ -67,11 +66,6 @@ const OnlineMultiplayer = () => {
     };
   }, [user, loading]);
 
-  useEffect(() => {
-    if (match?.status === "finished") {
-      setCompletedMatch(match);
-    }
-  }, [match]);
   return (
     <div className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8 text-white">
       <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
