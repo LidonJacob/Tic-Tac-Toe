@@ -4,6 +4,10 @@ import app from "./app.js";
 import "dotenv/config";
 import connectDB from "./config/db.js";
 import { socketAuth } from "./socket/socketAuth.js";
+import {
+  handleMatchMaking,
+  removeWaitingPlayer,
+} from "./socket/matchmaking.js";
 
 const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
@@ -18,6 +22,14 @@ io.use(socketAuth);
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
+
+  socket.on("find-match", () => {
+    handleMatchMaking(io, socket);
+  });
+
+  socket.on("disconnect", () => {
+    removeWaitingPlayer(socket);
+  });
 });
 
 connectDB().then(() => {

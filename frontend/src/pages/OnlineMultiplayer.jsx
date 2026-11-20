@@ -7,6 +7,11 @@ const OnlineMultiplayer = () => {
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const [isSearching, setIsSearching] = useState(false);
 
+  const findMatch = () => {
+    socket.emit("find-match");
+    setIsSearching(true);
+  };
+
   useEffect(() => {
     if (loading || !user) return;
 
@@ -28,7 +33,9 @@ const OnlineMultiplayer = () => {
   }, [user, loading]);
   return (
     <div className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center justify-center gap-6 px-4 py-8 text-white">
-      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">Online Multiplayer</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
+        Online Multiplayer
+      </h1>
       {loading && <p>Checking Authentication...</p>}
 
       {!loading && !user && <p> please login to play online</p>}
@@ -38,7 +45,15 @@ const OnlineMultiplayer = () => {
       )}
 
       {!loading && user && connectionStatus === "connected" && (
-        <p>Connected! Looking for an opponent...</p>
+        <p>Connected to the game server</p>
+      )}
+      {!isSearching && (
+        <button
+          onClick={findMatch}
+          className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition-colors"
+        >
+          Find Match
+        </button>
       )}
 
       {!loading && user && connectionStatus === "error" && (
