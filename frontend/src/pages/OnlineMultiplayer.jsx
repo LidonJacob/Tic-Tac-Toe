@@ -1,6 +1,7 @@
 import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
+import GameBoard from "../components/GameBoard";
 
 const OnlineMultiplayer = () => {
   const { user, loading } = useAuth();
@@ -13,12 +14,35 @@ const OnlineMultiplayer = () => {
     setIsSearching(true);
   };
 
+  const makeMove = (index) => {
+    if (!match) return;
+
+    if (
+      match.currentPlayer !==
+      match.players.find((player) => player.userId === user._id)?.symbol
+    )
+      return;
+
+    if (match.status !== "active") return;
+
+    socket.emit("make-move", {
+      roomId: match.roomId,
+      index,
+    });
+  };
+
   useEffect(() => {
     if (loading || !user) return;
 
     socket.on("match-found", (matchData) => {
       setMatch(matchData);
       setIsSearching(false);
+    });
+
+    socket.on("game-updated", (gameData) => {
+      setMatch((currentMatch) =>
+        currentMatch ? { ...currentMatch, ...gameData } : currentMatch,
+      );
     });
 
     socket.connect();
@@ -32,6 +56,7 @@ const OnlineMultiplayer = () => {
     });
 
     return () => {
+      socket.off("game-updated");
       socket.off("match-found");
       socket.off("connect");
       socket.off("connect_error");
@@ -54,7 +79,7 @@ const OnlineMultiplayer = () => {
       {!loading && user && connectionStatus === "connected" && (
         <p>Connected to the game server</p>
       )}
-      {!loading && user && connectionStatus === "connected" && (
+      {!loading && user && connectionStatus === "connected" && !isSearching && (
         <button
           onClick={findMatch}
           className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition-colors"
@@ -77,9 +102,20 @@ const OnlineMultiplayer = () => {
       )}
 
       {match && (
-        <p className="text-green-400 font-semibold">
-          Opponent found! Preparing your game...
-        </p>
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-green-400 font-semibold">
+            Opponent found! You are{" "}
+            {match.players.find((player) => player.userId === user._id)?.symbol}
+          </p>
+          <p className="text-xl font-semibold text-white">
+            {match.winner
+              ? `Player ${match.winner} wins!`
+              : match.isDraw
+                ? "It's a draw!"
+                : `Player ${match.currentPlayer}'s turn`}
+          </p>
+          <GameBoard board={match.board} onSquareClick={makeMove} />
+        </div>
       )}
 
       {!loading && user && connectionStatus === "error" && (

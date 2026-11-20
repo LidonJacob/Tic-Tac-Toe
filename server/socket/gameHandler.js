@@ -20,8 +20,8 @@ const checkWinner = (board) => {
   return null;
 };
 
-export const handleMakeMove = (io, socket, { rommId, index }) => {
-  const game = activeGames.get(rommId);
+export const handleMakeMove = (io, socket, { roomId, index }) => {
+  const game = activeGames.get(roomId);
 
   if (!game) return;
 

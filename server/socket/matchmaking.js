@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { stat } from "fs";
 
 const waitingPlayers = [];
 
@@ -20,7 +21,7 @@ export const handleMatchMaking = (io, socket) => {
 
   if (waitingPlayers.length === 0) {
     waitingPlayers.push(player);
-    socket.emit("Waiting-for-opponent");
+    socket.emit("waiting-for-opponent");
     return;
   }
 
@@ -32,7 +33,7 @@ export const handleMatchMaking = (io, socket) => {
 
   if (!opponentSocket) {
     waitingPlayers.unshift(player);
-    socket.emit("Waiting-for-opponent");
+    socket.emit("waiting-for-opponent");
     return;
   }
 
@@ -46,8 +47,8 @@ export const handleMatchMaking = (io, socket) => {
       { ...opponent, symbol: "X" },
       { ...player, symbol: "O" },
     ],
-    winner:null,
-    isDraw:false,
+    winner: null,
+    isDraw: false,
     status: "active",
   });
 
@@ -57,6 +58,7 @@ export const handleMatchMaking = (io, socket) => {
     roomId,
     board: game.board,
     currentPlayer: game.currentPlayer,
+    status: game.status,
     players: game.players.map(({ userId, symbol }) => ({
       userId,
       symbol,
