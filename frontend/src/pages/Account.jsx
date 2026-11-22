@@ -20,6 +20,7 @@ const Account = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -242,20 +243,21 @@ const Account = () => {
                 activeTab === "login" ? "current-password" : "new-password"
               }
               required
-              className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700
+              className="w-full pl-4 pr-16 py-2.5 bg-gray-900 border border-gray-700
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-9 text-sm font-medium text-cyan-400 hover:text-cyan-300"
             >
               {" "}
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
           {activeTab === "register" && (
-            <div>
+            <div className="relative">
               <label
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-300 mb-1"
@@ -263,7 +265,7 @@ const Account = () => {
                 Confirm Password
               </label>
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 id="confirmPassword"
@@ -272,6 +274,14 @@ const Account = () => {
                 required
                 className="w-full px-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-9 text-sm font-medium text-cyan-400 hover:text-cyan-300"
+              >
+                {" "}
+                {showConfirmPassword ? "Hide" : "Show"}
+              </button>
               {confirmPassword && !passwordsMatch && (
                 <p className="text-red-500 text-sm mt-2">
                   Passwords do not match
