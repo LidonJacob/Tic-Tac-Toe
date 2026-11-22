@@ -15,6 +15,7 @@ const VerifyEmail = () => {
 
     try {
       const response = await api.post("/auth/verify-email", {
+        email: registeredEmail,
         code,
       });
       toast.success(response.data.message);

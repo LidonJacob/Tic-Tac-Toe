@@ -19,6 +19,7 @@ const Account = () => {
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -223,7 +224,7 @@ const Account = () => {
               />
             </div>
           )}
-          <div>
+          <div className="relative">
             <label
               htmlFor="password"
               className="block text-sm font-medium text-gray-300 mb-1"
@@ -231,7 +232,8 @@ const Account = () => {
               {activeTab === "login" ? "Password" : "Create Password"}
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
+              minLength={8}
               value={password}
               id="password"
               name="password"
@@ -244,6 +246,13 @@ const Account = () => {
     rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500
     transition-colors"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {" "}
+              {showPassword ? "Hide" : "Show"}
+            </button>
           </div>
           {activeTab === "register" && (
             <div>
