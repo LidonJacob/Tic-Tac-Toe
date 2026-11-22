@@ -19,13 +19,17 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    emailVerificationToken: {
+    emailVerificationCodeHash: {
       type: String,
       default: null,
     },
-    emailVerificationTokenExpires: {
+    emailVerificationCodeExpires: {
       type: Date,
       default: null,
+    },
+    emailVerificationAttempts: {
+      type: Number,
+      default: 0,
     },
     avatar: {
       type: String,

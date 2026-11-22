@@ -1,14 +1,14 @@
-import { randomBytes, createHash } from "crypto";
+import { randomInt, createHmac } from "crypto";
 
-export const generateVerificationToken = () => {
-  const verificationToken = randomBytes(32).toString("hex");
+export const generateVerificationCode = () => {
+  const verificationCode = randomInt(100000, 10000000).toString();
 
-  const hashedToken = createHash("sha256")
-    .update(verificationToken)
+  const codeHash = createHmac("sha256", process.env.EMAIL_VERIFICATION_SECRET)
+    .update(verificationCode)
     .digest("hex");
 
-  return {
-    verificationToken,
-    hashedToken,
-  };
+    return {
+        verificationCode,
+        codeHash
+    }
 };

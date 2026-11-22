@@ -3,8 +3,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { sendEmail } from "../utils/sendEmail.js";
-import { generateVerificationToken } from "../utils/tokenUtils.js";
+import { generateVerificationCode } from "../utils/tokenUtils.js";
 import { createHash } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -29,9 +30,9 @@ export const registerUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { verificationToken, hashedToken } = generateVerificationToken();
+    const { verificationCode, codeHash } = generateVerificationCode();
 
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     const user = await User.create({
       username,
@@ -39,20 +40,16 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
       avatar,
       emailVerified: false,
-      emailVerificationToken: hashedToken,
-      emailVerificationTokenExpires: expiresAt,
+      emailVerificationCodeHash: codeHash,
+      emailVerificationCodeExpires: expiresAt,
     });
 
-    const verificationUrl = `http://localhost:5173/verify-email/${verificationToken}`;
+    const emailHtml = `<h2> Welcome to TicTacToe! </h2>
+    <p> Your email verification code is: </p>
+    <h1> ${verificationCode} </h1>
+    <p> This code expires in 10 minutes </p>`;
 
-    await sendEmail(
-      email,
-      "Verify your TicTacToe account",
-      `<h2> Welcome to TicTacToe! </h2>
-      <p> please verify your email address by clicking on the link below: </p>
-      <a href="${verificationUrl}">Verify email</a>
-      <p> This link expires in 30 minutes </p>`,
-    );
+    await sendEmail(email, "Verify your TicTacToe account", emailHtml);
 
     res.status(201).json({
       message:
@@ -207,24 +204,76 @@ export const logoutUser = (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   try {
-    const { token } = req.params;
+    const { email, code } = req.body;
 
-    const hashedToken = createHash("sha256").update(token).digest("hex");
-
-    const user = await User.findOne({
-      emailVerificationToken: hashedToken,
-      emailVerificationTokenExpires: { $gt: Date.now() },
-    });
-
-    if (!user) {
+    if (!email || !code) {
       return res
         .status(400)
-        .json({ message: "Invalid or expired verfication link" });
+        .json({ message: "Email and verification code are required" });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!user || user.emailVerified) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verification code" });
+    }
+
+    if (
+      !user.emailVerificationCodeHash ||
+      !user.emailVerificationCodeExpires ||
+      user.emailVerificationCodeExpires < new Date()
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verification code" });
+    }
+
+    if (user.emailVerificationAttempts >= 5) {
+      user.emailVerificationCodeHash = null;
+      user.emailVerificationCodeExpires = null;
+
+      await user.save();
+
+      return res.status(429).json({
+        message: "Too many attempts. Please request a new verification code.",
+      });
+    }
+
+    const submittedCodeHash = createHmac(
+      "sha256",
+      process.env.EMAIL_VERIFICATION_SECRET,
+    )
+      .update(code)
+      .digest("hex");
+
+    const storedHashBuffer = Buffer.from(user.emailVerificationCodeHash, "hex");
+
+    const submittedHashBuffer = Buffer.from(submittedCodeHash, "hex");
+
+    const isCodeValid =
+      storedHashBuffer.length === submittedHashBuffer.length &&
+      timingSafeEqual(storedHashBuffer, submittedHashBuffer);
+
+      if (!isCodeValid) {
+        user.emailVerificationAttempts += 1;
+
+        await user.save();
+
+        return res
+          .status(400)
+          .json({ message: "Invalid or expired verification code" });
+      }
+
     user.emailVerified = true;
-    user.emailVerificationToken = null;
-    user.emailVerificationTokenExpires = null;
+    user.emailVerificationCodeHash = null;
+    user.emailVerificationCodeExpires = null;
+    user.emailVerificationAttempts = 0;
 
     await user.save();
 

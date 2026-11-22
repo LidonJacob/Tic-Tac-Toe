@@ -8,6 +8,6 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/google", googleAuth);
 router.post("/logout", logoutUser);
-router.get("/verify-email/:token", verifyEmail);
+router.post("/verify-email/", verifyEmail);
 
 export default router;
