@@ -37,7 +37,9 @@ const VerifyEmail = () => {
         <p className="text-gray-400 text-sm text-center mb-6">
           Enter the 6-digit verification code sent to you email
         </p>
-        <p className="text-cyan-400 text-sm text-center mb-4">{registeredEmail}</p>
+        <p className="text-cyan-400 text-sm text-center mb-4">
+          {registeredEmail}
+        </p>
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-300 mb-2">
             Verification Code
@@ -46,15 +48,20 @@ const VerifyEmail = () => {
           <input
             type="text"
             inputMode="numeric"
+            minLength={6}
+            pattern="[0-9]{6}"
             maxLength={6}
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) =>
+              setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+            }
             placeholder="Enter 6-digit code"
             required
             className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
           />
         </div>
         <button
+          disabled={code.length !== 6}
           type="submit"
           className="w-full bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-semibold py-2.5 rounded-lg transition-colors"
         >
