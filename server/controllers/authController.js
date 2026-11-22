@@ -48,7 +48,11 @@ export const registerUser = async (req, res) => {
       emailVerified: false,
       emailVerificationCodeHash: codeHash,
       emailVerificationCodeExpires: expiresAt,
+      emailVerificationLastSentAt: new Date(),
     });
+
+  
+
 
     const emailHtml = `<h2> Welcome to TicTacToe! </h2>
     <p> Your email verification code is: </p>
@@ -266,15 +270,29 @@ export const verifyEmail = async (req, res) => {
       storedHashBuffer.length === submittedHashBuffer.length &&
       timingSafeEqual(storedHashBuffer, submittedHashBuffer);
 
-      if (!isCodeValid) {
-        user.emailVerificationAttempts += 1;
+    if (!isCodeValid) {
+      user.emailVerificationAttempts += 1;
+
+      if (!user.emailVerificationAttempts >= 5) {
+        user.emailVerificationCodeHash = null;
+        user.emailVerificationCodeExpires = null;
 
         await user.save();
 
-        return res
-          .status(400)
-          .json({ message: "Invalid or expired verification code" });
+        return res.status(429).json({
+          message: "Too many attempts. Please request a new verification code.",
+        });
       }
+
+      await user.save();
+
+      return res
+        .status(400)
+        .json({
+          message: "Invalid or expired verification code",
+          attemptsRemaining: 5 - user.emailVerificationAttempts,
+        });
+    }
 
     user.emailVerified = true;
     user.emailVerificationCodeHash = null;

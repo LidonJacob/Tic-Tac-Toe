@@ -9,6 +9,7 @@ const VerifyEmail = () => {
   const registeredEmail = location.state?.email || "";
 
   const [code, setCode] = useState("");
+  const [attempts, setAttempts] = useState(0);
 
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
@@ -21,7 +22,12 @@ const VerifyEmail = () => {
       toast.success(response.data.message);
       navigate("/account");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Email verification failed");
+      if (error.response?.status === 400) {
+        setAttempts((prev) => prev + 1);
+      } else if (error.response?.status === 429) {
+        setAttempts(5);
+      }
+      toast.error(error.response?.data?.message || "Failed to verify email");
     }
   };
   return (
@@ -59,11 +65,18 @@ const VerifyEmail = () => {
             required
             className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
           />
+          {attempts >= 5 && (
+            <p className="text-red-400 text-sm mt-2">
+              Too many incorrect attempts. Please request a new verification
+              code.
+            </p>
+          )}
         </div>
         <button
-          disabled={code.length !== 6}
+          disabled={code.length !== 6 || attempts >= 5}
           type="submit"
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-semibold py-2.5 rounded-lg transition-colors
+          disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Verify Email
         </button>

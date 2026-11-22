@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    emailVerificationLastSentAt: {
+      type: Date,
+      default: null,
+    },
     avatar: {
       type: String,
       default: "",
