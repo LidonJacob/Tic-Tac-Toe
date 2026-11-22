@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom"
+import { useState } from "react";
+import api from "../services/api";
+import {toast} from "react-toastify";
 
 const VerifyEmail = () => {
-    const { token } = useParams();
+    
   return (
     <div>VerifyEmail</div>
   )
