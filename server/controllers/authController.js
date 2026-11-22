@@ -79,7 +79,17 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "invalid email or password" });
     }
 
+    if (!user.emailVerified) {
+      return res
+        .status(403)
+        .json({ message: "Please verify your email before login" });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!user.password) {
+      return res.status(401).json({ message: "invalid email or password" });
+    }
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: "invalid email or password" });
@@ -155,8 +165,15 @@ export const googleAuth = async (req, res) => {
         username,
         email: normalizedEmail,
         avatar: picture || "",
+        emailVerified: true,
       });
     }
+
+    if (!user.emailVerified) {
+      user.emailVerified = true;
+      await user.save();
+    }
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -195,8 +212,8 @@ export const verifyEmail = async (req, res) => {
     const hashedToken = createHash("sha256").update(token).digest("hex");
 
     const user = await User.findOne({
-      emailVerficationToken: hashedToken,
-      emailVerificationExpires: { $gt: Date.now() },
+      emailVerificationToken: hashedToken,
+      emailVerificationTokenExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -207,7 +224,7 @@ export const verifyEmail = async (req, res) => {
 
     user.emailVerified = true;
     user.emailVerificationToken = null;
-    user.emailVerificationExpires = null;
+    user.emailVerificationTokenExpires = null;
 
     await user.save();
 
