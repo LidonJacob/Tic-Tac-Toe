@@ -25,9 +25,8 @@ const Account = () => {
       const response = await api.post("/auth/google", {
         credential: credentialResponse.credential,
       });
-      setUser(response.data.user);
+
       toast.success(response.data.message);
-      navigate("/");
     } catch (error) {
       console.error("Google Authentication error:", error);
       toast.error(error.response?.data?.message || "Google Login Failed");

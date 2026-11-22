@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
+import { sendEmail } from "../utils/sendEmail.js";
+import { generateVerificationToken } from "../utils/tokenUtils.js";
+import { createHash } from "crypto";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -26,26 +29,34 @@ export const registerUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const { verificationToken, hashedToken } = generateVerificationToken();
+
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
     const user = await User.create({
       username,
       email,
       password: hashedPassword,
       avatar,
+      emailVerified: false,
+      emailVerificationToken: hashedToken,
+      emailVerificationTokenExpires: expiresAt,
     });
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-    res.cookie("token", token, cookieOptions);
+    const verificationUrl = `http://localhost:5173/verify-email/${verificationToken}`;
+
+    await sendEmail(
+      email,
+      "Verify your TicTacToe account",
+      `<h2> Welcome to TicTacToe! </h2>
+      <p> please verify your email address by clicking on the link below: </p>
+      <a href="${verificationUrl}">Verify email</a>
+      <p> This link expires in 30 minutes </p>`,
+    );
 
     res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-      },
+      message:
+        "Registration successful! please check your email to verify your account",
     });
   } catch (error) {
     console.error("Register user error:", error.message);
@@ -175,4 +186,38 @@ export const logoutUser = (req, res) => {
   });
 
   res.status(200).json({ message: "logout successful" });
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const hashedToken = createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      emailVerficationToken: hashedToken,
+      emailVerificationExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired verfication link" });
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Email verified successfully you can now login" });
+  } catch (error) {
+    console.error("Error verifying email:", error.message);
+    return res
+      .status(500)
+      .json({ message: "server error while verifying email" });
+  }
 };
