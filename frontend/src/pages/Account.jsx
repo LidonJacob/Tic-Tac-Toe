@@ -58,7 +58,7 @@ const Account = () => {
         });
 
         toast.success(response.data.message);
-        
+        navigate("/verify-email", { state: { email } });
       } else {
         const response = await api.post("/auth/login", {
           email,

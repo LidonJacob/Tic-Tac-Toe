@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile";
 import OnlineMultiplayer from "./pages/OnlineMultiplayer";
+import VerifyEmail from "./pages/VerifyEmail";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/online" element={<OnlineMultiplayer />} />
         <Route path="/history" element={<History />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
