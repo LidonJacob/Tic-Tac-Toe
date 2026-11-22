@@ -85,11 +85,11 @@ export const loginUser = async (req, res) => {
         .json({ message: "Please verify your email before login" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!user.password) {
       return res.status(401).json({ message: "invalid email or password" });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: "invalid email or password" });
