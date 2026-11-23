@@ -26,6 +26,7 @@ const Account = () => {
     try {
       const response = await api.post("/auth/google", {
         credential: credentialResponse.credential,
+        mode: activeTab,
       });
 
       toast.success(response.data.message);
@@ -334,6 +335,7 @@ const Account = () => {
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => toast.error("Google login failed")}
+            text={activeTab === "login" ? "signin_with" : "signup_with"}
           />
         </div>
       </div>

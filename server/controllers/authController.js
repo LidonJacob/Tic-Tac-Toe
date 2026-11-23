@@ -159,6 +159,18 @@ export const googleAuth = async (req, res) => {
 
     let user = await User.findOne({ email: normalizedEmail });
 
+    if (mode === "login" && !user) {
+      return res.status(404).json({
+        message: "No account found. Please register first.",
+      });
+    }
+
+    if (mode === "register" && user) {
+      return res.status(409).json({
+        message: "An account already exists. Please login instead.",
+      });
+    }
+
     if (!user) {
       const baseUsername =
         (name || normalizedEmail.split("@")[0])
