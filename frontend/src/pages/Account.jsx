@@ -29,6 +29,8 @@ const Account = () => {
       });
 
       toast.success(response.data.message);
+      setUser(response.data.user);
+      navigate("/");
     } catch (error) {
       console.error("Google Authentication error:", error);
       toast.error(error.response?.data?.message || "Google Login Failed");
