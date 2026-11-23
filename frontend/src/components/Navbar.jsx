@@ -41,8 +41,8 @@ const Navbar = () => {
           ) : (
             <UserRound size={28} className="text-cyan-400" />
           )}
-          <span className="text-white font-medium hidden sm:inline">
-            {user.username}
+          <span className="text-gray-300 font-medium hidden sm:inline hover:text-cyan-400 transition-colors duration-200">
+            Account Settings
           </span>
         </Link>
       ) : (

@@ -185,40 +185,88 @@ const Profile = () => {
                 Profile Information
               </h2>
 
-              <p className="text-lg text-gray-300 mb-3">
+              <p className="text-lg text-gray-300 mb-1">
                 <strong>Username: </strong> {user.username}
               </p>
 
               <p className="text-lg text-gray-300">
                 <strong>Email: </strong> {user.email}
               </p>
-              {!isEditing && (
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => {
-                      setUsername(user.username);
-                      setEmail(user.email);
-                      setActiveSection("profile");
-                      setIsEditing(true);
-                    }}
-                    className="px-5 py-2
+
+              <div className="flex justify-center">
+                <button
+                  onClick={() => {
+                    setUsername(user.username);
+                    setEmail(user.email);
+                    setActiveSection("profile");
+                    setIsEditing(true);
+                  }}
+                  className="px-5 py-2
       bg-cyan-500 rounded-lg hover:bg-cyan-600"
-                  >
-                    {" "}
-                    Edit Profile{" "}
-                  </button>
-                </div>
-              )}
+                >
+                  {" "}
+                  Edit Profile{" "}
+                </button>
+              </div>
             </div>
           )}
-          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full">
-            <h2 className="text-lg font-semibold text-white mb-2">
-              Email Address
-            </h2>
-            <p className="text-gray-400 text-sm">
-              Manage the email address associated with your account.
-            </p>
-          </div>
+
+          {!isEditing && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold text-white mb-3">
+                Email Address
+              </h2>
+              <p className="text-gray-400 text-sm">
+                Manage the email address associated with your account.
+              </p>
+              <p className="text-gray-300 mt-3">{user.email}</p>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setActiveSection("email")}
+                  className="px-5 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors"
+                >
+                  Change Email
+                </button>
+              </div>
+            </div>
+          )}
+          {!isEditing && (
+            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold text-white mb-3">
+                Password & Security
+              </h2>
+              <p className="text-gray-400 text-sm">
+                Manage your account password and security.
+              </p>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => setActiveSection("password")}
+                  className="px-5 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors"
+                >
+                  Change Password
+                </button>
+              </div>
+            </div>
+          )}
+          {!isEditing && (
+            <div className="bg-gray-800/50 border border-red-900/50 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold text-red-400 mb-3">
+                Delete Account
+              </h2>
+              <p className="text-gray-400 text-sm">
+                Permanently delete your account and associated game history.
+                This action cannot be undone.
+              </p>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => setActiveSection("delete")}
+                  className="px-5 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Delete My Account
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
