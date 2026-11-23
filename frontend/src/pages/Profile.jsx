@@ -347,11 +347,11 @@ const Profile = () => {
 
                     <button
                       type="submit"
-                      disabled={isVerifying}
+                      
                       className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600
-                      disabled:opacity-50 disabled:cursor-not-allowed"
+                      "
                     >
-                      {isVerifying ? "Verifying..." : "Verify"}
+                      Verify
                     </button>
                   </form>
                 </div>
