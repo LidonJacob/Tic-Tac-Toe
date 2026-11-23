@@ -13,16 +13,30 @@ const Profile = () => {
   const [newEmail, setNewEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
-  
-  
+
   const handleEmailChange = async (e) => {
     e.preventDefault();
 
-    const response = await api.post("/users/request-email-change", {
+    await api.post("/users/request-email-change", {
       newEmail,
     });
     setIsCodeSent(true);
     toast.success("Verification code sent to your new email");
+  };
+
+  const handleVerifyEmailChange = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.post("/users/verify-email-change", {
+        code: verificationCode,
+      });
+
+      setUser(response.data.user);
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Email verification failed");
+    }
   };
 
   const [avatar, setAvatar] = useState(null);
@@ -251,48 +265,84 @@ const Profile = () => {
               <h2 className="text-lg font-semibold mb-3">
                 Change Email Address
               </h2>
+              {isCodeSent && (
+                <form
+                  onSubmit={handleEmailChange}
+                  className="flex flex-col gap-4"
+                >
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">
+                      New Email Address
+                    </label>
 
-              <form
-                onSubmit={handleEmailChange}
-                className="flex flex-col gap-4"
-              >
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      placeholder="Enter your new email"
+                      required
+                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                    >
+                      Continue
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveSection("null");
+                        setNewEmail("");
+                      }}
+                      className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+              {isCodeSent && (
                 <div>
-                  <label className="block text-sm text-gray-300 mb-2">
-                    New Email Address
-                  </label>
-
-                  <input
-                    type="email"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    placeholder="Enter your new email"
-                    required
-                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                  <h3 className="text-lg font-semibold mb-3">
+                    Verify Your New Email
+                  </h3>
+                  <form
+                    onSubmit={handleVerifyEmailChange}
+                    className="flex flex-col gap-4"
                   >
-                    Continue
-                  </button>
+                    <div>
+                      <label className="block text-sm text-gray-300 mb-2">
+                        Verification Code
+                      </label>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveSection("null");
-                      setNewEmail("");
-                    }}
-                    className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
+                      <input
+                        type="text"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        placeholder="Enter 6-digit code"
+                        maxLength={6}
+                        required
+                        className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                    >
+                      Verify Email
+                    </button>
+                  </form>
                 </div>
-              </form>
+              )}
             </div>
           )}
+
           {!isEditing && (
             <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full">
               <h2 className="text-lg font-semibold text-white mb-3">
