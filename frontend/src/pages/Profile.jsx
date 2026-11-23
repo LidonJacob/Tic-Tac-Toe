@@ -4,7 +4,7 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
-import axios from "axios";
+
 
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
