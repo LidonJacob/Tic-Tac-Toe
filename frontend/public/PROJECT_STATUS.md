@@ -422,8 +422,8 @@ Milestone 1 — Frontend Foundation
 - [x] Password & Security card.
 - [x] Delete Account card.
 - [x] Navbar Account Settings label.
-- [ ] Change Email functionality.
-- [ ] New email verification.
+- [x] Change Email functionality.
+- [x] New email verification.
 - [ ] Change Password functionality.
 - [ ] Delete Account functionality.
 - [ ] Account-management testing.
