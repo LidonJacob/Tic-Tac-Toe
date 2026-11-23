@@ -4,6 +4,7 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
+import { Eye, EyeOff } from "lucide-react";
 
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
@@ -19,6 +20,9 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
@@ -38,6 +42,13 @@ const Profile = () => {
     } finally {
       setIsRequestingEmail(false);
     }
+  };
+
+  const handleCancelPassword = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setActiveSection("null");
   };
   const handleVerifyEmailChange = async (e) => {
     e.preventDefault();
@@ -390,6 +401,73 @@ const Profile = () => {
           {activeSection === "password" && (
             <div className="bg-gray-800 border border-cyan-500/40 rounded-xl p-5 w-full">
               <h2 className="text-lg font-semibold mb-3">Change Password</h2>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-gray-300">
+                  Current Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                    required
+                    className="w-full pl-4 pr-12 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-400"
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm text-gray-300">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    required
+                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm text-gray-300">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      required
+                      className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center gap-3 mt-4">
+                <button
+                  type="button"
+                  disabled={isChangingPassword}
+                  className="px-5 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors disabled:opacity-50"
+                >
+                  {isChangingPassword ? "Changing..." : "Change Password"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelPassword}
+                  className="px-5 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors
+                  "
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
           {!isEditing && (
