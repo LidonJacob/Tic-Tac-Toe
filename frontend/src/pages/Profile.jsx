@@ -15,6 +15,10 @@ const Profile = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRequestingEmail, setIsRequestingEmail] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
@@ -324,6 +328,14 @@ const Profile = () => {
                     </button>
                   </div>
                 </form>
+              )}
+
+              {activeSection === "password" && (
+                <div className="bg-gray-800 border border-cyan-500/40 rounded-xl p-5 w-full">
+                  <h2 className="text-lg font-semibold mb-3">
+                    Change Password
+                  </h2>
+                </div>
               )}
               {isCodeSent && (
                 <div>
