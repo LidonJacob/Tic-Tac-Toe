@@ -176,38 +176,49 @@ const Profile = () => {
             </>
           )}
 
-          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5">
-            {!isEditing && (
-              <p className="text-lg text-center">
-                {" "}
+          {!isEditing && (
+            <div
+              className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full flex flex-col
+            gap-3"
+            >
+              <h2 className="text-lg font-semibold text-white mb-4 text-center">
+                Profile Information
+              </h2>
+
+              <p className="text-lg text-gray-300 mb-3">
                 <strong>Username: </strong> {user.username}
               </p>
-            )}
 
-            {!isEditing && (
-              <p className="text-lg text-center">
-                {" "}
+              <p className="text-lg text-gray-300">
                 <strong>Email: </strong> {user.email}
               </p>
-            )}
-          </div>
-          {!isEditing && (
-            <div className="flex justify-center">
-              <button
-                onClick={() => {
-                  setUsername(user.username);
-                  setEmail(user.email);
-                  setActiveSection("profile");
-                  setIsEditing(true);
-                }}
-                className="mt-4 px-5 py-2
+              {!isEditing && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      setUsername(user.username);
+                      setEmail(user.email);
+                      setActiveSection("profile");
+                      setIsEditing(true);
+                    }}
+                    className="px-5 py-2
       bg-cyan-500 rounded-lg hover:bg-cyan-600"
-              >
-                {" "}
-                Edit Profile{" "}
-              </button>
+                  >
+                    {" "}
+                    Edit Profile{" "}
+                  </button>
+                </div>
+              )}
             </div>
           )}
+          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full">
+            <h2 className="text-lg font-semibold text-white mb-2">
+              Email Address
+            </h2>
+            <p className="text-gray-400 text-sm">
+              Manage the email address associated with your account.
+            </p>
+          </div>
         </div>
       </div>
     </div>
