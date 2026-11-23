@@ -13,6 +13,7 @@ const Profile = () => {
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeSection, setActiveSection] = useState("null");
 
   const hasChanges = username !== user?.username || avatar !== null;
 
@@ -85,14 +86,17 @@ const Profile = () => {
     setAvatar(null);
     setAvatarPreview(user.avatar || "");
     setIsEditing(false);
+    setActiveSection("null");
   };
   return (
     <div className="min-h-[calc(100dvh-60px)] bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
       <div
-        className="w-full max-w-lg bg-gray-900 border
-        border-gray-800 rounded-2xl p-5 sm:p-8 shadow-xl"
+        className="w-full max-w-2xl bg-gray-900 border
+        border-gray-800 rounded-2xl p-5 sm:p-8 space-y-6 shadow-xl"
       >
-        <h1 className="text-3xl font-bold mb-6 text-center">My Profile</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Account Settings
+        </h1>
         <div className="flex flex-col items-center gap-4">
           {avatarPreview || user.avatar ? (
             <img
@@ -172,36 +176,39 @@ const Profile = () => {
             </>
           )}
 
-          {!isEditing && (
-            <p className="text-lg text-center">
-              {" "}
-              <strong>Username: </strong> {user.username}
-            </p>
-          )}
+          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-5">
+            {!isEditing && (
+              <p className="text-lg text-center">
+                {" "}
+                <strong>Username: </strong> {user.username}
+              </p>
+            )}
 
+            {!isEditing && (
+              <p className="text-lg text-center">
+                {" "}
+                <strong>Email: </strong> {user.email}
+              </p>
+            )}
+          </div>
           {!isEditing && (
-            <p className="text-lg text-center">
-              {" "}
-              <strong>Email: </strong> {user.email}
-            </p>
+            <div className="flex justify-center">
+              <button
+                onClick={() => {
+                  setUsername(user.username);
+                  setEmail(user.email);
+                  setActiveSection("profile");
+                  setIsEditing(true);
+                }}
+                className="mt-4 px-5 py-2
+      bg-cyan-500 rounded-lg hover:bg-cyan-600"
+              >
+                {" "}
+                Edit Profile{" "}
+              </button>
+            </div>
           )}
         </div>
-        {!isEditing && (
-          <div className="flex justify-center">
-            <button
-              onClick={() => {
-                setUsername(user.username);
-                setEmail(user.email);
-                setIsEditing(true);
-              }}
-              className="mt-4 px-5 py-2
-      bg-cyan-500 rounded-lg hover:bg-cyan-600"
-            >
-              {" "}
-              Edit Profile{" "}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
