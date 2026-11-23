@@ -129,7 +129,13 @@ export const loginUser = async (req, res) => {
 
 export const googleAuth = async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { credential, mode } = req.body;
+
+    if (!["login", "register"].includes(mode)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid Google Authentication mode" });
+    }
 
     if (!credential) {
       return res.status(400).json({ message: "Google credential is required" });
