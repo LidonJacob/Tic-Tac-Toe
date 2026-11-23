@@ -242,7 +242,7 @@ const Game = () => {
           }}
         />
       </div>
-      {createError && user && (
+      {createError && user && gameMode === "online" && (
         <button
           onClick={() => {
             setCreateError(false);
