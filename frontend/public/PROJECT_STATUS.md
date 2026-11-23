@@ -1,161 +1,324 @@
-Tic-Tac-Toe — Project Status
+Tic-Tac-Toe — Project Status & Development Roadmap
 
-Repository: "LidonJacob/Tic-Tac-Toe"
+Repository: "LidonJacob/Tic-Tac-Toe" (https://github.com/LidonJacob/Tic-Tac-Toe)
 Branch: "main"
-Frontend: React, Vite, Tailwind CSS v4
-Backend: Node.js, Express.js, MongoDB, Mongoose
-Authentication: JWT with HTTP-only cookies
-Real-time communication: Socket.IO
+Last Updated: 23 November 2026
 
 ---
 
 1. Project Overview
 
-We are building a full-stack Tic-Tac-Toe application that supports guests, registered users, AI gameplay and online multiplayer.
+We are building a full-stack Tic-Tac-Toe application using modern web technologies.
 
-The application is designed with separation of concerns, reusable React components, custom hooks, backend APIs and real-time communication.
+The application supports guest players, registered users, AI opponents, game history, user profiles and online multiplayer.
 
-Main Features
+The main objective is to build a complete, responsive and maintainable application while following good software engineering practices.
 
-- Guest gameplay without registration or login.
-- Player vs Player gameplay.
-- Player vs AI gameplay with three difficulty levels.
-- User registration and authentication.
-- User profiles and avatar uploads.
-- Persistent game history and statistics for registered users.
-- Guest game history using session storage.
-- Online multiplayer using Socket.IO.
-- Real-time move synchronization.
-- Online rematches.
-- Responsive user interface.
+Technology Stack
+
+Frontend
+
+- React.js
+- Vite
+- JavaScript
+- Tailwind CSS v4
+- React Router
+- Axios
+- Socket.IO Client
+- React Toastify
+- Lucide React
+
+Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcrypt
+- HTTP-only cookies
+- Socket.IO
+- Cloudinary
+
+Development Tools
+
+- Visual Studio Code
+- Git and GitHub
+- MongoDB Atlas
+- Cloudinary
 
 ---
 
-2. Current Project Status
+2. Main Application Features
 
-2.1 Frontend and Gameplay
+The application is designed to support:
 
-- [x] React and Vite frontend setup.
-- [x] Tailwind CSS v4 setup.
-- [x] Player vs Player gameplay.
-- [x] Easy AI implementation.
-- [x] Medium AI implementation.
-- [x] Hard AI implementation.
-- [x] Game mode selection.
-- [x] AI difficulty selection.
-- [x] Game restart functionality.
-- [x] Game status display.
-- [x] Winning-line animation.
-- [x] Game history interface.
-- [x] Responsive navigation.
-- [x] Responsive frontend layouts.
-- [x] Separation of game logic and presentation components.
-- [x] Reusable game logic using custom hooks.
+- Guest gameplay without registration.
+- Player vs Player gameplay.
+- Player vs AI gameplay.
+- Three AI difficulty levels: Easy, Medium and Hard.
+- User registration and login.
+- Email verification.
+- JWT-based authentication.
+- User profile management.
+- Profile avatar uploads.
+- Persistent game history for authenticated users.
+- Guest game history using session storage.
+- Game statistics.
+- Online multiplayer.
+- Real-time move synchronization.
+- Online rematches.
+- Responsive user interface.
+- Account management and security settings.
 
-2.2 Authentication and User Profiles
+---
 
-- [x] MongoDB database integration.
-- [x] User registration.
-- [x] User login.
-- [x] Password hashing using bcrypt.
-- [x] JWT authentication using HTTP-only cookies.
-- [x] Authentication middleware.
-- [x] Frontend authentication context.
-- [x] Authentication persistence using the profile endpoint.
-- [x] Dynamic navbar displaying the logged-in user's avatar.
-- [x] Profile page and "/profile" route.
-- [x] Display account details.
-- [x] Edit username and email.
-- [x] Update profile avatar using Cloudinary.
-- [x] Image compression before avatar upload.
-- [x] Logout functionality.
-- [x] Secure authentication cookie clearing.
-- [x] Verify logout and authentication persistence.
+3. Current Development Progress
 
-2.3 Backend Game Management
+3.1 Frontend Foundation and Gameplay
+
+- [x] Initialize React and Vite.
+- [x] Configure Tailwind CSS v4.
+- [x] Create reusable React components.
+- [x] Implement Player vs Player gameplay.
+- [x] Implement Easy AI.
+- [x] Implement Medium AI.
+- [x] Implement Hard AI using Minimax.
+- [x] Implement game mode selection.
+- [x] Implement AI difficulty selection.
+- [x] Implement restart functionality.
+- [x] Implement win detection.
+- [x] Implement draw detection.
+- [x] Implement game status display.
+- [x] Implement winning-line animation.
+- [x] Separate game logic from presentation components.
+- [x] Extract reusable game logic into custom hooks.
+- [x] Implement responsive layouts.
+- [x] Implement responsive navigation.
+- [x] Implement game history interface.
+
+3.2 Authentication and User Management
+
+- [x] Connect MongoDB.
+- [x] Create the User model.
+- [x] Implement user registration.
+- [x] Implement user login.
+- [x] Hash passwords using bcrypt.
+- [x] Implement JWT authentication.
+- [x] Store authentication tokens in HTTP-only cookies.
+- [x] Implement authentication middleware.
+- [x] Implement frontend AuthContext.
+- [x] Implement authentication persistence.
+- [x] Implement protected backend routes.
+- [x] Implement email verification during registration.
+- [x] Implement profile page.
+- [x] Implement username editing.
+- [x] Implement avatar uploads using Cloudinary.
+- [x] Implement image compression before avatar uploads.
+- [x] Implement avatar preview.
+- [x] Implement avatar validation.
+- [x] Implement profile cancellation and discard unsaved changes.
+- [x] Implement logout.
+- [x] Clear authentication cookies during logout.
+- [x] Verify authentication persistence and logout behavior.
+- [x] Implement Remember Me functionality.
+
+3.3 Account Settings Dashboard
+
+- [x] Create the Account Settings page.
+- [x] Display the user's profile avatar.
+- [x] Create the Profile Information card.
+- [x] Display username and email.
+- [x] Add the Edit Profile button.
+- [x] Create the Email Address card.
+- [x] Display the current email address.
+- [x] Add the Change Email button.
+- [x] Create the Password & Security card.
+- [x] Add the Change Password button.
+- [x] Create the Delete Account card.
+- [x] Add the Delete My Account button.
+- [x] Apply consistent cyan button styling.
+- [x] Apply red styling to destructive account actions.
+- [x] Refine card spacing and alignment.
+- [x] Update the navbar label from username to Account Settings.
+- [x] Add a matching navbar hover effect.
+
+Account Settings Functionality Still Required
+
+- [ ] Implement Change Email functionality.
+- [ ] Implement verification of the new email address.
+- [ ] Implement Change Password functionality.
+- [ ] Implement current-password verification.
+- [ ] Implement secure account deletion.
+- [ ] Implement deletion confirmation.
+- [ ] Handle associated game history during account deletion.
+- [ ] Test all account-management operations.
+
+Important: The four dashboard cards are currently implemented as UI. Their three account-management action buttons are placeholders and must not be treated as completed functionality.
+
+3.4 Backend Game Management
 
 - [x] Create game models.
-- [x] Create game APIs.
+- [x] Implement game-management APIs.
 - [x] Save authenticated game records.
 - [x] Record player moves.
 - [x] Track wins, losses and draws.
-- [x] Associate games with authenticated users.
-- [x] Prevent guest games from being saved to MongoDB.
-- [x] Create authenticated game records only after the first move.
-- [x] Delete unfinished authenticated games when restarted.
-- [x] Preserve completed authenticated game records.
+- [x] Associate game records with authenticated users.
 - [x] Validate submitted game data.
-- [x] Restrict game records to their respective authenticated users.
+- [x] Restrict game records to their respective owners.
+- [x] Create authenticated game records after the first move.
+- [x] Delete unfinished authenticated games when restarted.
+- [x] Preserve completed game records.
+- [x] Prevent guest games from being saved to MongoDB.
 
-2.4 Game History and Statistics
+3.5 Game History and Statistics
 
-- [x] Connect wins, losses and draws to authenticated users.
-- [x] Connect match history to the backend.
-- [x] Display user game statistics.
-- [x] Ensure statistics update correctly after games.
-- [x] Implement guest history using "sessionStorage".
-- [x] Implement registered-user history using MongoDB.
-- [x] Display only the logged-in user's game records.
-- [x] Isolate history between different registered accounts.
+- [x] Connect game statistics to authenticated users.
+- [x] Save registered-user game history in MongoDB.
+- [x] Display wins, losses and draws.
+- [x] Display match history.
+- [x] Implement guest history using sessionStorage.
+- [x] Isolate registered-user history between accounts.
+- [x] Ensure guests do not make game-management API requests.
 - [x] Verify guest history resets when the tab session ends.
-- [x] Verify guests do not make game-management API requests.
+- [x] Test registered-user history and statistics.
 
-2.5 Online Multiplayer — Socket.IO
+3.6 Online Multiplayer — Socket.IO
 
-- [x] Understand Socket.IO and its integration with the application.
+- [x] Understand Socket.IO integration.
 - [x] Set up Socket.IO on the backend.
-- [x] Connect the React frontend to the Socket.IO server.
+- [x] Connect the React frontend to Socket.IO.
 - [x] Implement Socket.IO authentication.
 - [x] Implement matchmaking.
 - [x] Create and join game rooms.
 - [x] Implement real-time gameplay.
 - [x] Synchronize moves between players.
 - [x] Validate player turns on the server.
-- [x] Handle winning and draw conditions.
-- [x] Synchronize game results between players.
+- [x] Handle winning conditions.
+- [x] Handle draw conditions.
+- [x] Synchronize game results.
 - [x] Implement online rematch requests.
-- [x] Notify players when an opponent requests a rematch.
+- [x] Notify players about rematch requests.
 - [x] Reset the board when a rematch starts.
 - [x] Swap player symbols during rematches.
-- [x] Restore the winning-line animation for online matches.
+- [x] Restore winning-line animations for online matches.
 - [x] Synchronize winning combinations between both clients.
-- [x] Clear the winning line when a rematch begins.
+- [x] Clear winning lines when rematches begin.
 - [x] Test online gameplay using two browser sessions.
 
 ---
 
-3. Production-Readiness Improvements
+4. Important Architectural Decisions
 
-- [x] Correct the Home page difficulty-label typo.
-- [x] Replace avatar-validation alerts with toast notifications.
-- [x] Improve error handling in "Account.jsx".
-- [x] Fix Profile page cancellation so unsaved changes, including avatar selections, are discarded.
-- [x] Review Remember Me functionality.
-- [x] Review the Google login button and plan real OAuth integration.
-- [x] Complete the initial frontend production-readiness review.
-- [x] Implement responsive navigation.
-- [x] Prevent human players from making moves during the AI's turn.
-- [x] Implement online rematch notifications.
-- [x] Restore online winning-line animations.
+These decisions must be preserved throughout development.
+
+4.1 Guest Gameplay
+
+Guests must be allowed to play entirely on the frontend without registering or logging in.
+
+- Guest games are not saved to MongoDB.
+- Guest gameplay does not use backend game-management endpoints.
+- Guest history is stored in sessionStorage.
+- Guest history belongs to the browser tab session.
+
+4.2 Authenticated Gameplay
+
+Authenticated users can use backend services to persist their games.
+
+- Game records are associated with their owners.
+- A game record is created after the first move.
+- Unfinished games are deleted when restarted.
+- Completed games remain saved.
+- Users must only access their own records and statistics.
+
+4.3 Authentication
+
+- JWT authentication uses HTTP-only cookies.
+- AuthContext manages frontend authentication state.
+- Protected backend routes use authentication middleware.
+- Logout clears the authentication cookie and frontend user state.
+- Authentication state must remain consistent after refreshing the application.
+
+4.4 User Profiles
+
+- Users can update their usernames.
+- Users can upload and update profile avatars.
+- Cloudinary handles avatar storage.
+- Images are compressed before upload.
+- Users can cancel editing without retaining unsaved changes.
+- Email changes must use a separate verification process.
+
+4.5 Separation of Concerns
+
+- React components handle presentation.
+- Custom hooks handle reusable React logic.
+- Utility functions handle reusable calculations and operations.
+- Backend controllers handle application business logic.
+- Models define database structures.
+- Middleware handles authentication and other shared request operations.
+- Dedicated Socket.IO handlers manage real-time game operations.
+
+Avoid unnecessary duplication and over-engineering.
 
 ---
 
-4. Remaining Work
+5. Current Remaining Work
 
-The following tasks must be completed before declaring the first development phase fully finished.
+5.1 Account Management
 
-4.1 Online Multiplayer Reliability
+This is our current development focus.
+
+Change Email
+
+- [ ] Design the Change Email interface.
+- [ ] Allow users to enter a new email address.
+- [ ] Validate the new email address.
+- [ ] Verify the user's identity before changing the email.
+- [ ] Send a verification link or code to the new email.
+- [ ] Verify ownership of the new email address.
+- [ ] Update the email in MongoDB only after successful verification.
+- [ ] Handle duplicate email addresses.
+- [ ] Handle expired verification tokens.
+- [ ] Notify the user when the change succeeds.
+
+Change Password
+
+- [ ] Design the Change Password interface.
+- [ ] Request the current password.
+- [ ] Request a new password.
+- [ ] Add password confirmation.
+- [ ] Validate password requirements.
+- [ ] Verify the current password.
+- [ ] Hash the new password using bcrypt.
+- [ ] Update the password securely.
+- [ ] Handle existing authentication sessions appropriately.
+- [ ] Display success and error notifications.
+
+Delete Account
+
+- [ ] Design the account deletion interface.
+- [ ] Display a confirmation warning.
+- [ ] Require appropriate identity verification.
+- [ ] Implement secure backend account deletion.
+- [ ] Handle associated game records.
+- [ ] Clear authentication cookies.
+- [ ] Clear frontend authentication state.
+- [ ] Redirect the user after successful deletion.
+- [ ] Test the complete deletion process.
+
+5.2 Online Multiplayer Reliability
 
 - [ ] Handle opponent disconnections during active matches.
-- [ ] Notify the remaining player when their opponent disconnects.
-- [ ] Implement a suitable reconnection strategy.
+- [ ] Notify the remaining player when an opponent disconnects.
+- [ ] Implement a reconnection strategy.
 - [ ] Restore the correct game state after reconnection.
 - [ ] Handle players who fail to reconnect.
-- [ ] Test disconnection and reconnection using two browser sessions.
+- [ ] Test disconnections and reconnections using two browser sessions.
 
-4.2 Final Integration Testing
+5.3 Final Integration Testing
 
-- [ ] Complete authentication testing.
+- [ ] Complete authentication regression testing.
+- [ ] Complete account-management testing.
 - [ ] Complete backend game-management testing.
 - [x] Test guest gameplay.
 - [x] Test registered-user gameplay.
@@ -167,58 +330,14 @@ The following tasks must be completed before declaring the first development pha
 - [ ] Complete disconnection and reconnection testing.
 - [ ] Run a complete application regression test.
 
-4.3 Documentation
+5.4 Documentation
 
-- [ ] Update the project status document after completing the remaining work.
+- [ ] Complete and maintain this project status document.
 - [ ] Prepare a comprehensive README.
 - [ ] Document environment variables and setup instructions.
 - [ ] Document backend API endpoints.
 - [ ] Document Socket.IO events.
-
----
-
-5. Important Architectural Decisions
-
-5.1 Guest Gameplay
-
-- Guests must be able to play entirely on the frontend.
-- Guest games must not require registration or login.
-- Guest games must not be saved to MongoDB.
-- Guest gameplay must not use backend game-management endpoints.
-- Guest history is stored in "sessionStorage".
-- Guest history is scoped to the browser tab session.
-
-5.2 Authenticated Gameplay
-
-- Authenticated users can save their games to MongoDB.
-- A game record is created only after the first move.
-- Unfinished games are deleted when restarted.
-- Completed games remain saved.
-- Each user must only access their own game records and statistics.
-
-5.3 Authentication
-
-- JWT authentication uses HTTP-only cookies.
-- Authentication state is managed through "AuthContext".
-- Protected backend routes must use authentication middleware.
-- Socket.IO connections require authentication.
-
-5.4 Online Multiplayer
-
-- Online multiplayer is available to authenticated users.
-- Socket.IO handles matchmaking and real-time communication.
-- The backend validates player identity and turns.
-- Both players receive synchronized game updates.
-- Rematches require requests from both players.
-- Winning combinations are synchronized between both clients.
-
-5.5 Separation of Concerns
-
-- React components are responsible for presentation.
-- Reusable game logic belongs in custom hooks and utility functions.
-- Backend business logic belongs in controllers and models.
-- Socket.IO game operations belong in dedicated socket handlers.
-- Avoid unnecessary duplication and over-engineering.
+- [ ] Document account-management workflows.
 
 ---
 
@@ -226,128 +345,208 @@ The following tasks must be completed before declaring the first development pha
 
 Milestone 1 — Frontend Foundation
 
-- [x] Set up React and Vite.
-- [x] Configure Tailwind CSS v4.
-- [x] Build reusable game components.
-- [x] Implement responsive layouts.
-- [x] Implement Player vs Player gameplay.
-- [x] Implement AI difficulty levels.
-- [x] Implement game mode selection.
+<details>
+<summary>Completed</summary>- [x] React and Vite setup.
+- [x] Tailwind CSS v4 configuration.
+- [x] Reusable game components.
+- [x] Player vs Player gameplay.
+- [x] Easy, Medium and Hard AI.
+- [x] Game mode selection.
+- [x] Responsive layouts.
+- [x] Game history interface.
 
-Milestone 2 — Authentication and User Profiles
+</details>Milestone 2 — Authentication and User Profiles
 
-- [x] Connect MongoDB.
-- [x] Implement user registration.
-- [x] Implement user login.
-- [x] Implement JWT authentication.
-- [x] Implement authentication middleware.
-- [x] Implement frontend authentication context.
-- [x] Implement user profiles.
-- [x] Implement profile editing.
-- [x] Implement Cloudinary avatar uploads.
-- [x] Implement logout.
+<details>
+<summary>Completed</summary>- [x] MongoDB integration.
+- [x] User registration.
+- [x] User login.
+- [x] Password hashing.
+- [x] JWT authentication.
+- [x] HTTP-only authentication cookies.
+- [x] Authentication middleware.
+- [x] Frontend authentication context.
+- [x] Email verification during registration.
+- [x] Profile management.
+- [x] Username editing.
+- [x] Cloudinary avatar uploads.
+- [x] Image compression.
+- [x] Logout.
+- [x] Remember Me.
 
-Milestone 3 — Backend Game Management
+</details>Milestone 3 — Backend Game Management
 
-- [x] Create game models.
-- [x] Create game APIs.
-- [x] Save authenticated game records.
-- [x] Record player moves.
-- [x] Track wins, losses and draws.
-- [x] Support guest gameplay without backend game persistence.
-- [x] Handle unfinished and completed authenticated games correctly.
+<details>
+<summary>Completed</summary>- [x] Game models.
+- [x] Game APIs.
+- [x] Authenticated game persistence.
+- [x] Move recording.
+- [x] Win, loss and draw tracking.
+- [x] Guest gameplay isolation.
+- [x] Game ownership validation.
+- [x] Restart and completed-game handling.
 
-Milestone 4 — Game Statistics and History
+</details>Milestone 4 — Game History and Statistics
 
-- [x] Connect wins, losses and draws to authenticated users.
-- [x] Connect match history to the backend.
-- [x] Display user game statistics.
-- [x] Implement guest history using session storage.
-- [x] Implement registered-user history using MongoDB.
-- [x] Ensure account-specific history isolation.
-- [x] Test guest and registered-user history.
+<details>
+<summary>Completed</summary>- [x] Registered-user history.
+- [x] Guest history.
+- [x] Game statistics.
+- [x] Account-specific history.
+- [x] Guest session isolation.
+- [x] History testing.
 
-Milestone 5 — Online Multiplayer with Socket.IO
+</details>Milestone 5 — Online Multiplayer
 
-- [x] Set up Socket.IO on the backend.
-- [x] Connect the frontend to Socket.IO.
-- [x] Implement authentication for Socket.IO.
-- [x] Implement matchmaking.
-- [x] Create and join game rooms.
-- [x] Synchronize moves in real time.
-- [x] Handle online wins and draws.
-- [x] Implement rematch requests.
-- [x] Synchronize rematch state.
-- [x] Implement online winning-line animations.
-- [ ] Implement complete disconnection handling.
-- [ ] Implement reconnection functionality.
-- [ ] Test disconnections and reconnections.
+<details>
+<summary>Core functionality completed; reliability work remains</summary>- [x] Socket.IO backend.
+- [x] Frontend Socket.IO connection.
+- [x] Authentication.
+- [x] Matchmaking.
+- [x] Game rooms.
+- [x] Real-time moves.
+- [x] Server-side turn validation.
+- [x] Wins and draws.
+- [x] Rematches.
+- [x] Winning-line synchronization.
+- [ ] Disconnection handling.
+- [ ] Reconnection functionality.
+- [ ] Complete reliability testing.
 
-Milestone 6 — Final Integration and Testing
+</details>Milestone 6 — Account Management
 
+<details>
+<summary>Dashboard UI completed; functionality in progress</summary>- [x] Account Settings dashboard.
+- [x] Profile Information card.
+- [x] Email Address card.
+- [x] Password & Security card.
+- [x] Delete Account card.
+- [x] Navbar Account Settings label.
+- [ ] Change Email functionality.
+- [ ] New email verification.
+- [ ] Change Password functionality.
+- [ ] Delete Account functionality.
+- [ ] Account-management testing.
+
+</details>Milestone 7 — Final Integration and Production Readiness
+
+- [ ] Complete account-management functionality.
+- [ ] Complete online multiplayer reliability.
 - [ ] Complete authentication testing.
-- [ ] Complete backend game-management testing.
-- [x] Test guest gameplay.
-- [x] Test registered-user gameplay.
-- [x] Test AI difficulty levels.
-- [x] Test game statistics and history.
-- [x] Test online multiplayer.
-- [ ] Test disconnections and reconnections.
-- [ ] Run complete application testing.
-- [ ] Complete project documentation.
+- [ ] Complete backend integration testing.
+- [ ] Complete application regression testing.
+- [ ] Review security and error handling.
+- [ ] Complete documentation.
+- [ ] Prepare deployment configuration.
+- [ ] Deploy the application.
 
 ---
 
 7. Future Development Considerations
 
-The following are potential improvements for future phases. They are not part of the completed functionality yet.
+These are potential improvements for future development, not currently completed features.
 
-- Google OAuth authentication.
-- Deployment of the frontend and backend.
-- Production database configuration.
-- Production Cloudinary configuration.
-- Improved online matchmaking.
-- Online player statistics and rankings.
+- Google OAuth authentication and verification.
+- Friend invitations.
+- Private online matches.
 - Leaderboards.
-- Friend invitations and private matches.
-- Improved game animations and user experience.
+- Online player rankings.
+- Improved matchmaking.
+- More game statistics.
 - Automated frontend and backend testing.
-- Application monitoring and logging.
-- Performance and security improvements.
+- Improved application monitoring.
+- Performance optimization.
+- Production deployment.
+- Improved animations and user experience.
 
 ---
 
-8. Development Rules
+8. Development Rules and Learning Preferences
 
-- Teach one implementation step at a time.
-- Explain why each change is necessary.
-- Never paste entire files or components when a small snippet is sufficient.
-- Check the latest GitHub code before modifying existing implementations.
-- Do not repeat completed features.
-- Do not skip roadmap milestones without discussing them first.
-- Preserve established architecture and decisions.
-- Use appropriate packages and tools when they genuinely help.
-- Test meaningful functionality.
-- Protect environment variables and sensitive credentials.
-- Keep the application responsive on mobile and desktop.
-- Wait for confirmation before proceeding to the next implementation step.
+These rules are important when continuing development with ChatGPT.
+
+1. Teach one implementation step at a time.
+2. Explain why each change is necessary.
+3. Never paste entire files or components when a small code snippet is sufficient.
+4. Show only the relevant code changes.
+5. Explain unfamiliar JavaScript, React and backend concepts in beginner-friendly language.
+6. Ask short understanding-check questions when appropriate.
+7. Wait for confirmation before moving to the next step.
+8. Check the latest GitHub code before modifying existing implementations.
+9. Do not repeat completed work.
+10. Do not skip development milestones.
+11. Preserve established architecture and decisions.
+12. Test each meaningful implementation before proceeding.
+13. Keep the application responsive on mobile and desktop.
+14. Protect environment variables, credentials and sensitive information.
+15. Verify ".gitignore" before committing or pushing sensitive backend changes.
+16. Do not introduce unnecessary dependencies or over-engineer solutions.
+
+Important: The user prefers learning through implementation rather than receiving complete solutions immediately.
 
 ---
 
-9. How to Resume Development
+9. How to Resume This Project
 
-When continuing this project:
+Whenever development continues:
 
 1. Read this document.
-2. Identify completed milestones.
-3. Identify the current development stage.
-4. Check the latest GitHub code before modifying existing implementations.
-5. Preserve established architectural decisions.
-6. Continue from the exact stopping point.
-7. Do not restart the project or repeat completed work.
+2. Identify the latest completed milestone.
+3. Check the latest GitHub code.
+4. Confirm the exact current implementation state.
+5. Preserve existing architecture.
+6. Continue from the last unfinished task.
+7. Provide only the small code changes required.
+8. Explain the purpose of each change.
+9. Wait for the user's confirmation before proceeding.
 
-Current checkpoint: Phase One — Final reliability and integration testing.
+Never restart completed milestones or ask the user to resend code unnecessarily when the latest repository version can be inspected.
 
-Next development task: Implement active-match disconnection handling and reconnection functionality for online multiplayer.
+---
 
-Do not begin a new major development phase until the remaining Phase One tasks have been completed and tested.
+10. Exact Current Development Checkpoint
+
+Last updated: 23 November 2026
+
+Current phase: Account Management — functionality implementation.
+
+What we have just completed
+
+We have finished designing the Account Settings dashboard.
+
+It contains:
+
+1. Profile Information.
+2. Email Address.
+3. Password & Security.
+4. Delete Account.
+
+We also updated the navbar so users see Account Settings instead of their username.
+
+The existing Edit Profile functionality remains intact.
+
+What is currently unfinished
+
+The three dashboard action buttons are visual placeholders:
+
+- Change Email.
+- Change Password.
+- Delete My Account.
+
+Their actual functionality has not yet been implemented.
+
+Next task — Change Email functionality
+
+We will begin by implementing the Change Email interface and then build its backend verification workflow.
+
+We must verify the existing registration email-verification implementation and reuse appropriate patterns where possible, without compromising account security.
+
+After account management
+
+1. Implement online multiplayer disconnection handling.
+2. Implement reconnection and game-state restoration.
+3. Complete integration testing.
+4. Complete production-readiness improvements.
+5. Prepare deployment.
+
+Do not repeat completed work. Continue from the Change Email implementation, one small step at a time.
