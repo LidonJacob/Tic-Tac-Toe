@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
 
-
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -15,9 +14,11 @@ const Profile = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isRequestingEmail, setIsRequestingEmail] = useState(false);
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
+    setIsRequestingEmail(true);
 
     try {
       await api.post("/users/request-email-change", {
@@ -30,6 +31,8 @@ const Profile = () => {
       toast.error(
         error.response?.data?.message || "Failed to request email change",
       );
+    } finally {
+      setIsRequestingEmail(false);
     }
   };
   const handleVerifyEmailChange = async (e) => {
@@ -302,9 +305,11 @@ const Profile = () => {
                   <div className="flex gap-3">
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                      disabled={isRequestingEmail}
+                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600
+                      disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      Continue
+                      {isRequestingEmail ? "Sending..." : "Continue"}
                     </button>
 
                     <button
@@ -347,11 +352,11 @@ const Profile = () => {
 
                     <button
                       type="submit"
-                      
+                      disabled={isVerifying}
                       className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600
-                      "
+                       disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      Verify
+                      {isVerifying ? "Verifying..." : "Verify"}
                     </button>
                   </form>
                 </div>
