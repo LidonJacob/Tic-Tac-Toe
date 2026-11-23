@@ -11,13 +11,18 @@ const Profile = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  
+  
   const handleEmailChange = async (e) => {
     e.preventDefault();
 
     const response = await api.post("/users/request-email-change", {
       newEmail,
     });
-    console.log(response.data);
+    setIsCodeSent(true);
+    toast.success("Verification code sent to your new email");
   };
 
   const [avatar, setAvatar] = useState(null);
@@ -191,7 +196,7 @@ const Profile = () => {
               className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 w-full flex flex-col
             gap-3"
             >
-              <h2 className="text-lg font-semibold text-white mb-4 text-center">
+              <h2 className="text-lg font-semibold text-white mb-4">
                 Profile Information
               </h2>
 

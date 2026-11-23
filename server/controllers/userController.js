@@ -1,8 +1,7 @@
 import User from "../models/User.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
-import { createHmac } from "crypto";
 import { sendEmail } from "../utils/sendEmail.js";
-
+import { createHmac, timingSafeEqual } from "crypto";
 export const getUserProfile = (req, res) => {
   res.status(200).json({ user: req.user });
 };
@@ -105,11 +104,7 @@ export const requestEmailChange = async (req, res) => {
     const user = await User.findById(req.user._id);
     user.pendingEmail = normalizedEmail;
 
-    const verificationCode = generateVerificationCode();
-
-    const codeHash = createHmac("sha256", process.env.EMAIL_VERIFICATION_SECRET)
-      .update(verificationCode)
-      .digest("hex");
+    const { verificationCode, codeHash } = generateVerificationCode();
 
     user.pendingEmailVerificationCodeHash = codeHash;
     user.pendingEmailVerificationCodeExpires = new Date(
@@ -138,5 +133,119 @@ export const requestEmailChange = async (req, res) => {
     res
       .status(500)
       .json({ message: "something went wrong while requesting email change" });
+  }
+};
+
+export const verifyEmailChange = async (req, res) => {
+  try {
+    const { code } = req.body;
+
+    if (!code) {
+      return res.status(400).json({
+        message: "Verification code is required",
+      });
+    }
+
+    if (typeof code !== "string" || !/^\d{6}$/.test(code)) {
+      return res.status(400).json({
+        message: "Verification code must be 6 digits",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user || !user.pendingEmail) {
+      return res.status(400).json({
+        message: "No pending email change found",
+      });
+    }
+
+    if (
+      !user.pendingEmailVerificationCodeHash ||
+      !user.pendingEmailVerificationCodeExpires ||
+      user.pendingEmailVerificationCodeExpires < new Date()
+    ) {
+      return res.status(400).json({
+        message: "invalid or expired verification code",
+      });
+    }
+
+    if (user.pendingEmailVerificationAttempts >= 5) {
+      user.pendingEmailVerificationCodeHash = null;
+      user.pendingEmailVerificationCodeExpires = null;
+
+      await user.save();
+
+      return res.status(429).json({
+        message: "Too many attempts. Please request a new verification code.",
+      });
+    }
+
+    const submittedCodeHash = createHmac(
+      "sha256",
+      process.env.EMAIL_VERIFICATION_SECRET,
+    )
+      .update(code)
+      .digest("hex");
+
+    const storedHashBuffer = Buffer.from(
+      user.pendingEmailVerificationCodeHash,
+      "hex",
+    );
+
+    const submittedHashBuffer = Buffer.from(submittedCodeHash, "hex");
+
+    const isCodeValid =
+      storedHashBuffer.length === submittedHashBuffer.length &&
+      timingSafeEqual(storedHashBuffer, submittedHashBuffer);
+
+    if (!isCodeValid) {
+      user.pendingEmailVerificationAttempts += 1;
+
+      if (user.pendingEmailVerificationAttempts >= 5) {
+        user.pendingEmailVerificationCodeHash = null;
+        user.pendingEmailVerificationCodeExpires = null;
+
+        await user.save();
+
+        return res.status(429).json({
+          message: "Too many attempts. Please request a new verification code.",
+        });
+      }
+
+      await user.save();
+
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+        attemptsRemaining: 5 - user.pendingEmailVerificationAttempts,
+      });
+    }
+    user.email = user.pendingEmail;
+    user.emailVerified = true;
+
+    user.pendingEmail = null;
+    user.pendingEmailVerificationCodeHash = null;
+    user.pendingEmailVerificationCodeExpires = null;
+    user.pendingEmailVerificationAttempts = 0;
+    user.pendingEmailVerificationSentAt = null;
+    user.pendingEmailVerificationLastSentAt = null;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Email address updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    console.error("Verify email change error:", error.message);
+
+    return res.status(500).json({
+      message: "Something went wrong while verifying email change",
+    });
   }
 };
