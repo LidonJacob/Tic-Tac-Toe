@@ -14,8 +14,7 @@ const Profile = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const hasChanges =
-    username !== user?.username || email !== user?.email || avatar !== null;
+  const hasChanges = username !== user?.username || avatar !== null;
 
   const handleAvatarChange = (e) => {
     const selectedImage = e.target.files[0];
@@ -57,7 +56,6 @@ const Profile = () => {
 
       const response = await api.patch("/users/profile", {
         username,
-        email,
         avatar: avatarUrl,
       });
 
@@ -145,10 +143,12 @@ const Profile = () => {
                   <input
                     type="email"
                     value={email}
+                    readOnly
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="enter Email"
                     className="w-full px-4 py-2 bg-gray-800 border border-cyan-500 rounded-lg
-             text-white outline-none focus:ring-2 focus:ring-cyan-500"
+             text-white outline-none focus:ring-2 focus:ring-cyan-500 read-only:opacity-60
+             read-only:cursor-not-allowed"
                   />
                 </div>
               </div>

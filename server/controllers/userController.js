@@ -20,16 +20,10 @@ export const updateUserProfile = async (req, res) => {
       user.username = req.body.username.trim();
     }
     if (req.body.email !== undefined) {
-      const email = req.body.email.trim().toLowerCase();
-
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({
-          message: "Please provide a valid email address",
-        });
-      }
-
-      user.email = email;
-    }
+  return res.status(400).json({
+    message: "Please use the email change process to update your email",
+  });
+}
 
     if (req.body.avatar) {
       user.avatar = req.body.avatar;
