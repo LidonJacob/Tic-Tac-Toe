@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,6 +10,17 @@ const VerifyEmail = () => {
 
   const [code, setCode] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const timer = setTimeout(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
@@ -30,6 +41,24 @@ const VerifyEmail = () => {
       toast.error(error.response?.data?.message || "Failed to verify email");
     }
   };
+
+  const handleResendCode = async () => {
+    try {
+      const response = await api.post("/auth/resend-verification-code", {
+        email: registeredEmail,
+      });
+
+      toast.success(response.data.message);
+      setAttempts(0);
+      setCode("");
+      setResendCooldown(60);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to resend verification code",
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <form
@@ -79,6 +108,17 @@ const VerifyEmail = () => {
           disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Verify Email
+        </button>
+        <button
+          type="button"
+          onClick={handleResendCode}
+          disabled={resendCooldown > 0}
+          className="w-full mt-4 text-cyan-400 hover:text-cyan-300 font-medium 
+          disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {resendCooldown > 0
+            ? `Resend code in ${resendCooldown}s`
+            : "Resend verification code"}
         </button>
       </form>
     </div>

@@ -271,7 +271,7 @@ export const verifyEmail = async (req, res) => {
     if (!isCodeValid) {
       user.emailVerificationAttempts += 1;
 
-      if (!user.emailVerificationAttempts >= 5) {
+      if (user.emailVerificationAttempts >= 5) {
         user.emailVerificationCodeHash = null;
         user.emailVerificationCodeExpires = null;
 
