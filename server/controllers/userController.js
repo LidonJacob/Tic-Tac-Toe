@@ -251,12 +251,72 @@ export const verifyEmailChange = async (req, res) => {
   }
 };
 
-
-export const changePassword = async (req,res) => {
+export const changePassword = async (req, res) => {
   try {
-const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
 
+    if (
+      typeof currentPassword !== "string" ||
+      typeof newPassword !== "string" ||
+      !currentPassword ||
+      !newPassword
+    ) {
+      return res.status(400).json({
+        message: "Please provide both current and new passwords",
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (!user.password) {
+      return res.status(400).json({
+        message:
+          "This account has no set user password. Please use Google login",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "current password is incorrect",
+      });
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+    if (isSamePassword) {
+      return res.status(400).json({
+        message: "New password cannot be the same as the current password",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Password changed successfully",
+    });
   } catch (error) {
-
+    console.error("Error changing password:", error);
+    return res.status(500).json({
+      message: "Something went wrong while changing password",
+    });
   }
-}
+};

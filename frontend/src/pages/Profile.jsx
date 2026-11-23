@@ -53,6 +53,46 @@ const Profile = () => {
     setShowNewPassword(false);
     setShowConfirmPassword(false);
   };
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("Please fill in all password fields");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      const response = await api.post("/users/change-password", {
+        currentPassword,
+        newPassword,
+      });
+
+      toast.success(response.data.message);
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
+      setActiveSection("null");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to change password");
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
   const handleVerifyEmailChange = async (e) => {
     e.preventDefault();
     setIsVerifying(true);
@@ -484,6 +524,7 @@ const Profile = () => {
               <div className="flex justify-center gap-3 mt-4">
                 <button
                   type="button"
+                  onClick={handleChangePassword}
                   disabled={isChangingPassword}
                   className="px-5 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors disabled:opacity-50"
                 >
