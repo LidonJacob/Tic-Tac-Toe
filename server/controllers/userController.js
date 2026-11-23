@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { createHmac, timingSafeEqual } from "crypto";
+import bcrypt from "bcrypt";
 export const getUserProfile = (req, res) => {
   res.status(200).json({ user: req.user });
 };
@@ -249,3 +250,13 @@ export const verifyEmailChange = async (req, res) => {
     });
   }
 };
+
+
+export const changePassword = async (req,res) => {
+  try {
+const { currentPassword, newPassword } = req.body;
+
+  } catch (error) {
+
+  }
+}
