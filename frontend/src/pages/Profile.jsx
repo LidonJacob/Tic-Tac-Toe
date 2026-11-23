@@ -330,13 +330,6 @@ const Profile = () => {
                 </form>
               )}
 
-              {activeSection === "password" && (
-                <div className="bg-gray-800 border border-cyan-500/40 rounded-xl p-5 w-full">
-                  <h2 className="text-lg font-semibold mb-3">
-                    Change Password
-                  </h2>
-                </div>
-              )}
               {isCodeSent && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">
@@ -392,6 +385,11 @@ const Profile = () => {
                   Change Password
                 </button>
               </div>
+            </div>
+          )}
+          {activeSection === "password" && (
+            <div className="bg-gray-800 border border-cyan-500/40 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold mb-3">Change Password</h2>
             </div>
           )}
           {!isEditing && (
