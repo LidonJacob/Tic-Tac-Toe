@@ -332,9 +332,14 @@ export const resendVerificationCode = async (req, res) => {
       user.emailVerificationLastSentAt &&
       Date.now() - user.emailVerificationLastSentAt.getTime() < 60 * 1000
     ) {
+      const elapsedTime =
+        Date.now() - user.emailVerificationLastSentAt.getTime();
+      const retryAfterSeconds = math.ceil((60000 - elapsedTime) / 1000);
+
       return res.status(429).json({
         message:
           "Please wait 1 minute before requesting a new verification code",
+        retryAfterSeconds,
       });
     }
 

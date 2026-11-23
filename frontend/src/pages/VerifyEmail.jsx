@@ -10,7 +10,8 @@ const VerifyEmail = () => {
 
   const [code, setCode] = useState("");
   const [attempts, setAttempts] = useState(0);
-  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendCooldown, setResendCooldown] = useState(60);
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -43,6 +44,7 @@ const VerifyEmail = () => {
   };
 
   const handleResendCode = async () => {
+    setIsResending(true);
     try {
       const response = await api.post("/auth/resend-verification-code", {
         email: registeredEmail,
@@ -53,9 +55,14 @@ const VerifyEmail = () => {
       setCode("");
       setResendCooldown(60);
     } catch (error) {
+      if (error.response?.status === 429) {
+        setResendCooldown(error.response.data.retryAfterSeconds);
+      }
       toast.error(
         error.response?.data?.message || "Failed to resend verification code",
       );
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -112,9 +119,10 @@ const VerifyEmail = () => {
         <button
           type="button"
           onClick={handleResendCode}
-          disabled={resendCooldown > 0}
-          className="w-full mt-4 text-cyan-400 hover:text-cyan-300 font-medium 
-          disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={resendCooldown > 0 || isResending}
+          className="w-full mt-4 bg-gray-800 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 
+          hover:text-gray-950 font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed 
+          disabled:hover:bg-gray-800 disabled:hover:text-cyan-400"
         >
           {resendCooldown > 0
             ? `Resend code in ${resendCooldown}s`

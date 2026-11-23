@@ -89,7 +89,7 @@ const Profile = () => {
     setIsEditing(false);
   };
   return (
-    <div className="min-h-[calc(100dvh-73px)] bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
+    <div className="min-h-[calc(100dvh-60px)] bg-gray-950 text-white flex justify-center items-center p-4 sm:p-6">
       <div
         className="w-full max-w-lg bg-gray-900 border
         border-gray-800 rounded-2xl p-5 sm:p-8 shadow-xl"
