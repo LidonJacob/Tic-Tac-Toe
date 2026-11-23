@@ -17,13 +17,19 @@ const Profile = () => {
   const handleEmailChange = async (e) => {
     e.preventDefault();
 
-    await api.post("/users/request-email-change", {
-      newEmail,
-    });
-    setIsCodeSent(true);
-    toast.success("Verification code sent to your new email");
-  };
+    try {
+      await api.post("/users/request-email-change", {
+        newEmail,
+      });
 
+      setIsCodeSent(true);
+      toast.success("Verification code sent to your new email");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to request email change",
+      );
+    }
+  };
   const handleVerifyEmailChange = async (e) => {
     e.preventDefault();
 
@@ -34,6 +40,10 @@ const Profile = () => {
 
       setUser(response.data.user);
       toast.success(response.data.message);
+      setIsCodeSent(false);
+      setVerificationCode("");
+      setNewEmail("");
+      setActiveSection("null");
     } catch (error) {
       toast.error(error.response?.data?.message || "Email verification failed");
     }
@@ -265,7 +275,7 @@ const Profile = () => {
               <h2 className="text-lg font-semibold mb-3">
                 Change Email Address
               </h2>
-              {isCodeSent && (
+              {!isCodeSent && (
                 <form
                   onSubmit={handleEmailChange}
                   className="flex flex-col gap-4"
