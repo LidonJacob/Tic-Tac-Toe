@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
 
+
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -13,6 +14,7 @@ const Profile = () => {
   const [newEmail, setNewEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ const Profile = () => {
   };
   const handleVerifyEmailChange = async (e) => {
     e.preventDefault();
-
+    setIsVerifying(true);
     try {
       const response = await api.post("/users/verify-email-change", {
         code: verificationCode,
@@ -46,6 +48,8 @@ const Profile = () => {
       setActiveSection("null");
     } catch (error) {
       toast.error(error.response?.data?.message || "Email verification failed");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -343,9 +347,11 @@ const Profile = () => {
 
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                      disabled={isVerifying}
+                      className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600
+                      disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Verify Email
+                      {isVerifying ? "Verifying..." : "Verify"}
                     </button>
                   </form>
                 </div>
