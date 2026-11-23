@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { sendEmail } from "../utils/sendEmail.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
-import { createHash } from "crypto";
 import { createHmac, timingSafeEqual } from "crypto";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -48,11 +47,7 @@ export const registerUser = async (req, res) => {
       emailVerified: false,
       emailVerificationCodeHash: codeHash,
       emailVerificationCodeExpires: expiresAt,
-      emailVerificationLastSentAt: new Date(),
     });
-
-  
-
 
     const emailHtml = `<h2> Welcome to TicTacToe! </h2>
     <p> Your email verification code is: </p>
@@ -60,6 +55,9 @@ export const registerUser = async (req, res) => {
     <p> This code expires in 10 minutes </p>`;
 
     await sendEmail(email, "Verify your TicTacToe account", emailHtml);
+    user.emailVerificationLastSentAt = new Date();
+
+    await user.save();
 
     res.status(201).json({
       message:
@@ -286,12 +284,10 @@ export const verifyEmail = async (req, res) => {
 
       await user.save();
 
-      return res
-        .status(400)
-        .json({
-          message: "Invalid or expired verification code",
-          attemptsRemaining: 5 - user.emailVerificationAttempts,
-        });
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+        attemptsRemaining: 5 - user.emailVerificationAttempts,
+      });
     }
 
     user.emailVerified = true;
@@ -309,5 +305,67 @@ export const verifyEmail = async (req, res) => {
     return res
       .status(500)
       .json({ message: "server error while verifying email" });
+  }
+};
+
+export const resendVerificationCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+    if (!user) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    if (user.emailVerified) {
+      return res
+        .status(400)
+        .json({ message: "Email already verified. Please login" });
+    }
+
+    if (
+      user.emailVerificationLastSentAt &&
+      Date.now() - user.emailVerificationLastSentAt.getTime() < 60 * 1000
+    ) {
+      return res.status(429).json({
+        message:
+          "Please wait 1 minute before requesting a new verification code",
+      });
+    }
+
+    const { verificationCode, codeHash } = generateVerificationCode();
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.emailVerificationCodeHash = codeHash;
+    user.emailVerificationCodeExpires = expiresAt;
+    user.emailVerificationAttempts = 0;
+
+    await user.save();
+
+    const emailHtml = `<h2> Welcome To TicTacToe!</h2>
+    <p> Your new verification code is</p>
+    <h1>${verificationCode}</h1>
+    <p>This Code expires in 10 minutes</p>`;
+
+    await sendEmail(user.email, "TicTacToe Verification Code", emailHtml);
+
+    user.emailVerificationLastSentAt = new Date(Date.now());
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "A new verification code has been sent to your email" });
+  } catch (error) {
+    console.error("Error resending verification code:", error.message);
+    return res
+      .status(500)
+      .json({ message: "server error while resending verification code" });
   }
 };
