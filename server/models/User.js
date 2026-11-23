@@ -35,6 +35,30 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    pendingEmail: {
+      type: String,
+      default: null,
+    },
+    pendingEmailVerificationCodeHash: {
+      type: String,
+      default: null,
+    },
+    pendingEmailVerificationCodeExpires: {
+      type: Date,
+      default: null,
+    },
+    pendingEmailVerificationAttempts: {
+      type: Number,
+      default: 0,
+    },
+    pendingEmailVerificationSentAt: {
+      type: Date,
+      default: null,
+    },
+    pendingEmailVerificationLastSentAt: {
+      type: Date,
+      default: null,
+    },
     avatar: {
       type: String,
       default: "",

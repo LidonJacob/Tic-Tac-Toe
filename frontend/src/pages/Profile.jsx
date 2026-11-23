@@ -4,12 +4,19 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
+import axios from "axios";
 
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const handleEmailChange = (e) => {
+    e.preventDefault();
+    console.log(newEmail);
+  };
+
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -228,6 +235,51 @@ const Profile = () => {
                   Change Email
                 </button>
               </div>
+            </div>
+          )}
+
+          {activeSection === "email" && (
+            <div className="bg-gray-800 border border-cyan-500/40 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold mb-3">
+                Change Email Address
+              </h2>
+
+              <form onSubmit={handleEmailChange}  className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">
+                    New Email Address
+                  </label>
+
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="Enter your new email"
+                    required
+                    className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-cyan-500 text-gray-950 rounded-lg hover:bg-cyan-600"
+                  >
+                    Continue
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveSection("null");
+                      setNewEmail("");
+                    }}
+                    className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
           )}
           {!isEditing && (

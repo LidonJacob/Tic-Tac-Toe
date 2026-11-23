@@ -1,4 +1,7 @@
 import User from "../models/User.js";
+import { generateVerificationCode } from "../utils/tokenUtils.js";
+import { createHmac } from "crypto";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const getUserProfile = (req, res) => {
   res.status(200).json({ user: req.user });
@@ -20,10 +23,10 @@ export const updateUserProfile = async (req, res) => {
       user.username = req.body.username.trim();
     }
     if (req.body.email !== undefined) {
-  return res.status(400).json({
-    message: "Please use the email change process to update your email",
-  });
-}
+      return res.status(400).json({
+        message: "Please use the email change process to update your email",
+      });
+    }
 
     if (req.body.avatar) {
       user.avatar = req.body.avatar;
@@ -52,5 +55,88 @@ export const updateUserProfile = async (req, res) => {
       });
     }
     res.status(500).json({ message: "server error while updating user" });
+  }
+};
+
+export const requestEmailChange = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+
+    if (!newEmail) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a new email address" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(newEmail)) {
+      return res.status(400).json({
+        message: "Please provide a valid email address",
+      });
+    }
+
+    const normalizedEmail = newEmail.toLowerCase().trim();
+
+    if (normalizedEmail === req.user.email) {
+      return res.status(400).json({
+        message: "This is already your email address",
+      });
+    }
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "This email address is already registered",
+      });
+    }
+
+    const pendingEmailUser = await User.findOne({
+      pendingEmail: normalizedEmail,
+    });
+
+    if (pendingEmailUser) {
+      return res.status(409).json({
+        message: "This email address is already pending verification",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    user.pendingEmail = normalizedEmail;
+
+    const verificationCode = generateVerificationCode();
+
+    const codeHash = createHmac("sha256", process.env.EMAIL_VERIFICATION_SECRET)
+      .update(verificationCode)
+      .digest("hex");
+
+    user.pendingEmailVerificationCodeHash = codeHash;
+    user.pendingEmailVerificationCodeExpires = new Date(
+      Date.now() + 10 * 60 * 1000,
+    );
+
+    user.pendingEmailVerificationAttempts = 0;
+    user.pendingEmailVerificationLastSentAt = new Date();
+
+    await user.save();
+
+    await sendEmail(
+      normalizedEmail,
+      "Verify your email address",
+      `<h2>Email Change Verification</h2>
+    <p>Your Verification Code is </p>
+    <h1>${verificationCode}</h1>
+    <p>This code is valid for 10 minutes</p>`,
+    );
+
+    res.status(200).json({
+      message: "A verification code has been sent to your new email address",
+    });
+  } catch (error) {
+    console.error("Request email change error:", error.message);
+    res
+      .status(500)
+      .json({ message: "something went wrong while requesting email change" });
   }
 };
