@@ -5,16 +5,19 @@ import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
 
-
 const Profile = () => {
   const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  const handleEmailChange = (e) => {
+  const handleEmailChange = async (e) => {
     e.preventDefault();
-    console.log(newEmail);
+
+    const response = await api.post("/users/request-email-change", {
+      newEmail,
+    });
+    console.log(response.data);
   };
 
   const [avatar, setAvatar] = useState(null);
@@ -244,7 +247,10 @@ const Profile = () => {
                 Change Email Address
               </h2>
 
-              <form onSubmit={handleEmailChange}  className="flex flex-col gap-4">
+              <form
+                onSubmit={handleEmailChange}
+                className="flex flex-col gap-4"
+              >
                 <div>
                   <label className="block text-sm text-gray-300 mb-2">
                     New Email Address
