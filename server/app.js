@@ -5,15 +5,18 @@ import healthRoute from "./routes/healthRoute.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
+import { apiLimiter } from "./middleware/rateLimitMiddleware.js";
 
 const app = express();
-app.use(cors({
+app.use(
+  cors({
     origin: "http://localhost:5173",
-    credentials: true
-}))
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
-
+app.use("/api", apiLimiter);
 
 app.use("/api", healthRoute);
 app.use("/api/auth", authRoutes);
