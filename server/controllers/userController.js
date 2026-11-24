@@ -324,11 +324,32 @@ export const changePassword = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
   try {
-    if (req.body.comfirmation !== "DELETE") {
+    if (req.body.confirmation !== "DELETE") {
       return res.status(400).json({
         message: "Please confirm you want to delete your account",
       });
     }
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    await Game.deleteMany({ "players.user": req.user._id });
+
+    await user.deleteOne();
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      message: "Account deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting account:", error);
 

@@ -6,6 +6,7 @@ import {
   requestEmailChange,
   verifyEmailChange,
   changePassword,
+  deleteAccount,
 } from "../controllers/userController.js";
 
 const router = Router();
@@ -15,5 +16,6 @@ router.patch("/profile", protect, updateUserProfile);
 router.post("/request-email-change", protect, requestEmailChange);
 router.post("/verify-email-change", protect, verifyEmailChange);
 router.post("/change-password", protect, changePassword);
+router.delete("/account", protect, deleteAccount);
 
 export default router;

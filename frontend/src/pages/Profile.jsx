@@ -5,8 +5,11 @@ import { toast } from "react-toastify";
 import { uploadAvatar } from "../services/cloudinary";
 import compressImage from "../utils/compressImage";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
+
   const { user, loading, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
@@ -24,6 +27,7 @@ const Profile = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
@@ -94,6 +98,25 @@ const Profile = () => {
       setIsChangingPassword(false);
     }
   };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+
+    try {
+      const response = await api.delete("/users/account", {
+        data: { confirmation: deleteConfirmation },
+      });
+
+      toast.success(response.data.message);
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete account");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleVerifyEmailChange = async (e) => {
     e.preventDefault();
     setIsVerifying(true);
@@ -580,6 +603,15 @@ const Profile = () => {
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
               />
               <div className="flex gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  disabled={deleteConfirmation !== "DELETE" || isDeleting}
+                  className="px-5 py-2 bg-red-500 rounded-lg hover:bg-red-600
+  disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? "Deleting..." : "Confirm Deletion"}
+                </button>
                 <button
                   type="button"
                   onClick={() => {
