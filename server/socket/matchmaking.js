@@ -43,10 +43,9 @@ export const handleMatchMaking = (io, socket) => {
     board: Array(9).fill(""),
     currentPlayer: "X",
     players: [
-      { ...opponent, symbol: "X" },
-      { ...player, symbol: "O" },
+      { ...opponent, symbol: "X", isConnected: true },
+      { ...player, symbol: "O", isConnected: true },
     ],
-    isConnected: true,
     winner: null,
     isDraw: false,
     winningCombination: null,
