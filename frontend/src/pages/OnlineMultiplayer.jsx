@@ -98,10 +98,34 @@ const OnlineMultiplayer = () => {
       }
     });
 
+    socket.on("opponent-disconnected", () => {
+      toast.warning(
+        "Your opponent has disconnected, waiting for them to reconnect...",
+      );
+    });
+
+    socket.on("opponent-reconnected", () => {
+      toast.success("Your opponent has reconnected!");
+    });
+
+    socket.on("match-restored", (matchData) => {
+      completedMatchRef.current = false;
+      matchRef.current = matchData;
+      setMatch(matchData);
+      setCompletedMatch(null);
+      setIsSearching(false);
+
+      toast.success("Your previous match has been restored!");
+    });
+
     socket.connect();
 
     socket.on("connect", () => {
       setConnectionStatus("connected");
+    });
+
+    socket.on("disconnect", () => {
+      setConnectionStatus("disconnected");
     });
 
     socket.on("connect_error", () => {
@@ -114,6 +138,10 @@ const OnlineMultiplayer = () => {
       socket.off("connect");
       socket.off("connect_error");
       socket.disconnect();
+      socket.off("opponent-disconnected");
+      socket.off("opponent-reconnected");
+      socket.off("match-restored");
+      socket.off("disconnect");
     };
   }, [user, loading]);
 
@@ -188,7 +216,11 @@ const OnlineMultiplayer = () => {
                 ? "It's a draw!"
                 : `Player ${match.currentPlayer}'s turn`}
           </p>
-          <GameBoard board={match.board} onSquareClick={makeMove} winningCombination={match.winningCombination} />
+          <GameBoard
+            board={match.board}
+            onSquareClick={makeMove}
+            winningCombination={match.winningCombination}
+          />
         </div>
       )}
 

@@ -7,8 +7,13 @@ import { socketAuth } from "./socket/socketAuth.js";
 import {
   handleMatchMaking,
   removeWaitingPlayer,
+  handlePlayerReconnect,
 } from "./socket/matchmaking.js";
-import { handleMakeMove, handleRematchRequest } from "./socket/gameHandler.js";
+import {
+  handleMakeMove,
+  handleRematchRequest,
+  handlePlayerDisconnect,
+} from "./socket/gameHandler.js";
 
 const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
@@ -23,6 +28,7 @@ io.use(socketAuth);
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
+  handlePlayerReconnect(io, socket);
 
   socket.on("find-match", () => {
     handleMatchMaking(io, socket);
@@ -30,6 +36,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     removeWaitingPlayer(socket);
+    handlePlayerDisconnect(io, socket);
   });
 
   socket.on("make-move", (moveData) => {

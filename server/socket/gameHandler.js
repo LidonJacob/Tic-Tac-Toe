@@ -127,3 +127,19 @@ export const handleRematchRequest = (io, socket, roomId) => {
     })),
   });
 };
+
+export const handlePlayerDisconnect = (io, socket) => {
+  for (const [roomId, game] of activeGames) {
+    const player = game.players.find((player) => player.socketId === socket.id);
+
+    if (!player) continue;
+
+    player.isConnected = false;
+
+    io.to(roomId).emit("opponent-disconnected", {
+      userId: player.userId,
+    });
+
+    break;
+  }
+};

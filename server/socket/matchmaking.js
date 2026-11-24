@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
 
-
 const waitingPlayers = [];
 
 export const activeGames = new Map();
@@ -47,6 +46,7 @@ export const handleMatchMaking = (io, socket) => {
       { ...opponent, symbol: "X" },
       { ...player, symbol: "O" },
     ],
+    isConnected: true,
     winner: null,
     isDraw: false,
     winningCombination: null,
@@ -75,5 +75,30 @@ export const removeWaitingPlayer = (socket) => {
 
   if (index !== -1) {
     waitingPlayers.splice(index, 1);
+  }
+};
+
+export const handlePlayerReconnect = (io, socket) => {
+  for (const [roomId, game] of activeGames) {
+    const player = game.players.find(
+      (player) =>
+        player.userId === socket.user._id.toString() && !player.isConnected,
+    );
+
+    if (!player) continue;
+
+    player.socketId = socket.id;
+    player.isConnected = true;
+
+    socket.join(roomId);
+
+    socket.to(roomId).emit("opponent-reconnected");
+
+    socket.emit("match-restored", {
+      roomId,
+      ...game,
+    });
+
+    break;
   }
 };
