@@ -98,6 +98,7 @@ const History = () => {
           : `Opponent (${winner.username})`;
       },
     },
+
     {
       header: "AI Difficulty",
       accessorKey: "aiDifficulty",

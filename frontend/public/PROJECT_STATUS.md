@@ -409,9 +409,9 @@ Milestone 1 — Frontend Foundation
 - [x] Wins and draws.
 - [x] Rematches.
 - [x] Winning-line synchronization.
-- [ ] Disconnection handling.
-- [ ] Reconnection functionality.
-- [ ] Complete reliability testing.
+- [x] Disconnection handling.
+- [x] Reconnection functionality.
+- [x] Complete reliability testing.
 
 </details>Milestone 6 — Account Management
 
