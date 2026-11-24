@@ -27,7 +27,6 @@ const io = new Server(httpServer, {
 io.use(socketAuth);
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
   handlePlayerReconnect(io, socket);
 
   socket.on("find-match", () => {
