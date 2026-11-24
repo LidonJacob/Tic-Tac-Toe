@@ -150,6 +150,75 @@ export const requestEmailChange = async (req, res) => {
   }
 };
 
+export const resendEmailChangeVerification = async () => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user || !user.pendingEmail) {
+      return res.status(400).json({
+        message: "No pending email change found",
+      });
+    }
+
+    if (user.pendingEmailVerificationLastSentAt) {
+      const elapsedTime =
+        Date.now() - user.pendingEmailVerificationLastSentAt.getTime();
+
+      const remainingTime = 60 - Math.floor(elapsedTime / 1000);
+
+      if (remainingTime > 0) {
+        return res.status(429).json({
+          message: `Please wait ${remainingTime} seconds before requesting another code`,
+          retryAfter: remainingTime,
+        });
+      }
+    }
+
+    const { verificationCode, codeHash } = generateVerificationCode();
+
+    user.pendingEmailVerificationCodeHash = codeHash;
+    user.pendingEmailVerificationCodeExpires = new Date(
+      Date.now() + 10 * 60 * 1000,
+    );
+
+    user.pendingEmailVerificationAttempts = 0;
+    user.pendingEmailVerificationLastSentAt = new Date();
+
+    await user.save();
+
+    try {
+      await sendEmail(
+        user.pendingEmail,
+        "Verify your email address",
+        `<h2>Email Change Verification</h2>
+    <p>Your Verification Code is </p>
+    <h1>${verificationCode}</h1>
+    <p>This code is valid for 10 minutes</p>`,
+      );
+    } catch (error) {
+      user.pendingEmail = null;
+      user.pendingEmailVerificationCodeHash = null;
+      user.pendingEmailVerificationCodeExpires = null;
+      user.pendingEmailVerificationAttempts = 0;
+      user.pendingEmailVerificationLastSentAt = null;
+
+      await user.save();
+
+      throw error;
+    }
+
+    res.status(200).json({
+      message:
+        "A verification code has been sent to your pending email address",
+    });
+  } catch (error) {
+    console.error("Resend Email Change Verification error:", error.message);
+    res
+      .status(500)
+      .json({ message: "something went wrong while requesting email change" });
+  }
+};
+
 export const verifyEmailChange = async (req, res) => {
   try {
     const { code } = req.body;

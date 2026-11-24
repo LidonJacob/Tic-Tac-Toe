@@ -19,6 +19,7 @@ const Profile = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRequestingEmail, setIsRequestingEmail] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,6 +47,22 @@ const Profile = () => {
       );
     } finally {
       setIsRequestingEmail(false);
+    }
+  };
+
+  const handleResendEmailCode = async () => {
+    setIsResendingEmail(true);
+
+    try {
+      const response = await api.post("/users/resend-email-change");
+
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to resend verification code",
+      );
+    } finally {
+      setIsResendingEmail(false);
     }
   };
 
@@ -440,6 +457,15 @@ const Profile = () => {
                        disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {isVerifying ? "Verifying..." : "Verify"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResendEmailCode}
+                      disabled={isResendingEmail}
+                      className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600
+  disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {isResendingEmail ? "Sending..." : "Resend Code"}
                     </button>
                   </form>
                 </div>
