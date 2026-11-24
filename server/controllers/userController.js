@@ -150,7 +150,7 @@ export const requestEmailChange = async (req, res) => {
   }
 };
 
-export const resendEmailChangeVerification = async () => {
+export const resendEmailChangeVerification = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
 
@@ -210,6 +210,7 @@ export const resendEmailChangeVerification = async () => {
     res.status(200).json({
       message:
         "A verification code has been sent to your pending email address",
+        retryAfter: 60,
     });
   } catch (error) {
     console.error("Resend Email Change Verification error:", error.message);

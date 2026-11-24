@@ -20,6 +20,7 @@ const Profile = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRequestingEmail, setIsRequestingEmail] = useState(false);
   const [isResendingEmail, setIsResendingEmail] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -40,6 +41,7 @@ const Profile = () => {
       });
 
       setIsCodeSent(true);
+      setResendCooldown(60);
       toast.success("Verification code sent to your new email");
     } catch (error) {
       toast.error(
@@ -55,6 +57,7 @@ const Profile = () => {
 
     try {
       const response = await api.post("/users/resend-email-change");
+      setResendCooldown(response.data.retryAfter);
 
       toast.success(response.data.message);
     } catch (error) {
@@ -190,6 +193,16 @@ const Profile = () => {
       }
     };
   }, [avatarPreview]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
   const handleSave = async () => {
     try {
       setIsSaving(true);
