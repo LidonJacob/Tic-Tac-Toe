@@ -17,6 +17,17 @@ const OnlineMultiplayer = () => {
   const completedMatchRef = useRef(false);
   const [completedMatch, setCompletedMatch] = useState(null);
   const [rematchStatus, setRematchStatus] = useState("");
+  const [rematchWindowOpen, setRematchWindowOpen] = useState(false);
+
+  useEffect(()=>{
+    if(!rematchWindowOpen) return;
+
+    const timer = setTimeout(() => {
+      setRematchWindowOpen(false);
+    }, 15000);
+
+    return () => clearTimeout(timer);
+  }, [rematchWindowOpen]);
 
   const findMatch = () => {
     socket.emit("find-match");
@@ -69,6 +80,7 @@ const OnlineMultiplayer = () => {
     socket.on("rematch-started", (matchData) => {
       setOpponentDisconnected(false);
       setOpponentFailedToReconnect(false);
+      setRematchWindowOpen(false);
       completedMatchRef.current = false;
       matchRef.current = matchData;
       setMatch(matchData);
@@ -92,6 +104,7 @@ const OnlineMultiplayer = () => {
       if (updatedMatch.status === "finished" && !completedMatchRef.current) {
         completedMatchRef.current = true;
         setCompletedMatch(updatedMatch);
+        setRematchWindowOpen(true);
 
         if (updatedMatch.isDraw) {
           toast.info("The match ended in a draw!", {
@@ -116,6 +129,7 @@ const OnlineMultiplayer = () => {
     socket.on("opponent-failed-to-reconnect", () => {
       setOpponentFailedToReconnect(true);
       setOpponentDisconnected(false);
+      returnToLobby();
 
       toast.error("Your opponent has failed to reconnect!, Match Ended!");
     });
@@ -193,12 +207,12 @@ const OnlineMultiplayer = () => {
           </button>
         )}
 
-      {completedMatch && (
+      {completedMatch && rematchWindowOpen && (
         <button
           onClick={requestRematch}
           className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors"
         >
-          Play Again
+          Rematch
         </button>
       )}
 
