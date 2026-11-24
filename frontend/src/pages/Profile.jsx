@@ -36,12 +36,12 @@ const Profile = () => {
     setIsRequestingEmail(true);
 
     try {
-      await api.post("/users/request-email-change", {
+      const response = await api.post("/users/request-email-change", {
         newEmail,
       });
 
       setIsCodeSent(true);
-      setResendCooldown(60);
+      setResendCooldown(response.data.retryAfter);
       toast.success("Verification code sent to your new email");
     } catch (error) {
       toast.error(
@@ -61,6 +61,9 @@ const Profile = () => {
 
       toast.success(response.data.message);
     } catch (error) {
+      if (error.response?.data?.retryAfter) {
+        setResendCooldown(error.response.data.retryAfter);
+      }
       toast.error(
         error.response?.data?.message || "Failed to resend verification code",
       );
@@ -203,6 +206,25 @@ const Profile = () => {
 
     return () => clearInterval(timer);
   }, [resendCooldown]);
+
+  useEffect(() => {
+    const fetchEmailChangeStatus = async () => {
+      try {
+        const response = await api.get("/users/email-change-status");
+
+        if (response.data.hasPendingEmail) {
+          setIsCodeSent(true);
+          setNewEmail(response.data.pendingEmail);
+          setResendCooldown(response.data.retryAfter);
+        }
+        setActiveSection("email");
+      } catch (error) {
+        console.error("Failed to retrieve email change status:", error);
+      }
+    };
+
+    fetchEmailChangeStatus();
+  }, []);
   const handleSave = async () => {
     try {
       setIsSaving(true);
@@ -474,12 +496,17 @@ const Profile = () => {
                     <button
                       type="button"
                       onClick={handleResendEmailCode}
-                      disabled={isResendingEmail}
+                      disabled={isResendingEmail || resendCooldown > 0}
                       className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600
   disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {isResendingEmail ? "Sending..." : "Resend Code"}
                     </button>
+                    {resendCooldown > 0 && (
+                      <p className="text-sm text-gray-400 text-center">
+                        You can request another code in {resendCooldown} s.
+                      </p>
+                    )}
                   </form>
                 </div>
               )}

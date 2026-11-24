@@ -8,6 +8,40 @@ export const getUserProfile = (req, res) => {
   res.status(200).json({ user: req.user });
 };
 
+export const getEmailChangeStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user || !user.pendingEmail) {
+      return res.status(200).json({
+        hasPendingEmail: false,
+        retryAfter: 0,
+      });
+    }
+
+    let retryAfter = 0;
+
+    if (user.pendingEmailVerificationLastSentAt) {
+      const elapsedTime =
+        Date.now() - user.pendingEmailVerificationLastSentAt.getTime();
+
+      retryAfter = Math.max(0, 60 - Math.floor(elapsedTime / 1000));
+    }
+
+    return res.status(200).json({
+      hasPendingEmail: true,
+      pendingEmail: user.pendingEmail,
+      retryAfter,
+    });
+  } catch (error) {
+    console.error("Get email change status error:", error.message);
+
+    return res.status(500).json({
+      message: "Failed to retrieve email change status",
+    });
+  }
+};
+
 export const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -141,6 +175,7 @@ export const requestEmailChange = async (req, res) => {
 
     res.status(200).json({
       message: "A verification code has been sent to your new email address",
+      retryAfter: 60,
     });
   } catch (error) {
     console.error("Request email change error:", error.message);
@@ -210,7 +245,7 @@ export const resendEmailChangeVerification = async (req, res) => {
     res.status(200).json({
       message:
         "A verification code has been sent to your pending email address",
-        retryAfter: 60,
+      retryAfter: 60,
     });
   } catch (error) {
     console.error("Resend Email Change Verification error:", error.message);
