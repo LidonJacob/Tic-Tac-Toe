@@ -1,5 +1,28 @@
 import Game from "../models/Game.js";
 
+const winningCombinations = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+const getWinner = (board) => {
+  return (
+    winningCombinations
+      .map(([a, b, c]) =>
+        board[a] && board[a] === board[b] && board[a] === board[c]
+          ? board[a]
+          : null,
+      )
+      .find(Boolean) || null
+  );
+};
+
 export const createGame = async (req, res) => {
   const { gameMode, aiDifficulty } = req.body;
 
@@ -118,7 +141,7 @@ export const updateGame = async (req, res) => {
       return res.status(400).json({ message: "Invalid board values" });
     }
 
-    if (!["", "X", "O"].includes(currentPlayer)) {
+    if (!["X", "O"].includes(currentPlayer)) {
       return res.status(400).json({ message: "Invalid current player" });
     }
 
@@ -160,11 +183,25 @@ export const updateGame = async (req, res) => {
       return res.status(400).json({ message: "Invalid turn order" });
     }
 
+    const lastMove = moves[moves.length - 1];
+
+    if (!lastMove || currentPlayer !== lastMove.player) {
+      return res.status(400).json({
+        message: "Current player must match the last recorded move",
+      });
+    }
+
     const reconstructedBoard = Array(9).fill("");
 
-    moves.forEach((move) => {
+    for (const move of moves) {
+      if (getWinner(reconstructedBoard)) {
+        return res.status(400).json({
+          message: "Moves cannot continue after a winning move",
+        });
+      }
+
       reconstructedBoard[move.position] = move.player;
-    });
+    }
 
     if (!reconstructedBoard.every((square, index) => square === board[index])) {
       return res
@@ -172,25 +209,7 @@ export const updateGame = async (req, res) => {
         .json({ message: "Board Moves do not match recored moves" });
     }
 
-    const winningCombinations = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-
-    const actualWinner =
-      winningCombinations
-        .map(([a, b, c]) =>
-          board[a] && board[a] === board[b] && board[a] === board[c]
-            ? board[a]
-            : null,
-        )
-        .find(Boolean) || null;
+    const actualWinner = getWinner(board);
 
     if (status === "won" && actualWinner !== winner) {
       return res
