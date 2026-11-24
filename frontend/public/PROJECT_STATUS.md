@@ -145,14 +145,14 @@ The application is designed to support:
 
 Account Settings Functionality Still Required
 
-- [ ] Implement Change Email functionality.
-- [ ] Implement verification of the new email address.
-- [ ] Implement Change Password functionality.
-- [ ] Implement current-password verification.
-- [ ] Implement secure account deletion.
-- [ ] Implement deletion confirmation.
-- [ ] Handle associated game history during account deletion.
-- [ ] Test all account-management operations.
+- [x] Implement Change Email functionality.
+- [x] Implement verification of the new email address.
+- [x] Implement Change Password functionality.
+- [x] Implement current-password verification.
+- [x] Implement secure account deletion.
+- [x] Implement deletion confirmation.
+- [x] Handle associated game history during account deletion.
+- [x] Test all account-management operations.
 
 Important: The four dashboard cards are currently implemented as UI. Their three account-management action buttons are placeholders and must not be treated as completed functionality.
 
@@ -270,56 +270,56 @@ This is our current development focus.
 
 Change Email
 
-- [ ] Design the Change Email interface.
-- [ ] Allow users to enter a new email address.
-- [ ] Validate the new email address.
-- [ ] Verify the user's identity before changing the email.
-- [ ] Send a verification link or code to the new email.
-- [ ] Verify ownership of the new email address.
-- [ ] Update the email in MongoDB only after successful verification.
-- [ ] Handle duplicate email addresses.
-- [ ] Handle expired verification tokens.
-- [ ] Notify the user when the change succeeds.
+- [x] Design the Change Email interface.
+- [x] Allow users to enter a new email address.
+- [x] Validate the new email address.
+- [x] Verify the user's identity before changing the email.
+- [x] Send a verification link or code to the new email.
+- [x] Verify ownership of the new email address.
+- [x] Update the email in MongoDB only after successful verification.
+- [x] Handle duplicate email addresses.
+- [x] Handle expired verification tokens.
+- [x] Notify the user when the change succeeds.
 
 Change Password
 
-- [ ] Design the Change Password interface.
-- [ ] Request the current password.
-- [ ] Request a new password.
-- [ ] Add password confirmation.
-- [ ] Validate password requirements.
-- [ ] Verify the current password.
-- [ ] Hash the new password using bcrypt.
-- [ ] Update the password securely.
-- [ ] Handle existing authentication sessions appropriately.
-- [ ] Display success and error notifications.
+- [x] Design the Change Password interface.
+- [x] Request the current password.
+- [x] Request a new password.
+- [x] Add password confirmation.
+- [x] Validate password requirements.
+- [x] Verify the current password.
+- [x] Hash the new password using bcrypt.
+- [x] Update the password securely.
+- [x] Handle existing authentication sessions appropriately.
+- [x] Display success and error notifications.
 
 Delete Account
 
-- [ ] Design the account deletion interface.
-- [ ] Display a confirmation warning.
-- [ ] Require appropriate identity verification.
-- [ ] Implement secure backend account deletion.
-- [ ] Handle associated game records.
-- [ ] Clear authentication cookies.
-- [ ] Clear frontend authentication state.
-- [ ] Redirect the user after successful deletion.
-- [ ] Test the complete deletion process.
+- [x] Design the account deletion interface.
+- [x] Display a confirmation warning.
+- [x] Require appropriate identity verification.
+- [x] Implement secure backend account deletion.
+- [x] Handle associated game records.
+- [x] Clear authentication cookies.
+- [x] Clear frontend authentication state.
+- [x] Redirect the user after successful deletion.
+- [x] Test the complete deletion process.
 
 5.2 Online Multiplayer Reliability
 
-- [ ] Handle opponent disconnections during active matches.
-- [ ] Notify the remaining player when an opponent disconnects.
-- [ ] Implement a reconnection strategy.
-- [ ] Restore the correct game state after reconnection.
-- [ ] Handle players who fail to reconnect.
-- [ ] Test disconnections and reconnections using two browser sessions.
+- [x] Handle opponent disconnections during active matches.
+- [x] Notify the remaining player when an opponent disconnects.
+- [x] Implement a reconnection strategy.
+- [x] Restore the correct game state after reconnection.
+- [x] Handle players who fail to reconnect.
+- [x] Test disconnections and reconnections using two browser sessions.
 
 5.3 Final Integration Testing
 
-- [ ] Complete authentication regression testing.
-- [ ] Complete account-management testing.
-- [ ] Complete backend game-management testing.
+- [x] Complete authentication regression testing.
+- [x] Complete account-management testing.
+- [x] Complete backend game-management testing.
 - [x] Test guest gameplay.
 - [x] Test registered-user gameplay.
 - [x] Test AI difficulty levels.
@@ -327,7 +327,7 @@ Delete Account
 - [x] Test online matchmaking.
 - [x] Test online gameplay.
 - [x] Test online rematches.
-- [ ] Complete disconnection and reconnection testing.
+- [x] Complete disconnection and reconnection testing.
 - [ ] Run a complete application regression test.
 
 5.4 Documentation
