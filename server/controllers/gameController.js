@@ -41,7 +41,9 @@ export const getUserGames = async (req, res) => {
 
     const games = await Game.find({
       "players.user": userId,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("players.user", "username")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({ games });
   } catch (error) {

@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 
+
 const waitingPlayers = [];
 
 export const activeGames = new Map();

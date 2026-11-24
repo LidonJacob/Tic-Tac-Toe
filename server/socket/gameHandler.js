@@ -1,4 +1,5 @@
 import { activeGames, reconnectTimers } from "./matchmaking.js";
+import Game from "../models/Game.js";
 
 const winningCombinations = [
   [0, 1, 2],
@@ -31,7 +32,7 @@ const getWinningCombination = (board) => {
   return null;
 };
 
-export const handleMakeMove = (io, socket, { roomId, index }) => {
+export const handleMakeMove = async (io, socket, { roomId, index }) => {
   const game = activeGames.get(roomId);
 
   if (!game) return;
@@ -52,6 +53,15 @@ export const handleMakeMove = (io, socket, { roomId, index }) => {
 
   game.board[index] = player.symbol;
 
+  if (!game.moves) {
+    game.moves = [];
+  }
+
+  game.moves.push({
+    player: player.symbol,
+    position: index,
+  });
+
   const winner = checkWinner(game.board);
 
   if (winner) {
@@ -64,6 +74,25 @@ export const handleMakeMove = (io, socket, { roomId, index }) => {
     game.status = "finished";
     game.winner = null;
     game.isDraw = true;
+  }
+
+  if (game.status === "finished") {
+    try {
+      await Game.create({
+        players: game.players.map((player) => ({
+          user: player.userId,
+          symbol: player.symbol,
+        })),
+        board: game.board,
+        moves: game.moves,
+        status: game.isDraw ? "draw" : "won",
+        winner: game.winner,
+        currentPlayer: game.currentPlayer,
+        gameMode: "online",
+      });
+    } catch (error) {
+      console.error("Failed to save online game:", error);
+    }
   }
 
   if (game.status === "active") {
@@ -135,6 +164,11 @@ export const handlePlayerDisconnect = (io, socket) => {
     if (!player) continue;
 
     player.isConnected = false;
+
+    if (game.rematchRequests.length > 0) {
+      game.rematchRequests = [];
+      io.to(roomId).emit("rematch-cancelled");
+    }
 
     const existingTimer = reconnectTimers.get(roomId);
 

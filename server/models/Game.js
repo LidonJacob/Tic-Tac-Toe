@@ -51,7 +51,7 @@ const gameSchema = new mongoose.Schema(
     },
     gameMode: {
       type: String,
-      enum: ["player", "ai"],
+      enum: ["player", "ai", "online"],
       required: true,
     },
     aiDifficulty: {

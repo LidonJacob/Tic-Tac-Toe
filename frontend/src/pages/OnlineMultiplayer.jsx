@@ -19,8 +19,8 @@ const OnlineMultiplayer = () => {
   const [rematchStatus, setRematchStatus] = useState("");
   const [rematchWindowOpen, setRematchWindowOpen] = useState(false);
 
-  useEffect(()=>{
-    if(!rematchWindowOpen) return;
+  useEffect(() => {
+    if (!rematchWindowOpen) return;
 
     const timer = setTimeout(() => {
       setRematchWindowOpen(false);
@@ -94,6 +94,12 @@ const OnlineMultiplayer = () => {
 
     socket.on("rematch-requested", () => {
       setRematchStatus("Your opponent has requested a rematch!");
+    });
+
+    socket.on("rematch-cancelled", () => {
+      setRematchStatus("Rematch cancelled because a player disconnected.");
+
+      toast.warning("Rematch cancelled");
     });
 
     socket.on("game-updated", (gameData) => {
@@ -175,6 +181,7 @@ const OnlineMultiplayer = () => {
       socket.off("match-restored");
       socket.off("disconnect");
       socket.off("opponent-failed-to-reconnect");
+      socket.off("rematch-cancelled");
     };
   }, [user, loading]);
 

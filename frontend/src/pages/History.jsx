@@ -60,13 +60,43 @@ const History = () => {
     {
       header: "Game Mode",
       accessorKey: "gameMode",
-      cell: (info) =>
-        info.getValue() === "player" ? "Player vs Player" : "Player vs AI",
+      cell: (info) => {
+        const mode = info.getValue();
+
+        if (mode === "online") return "Online Multiplayer";
+        if (mode === "player") return "Player vs Player";
+
+        return "Player vs AI";
+      },
     },
     {
       header: "Winner",
       accessorFn: (row) =>
-        row.winner || (row.isDraw || row.status === "draw" ? "Draw" : "Unknown"),
+        row.winner ||
+        (row.isDraw || row.status === "draw" ? "Draw" : "Unknown"),
+      cell: (info) => {
+        const game = info.row.original;
+
+        if (!game.winner) {
+          return game.isDraw || game.status === "draw" ? "Draw" : "Unknown";
+        }
+
+        if (game.gameMode !== "online") {
+          return `Player ${game.winner}`;
+        }
+
+        const winner = game.players.find(
+          (player) => player.symbol === game.winner,
+        )?.user;
+
+        if (!winner || typeof winner === "string") {
+          return `Player ${game.winner}`;
+        }
+
+        return String(winner._id) === String(user._id)
+          ? `You (${winner.username})`
+          : `Opponent (${winner.username})`;
+      },
     },
     {
       header: "AI Difficulty",
