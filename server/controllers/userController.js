@@ -118,6 +118,7 @@ export const requestEmailChange = async (req, res) => {
 
     await user.save();
 
+    try {
     await sendEmail(
       normalizedEmail,
       "Verify your email address",
@@ -126,6 +127,9 @@ export const requestEmailChange = async (req, res) => {
     <h1>${verificationCode}</h1>
     <p>This code is valid for 10 minutes</p>`,
     );
+  } catch (error) {
+
+  }
 
     res.status(200).json({
       message: "A verification code has been sent to your new email address",
