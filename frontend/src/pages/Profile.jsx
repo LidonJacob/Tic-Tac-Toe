@@ -23,6 +23,7 @@ const Profile = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const handleEmailChange = async (e) => {
     e.preventDefault();
@@ -556,6 +557,38 @@ const Profile = () => {
                   className="px-5 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
                 >
                   Delete My Account
+                </button>
+              </div>
+            </div>
+          )}
+          {activeSection === "delete" && (
+            <div className="bg-gray-800 border border-red-500/40 rounded-xl p-5 w-full">
+              <h2 className="text-lg font-semibold text-red-400 mb-3">
+                Confirm Account Deletion
+              </h2>
+
+              <p className="text-gray-300 text-sm mb-3">
+                Type DELETE below to confirm that you want to permanently delete
+                your account.
+              </p>
+
+              <input
+                type="text"
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                placeholder="Type DELETE"
+                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+              />
+              <div className="flex gap-3 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteConfirmation("");
+                    setActiveSection("null");
+                  }}
+                  className="px-5 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+                >
+                  Cancel
                 </button>
               </div>
             </div>

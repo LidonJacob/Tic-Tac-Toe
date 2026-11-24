@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Game from "../models/Game.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { createHmac, timingSafeEqual } from "crypto";
@@ -317,6 +318,22 @@ export const changePassword = async (req, res) => {
     console.error("Error changing password:", error);
     return res.status(500).json({
       message: "Something went wrong while changing password",
+    });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    if (req.body.comfirmation !== "DELETE") {
+      return res.status(400).json({
+        message: "Please confirm you want to delete your account",
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting account:", error);
+
+    return res.status(500).json({
+      message: "Something went wrong while deleting account",
     });
   }
 };
