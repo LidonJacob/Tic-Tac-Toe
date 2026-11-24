@@ -424,9 +424,9 @@ Milestone 1 — Frontend Foundation
 - [x] Navbar Account Settings label.
 - [x] Change Email functionality.
 - [x] New email verification.
-- [ ] Change Password functionality.
-- [ ] Delete Account functionality.
-- [ ] Account-management testing.
+- [x] Change Password functionality.
+- [x] Delete Account functionality.
+- [x] Account-management testing.
 
 </details>Milestone 7 — Final Integration and Production Readiness
 
