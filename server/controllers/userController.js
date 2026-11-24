@@ -119,17 +119,25 @@ export const requestEmailChange = async (req, res) => {
     await user.save();
 
     try {
-    await sendEmail(
-      normalizedEmail,
-      "Verify your email address",
-      `<h2>Email Change Verification</h2>
+      await sendEmail(
+        normalizedEmail,
+        "Verify your email address",
+        `<h2>Email Change Verification</h2>
     <p>Your Verification Code is </p>
     <h1>${verificationCode}</h1>
     <p>This code is valid for 10 minutes</p>`,
-    );
-  } catch (error) {
+      );
+    } catch (error) {
+      user.pendingEmail = null;
+      user.pendingEmailVerificationCodeHash = null;
+      user.pendingEmailVerificationCodeExpires = null;
+      user.pendingEmailVerificationAttempts = 0;
+      user.pendingEmailVerificationLastSentAt = null;
 
-  }
+      await user.save();
+
+      throw error;
+    }
 
     res.status(200).json({
       message: "A verification code has been sent to your new email address",
