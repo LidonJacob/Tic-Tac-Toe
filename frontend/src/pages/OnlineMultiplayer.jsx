@@ -11,6 +11,8 @@ const OnlineMultiplayer = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [match, setMatch] = useState(null);
   const [opponentDisconnected, setOpponentDisconnected] = useState(false);
+  const [opponentFailedToReconnect, setOpponentFailedToReconnect] =
+    useState(false);
   const matchRef = useRef(null);
   const completedMatchRef = useRef(false);
   const [completedMatch, setCompletedMatch] = useState(null);
@@ -56,6 +58,7 @@ const OnlineMultiplayer = () => {
 
     socket.on("match-found", (matchData) => {
       setOpponentDisconnected(false);
+      setOpponentFailedToReconnect(false);
       completedMatchRef.current = false;
       matchRef.current = matchData;
       setMatch(matchData);
@@ -65,6 +68,7 @@ const OnlineMultiplayer = () => {
 
     socket.on("rematch-started", (matchData) => {
       setOpponentDisconnected(false);
+      setOpponentFailedToReconnect(false);
       completedMatchRef.current = false;
       matchRef.current = matchData;
       setMatch(matchData);
@@ -109,6 +113,13 @@ const OnlineMultiplayer = () => {
       );
     });
 
+    socket.on("opponent-failed-to-reconnect", () => {
+      setOpponentFailedToReconnect(true);
+      setOpponentDisconnected(false);
+
+      toast.error("Your opponent has failed to reconnect!, Match Ended!");
+    });
+
     socket.on("opponent-reconnected", () => {
       setOpponentDisconnected(false);
 
@@ -149,6 +160,7 @@ const OnlineMultiplayer = () => {
       socket.off("opponent-reconnected");
       socket.off("match-restored");
       socket.off("disconnect");
+      socket.off("opponent-failed-to-reconnect");
     };
   }, [user, loading]);
 
@@ -210,13 +222,15 @@ const OnlineMultiplayer = () => {
       {match && (
         <div className="flex flex-col items-center gap-4">
           <p className="text-green-400 font-semibold">
-            {opponentDisconnected
-              ? "Opponent disconnected. Waiting for reconnection..."
-              : `Opponent found! You are ${
-                  match.players.find(
-                    (player) => player.userId === currentUserId,
-                  )?.symbol
-                }`}
+            {opponentFailedToReconnect
+              ? "Opponent failed to reconnect. Match ended."
+              : opponentDisconnected
+                ? "Opponent disconnected. Waiting for reconnection..."
+                : `Opponent found! You are ${
+                    match.players.find(
+                      (player) => player.userId === currentUserId,
+                    )?.symbol
+                  }`}
           </p>
           <p className="text-xl font-semibold text-white">
             {match.winner

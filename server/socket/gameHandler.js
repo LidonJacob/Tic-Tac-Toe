@@ -1,4 +1,4 @@
-import { activeGames } from "./matchmaking.js";
+import { activeGames, reconnectTimers } from "./matchmaking.js";
 
 const winningCombinations = [
   [0, 1, 2],
@@ -135,6 +135,23 @@ export const handlePlayerDisconnect = (io, socket) => {
     if (!player) continue;
 
     player.isConnected = false;
+
+    const existingTimer = reconnectTimers.get(roomId);
+
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    const timer = setTimeout(() => {
+      io.to(roomId).emit("opponent-failed-to-reconnect", {
+        userId: player.userId,
+      });
+
+      activeGames.delete(roomId);
+      reconnectTimers.delete(roomId);
+    }, 30000);
+
+    reconnectTimers.set(roomId, timer);
 
     io.to(roomId).emit("opponent-disconnected", {
       userId: player.userId,

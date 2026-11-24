@@ -4,6 +4,8 @@ const waitingPlayers = [];
 
 export const activeGames = new Map();
 
+export const reconnectTimers = new Map();
+
 export const handleMatchMaking = (io, socket) => {
   if (
     waitingPlayers.some(
@@ -85,6 +87,13 @@ export const handlePlayerReconnect = (io, socket) => {
     );
 
     if (!player) continue;
+
+    const timer = reconnectTimers.get(roomId);
+
+    if (timer) {
+      clearTimeout(timer);
+      reconnectTimers.delete(roomId);
+    }
 
     player.socketId = socket.id;
     player.isConnected = true;
