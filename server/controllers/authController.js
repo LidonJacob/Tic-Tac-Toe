@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
     if (password.length < 8) {
       return res
         .status(400)
-        .json({ message: "Password must be at least 88 characters long" });
+        .json({ message: "Password must be at least 8 characters long" });
     }
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
