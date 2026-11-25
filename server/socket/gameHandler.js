@@ -32,11 +32,11 @@ const getWinningCombination = (board) => {
   return null;
 };
 
-export const handleMakeMove = async (i0, socket, moveData) => {
+export const handleMakeMove = async (io, socket, moveData) => {
   if (!moveData || typeof moveData !== "object" || Array.isArray(moveData))
     return;
   const { roomId, index } = moveData;
-  if (typeof roomId !=="string" || !roomId.trim()) return;
+  if (typeof roomId !== "string" || !roomId.trim()) return;
 
   const game = activeGames.get(roomId);
 
@@ -115,6 +115,7 @@ export const handleMakeMove = async (i0, socket, moveData) => {
 };
 
 export const handleRematchRequest = (io, socket, roomId) => {
+  if (typeof roomId !== "string" || !roomId.trim()) return;
   const game = activeGames.get(roomId);
 
   if (!game) return;

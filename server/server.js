@@ -15,9 +15,6 @@ import {
   handlePlayerDisconnect,
 } from "./socket/gameHandler.js";
 
-
-
-
 const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
 
@@ -46,6 +43,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("request-rematch", (data) => {
+    if (!data || typeof data !== "object" || Array.isArray(data)) return;
+
     handleRematchRequest(io, socket, data.roomId);
   });
 });
