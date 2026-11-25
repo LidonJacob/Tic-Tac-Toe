@@ -50,8 +50,13 @@ io.on("connection", (socket) => {
   });
 });
 
-connectDB().then(() => {
-  httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+connectDB()
+  .then(() => {
+    httpServer.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Server startup failed:", error.message);
+    process.exit(1);
   });
-});
