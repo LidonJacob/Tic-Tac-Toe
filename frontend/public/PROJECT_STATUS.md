@@ -337,9 +337,9 @@ Account management and online multiplayer reliability are completed. The remaini
 - [x] Test online gameplay.
 - [x] Test online rematches.
 - [x] Test disconnection and reconnection.
-- [ ] Run a complete application regression test.
-- [ ] Verify frontend and backend integration after final cleanup.
-- [ ] Test important user journeys from beginning to end.
+- [x] Run a complete application regression test.
+- [x] Verify frontend and backend integration after final cleanup.
+- [x] Test important user journeys from beginning to end.
 
 6.2 Security and Error-Handling Review
 
@@ -503,7 +503,7 @@ Status: In Progress
 - [x] Backend game-management testing.
 - [x] Individual feature regression testing.
 - [x] Complete application regression testing.
-- [ ] Security and error-handling review.
+- [x] Security and error-handling review.
 - [ ] Codebase cleanup and optimization.
 - [ ] Complete documentation.
 - [ ] Deployment configuration.
