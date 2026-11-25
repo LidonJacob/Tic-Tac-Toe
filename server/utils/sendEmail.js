@@ -1,19 +1,19 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: "in-v3.mailjet.com",
+  port: 2525,
+  secure: false,
+  requireTLS: true,
+  auth: {
+    user: process.env.MAILJET_API_KEY,
+    pass: process.env.MAILJET_SECRET_KEY,
+  },
+});
 
-export const sendEmail = async (to, subject, html) => {
-  const { data, error } = await resend.emails.send({
-    from: "HavenPlay <onboarding@resend.dev>",
-    to,
-    subject,
-    html,
-  });
-
-  if (error) {
-    console.error("Resend email error:", error);
-    throw new Error(error.message);
-  }
-
-  return data;
-};
+return transporter.sendMail({
+  from: `HavenPlay <${process.env.EMAIL_FROM}>`,
+  to,
+  subject,
+  html,
+});
