@@ -32,7 +32,7 @@ const Navbar = () => {
       >
         HavenPlay
       </Link>
-    
+
       <div className="flex items-center gap-3 sm:gap-6">
         <Link
           to={"/"}
@@ -56,6 +56,27 @@ const Navbar = () => {
           <History size={18} />
           <span className="hidden sm:inline">History</span>
         </Link>
+        {!loading && user && (
+          <Link
+            to="/profile"
+            title="View Profile"
+            className="flex items-center gap-2"
+          >
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover border-2 border-cyan-400"
+              />
+            ) : (
+              <UserRound size={18} className="flex items-center gap-2 text-gray-300 hover:text-cyan-400
+              transition-colors duration-200 font-medium" />
+            )}
+            <span className="text-gray-300 font-medium hidden sm:inline hover:text-cyan-400">
+              Account Settings
+            </span>
+          </Link>
+        )}
         {!loading &&
           (user ? (
             <button
