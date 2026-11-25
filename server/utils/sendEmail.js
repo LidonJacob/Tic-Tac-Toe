@@ -11,9 +11,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-return transporter.sendMail({
-  from: `HavenPlay <${process.env.EMAIL_FROM}>`,
-  to,
-  subject,
-  html,
-});
+export const sendEmail = async (to, subject, html) => {
+  return transporter.sendMail({
+    from: `HavenPlay <${process.env.EMAIL_FROM}>`,
+    to,
+    subject,
+    html,
+  });
+};
