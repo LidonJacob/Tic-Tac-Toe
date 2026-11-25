@@ -1,11 +1,12 @@
 import User from "../models/User.js";
-import pendingRegistration from "../models/pendingRegistration.js";
+import PendingRegistration from "../models/pendingRegistration.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { sendEmail } from "../utils/sendEmail.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
 import { createHmac, timingSafeEqual } from "crypto";
+import pendingRegistration from "../models/pendingRegistration.js";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -66,7 +67,7 @@ export const registerUser = async (req, res) => {
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    await PendingRegistration.create({
+    const PendingRegistration = await PendingRegistration.create({
       username: normalizedUsername,
       email: normalizedEmail,
       password: hashedPassword,
@@ -82,14 +83,15 @@ export const registerUser = async (req, res) => {
     <h1> ${verificationCode} </h1>
     <p> This code expires in 10 minutes </p>`;
 
-    const pendingRegistration = await PendingRegistration.findOne({
-      email: normalizedEmail,
-    });
+    await sendEmail(
+      normalizedEmail,
+      "Verify your HavenPlay account",
+      emailHtml,
+    );
 
     pendingRegistration.emailVerificationLastSentAt = new Date();
-    await pendingRegistration.save();
 
-    await user.save();
+    await pendingRegistration.save();
 
     res.status(201).json({
       message:
@@ -297,20 +299,20 @@ export const verifyEmail = async (req, res) => {
     }
 
     if (
-      !user.emailVerificationCodeHash ||
-      !user.emailVerificationCodeExpires ||
-      user.emailVerificationCodeExpires < new Date()
+      !pendingRegistration.emailVerificationCodeHash ||
+      !pendingRegistration.emailVerificationCodeExpires ||
+      pendingRegistration.emailVerificationCodeExpires < new Date()
     ) {
       return res
         .status(400)
         .json({ message: "Invalid or expired verification code" });
     }
 
-    if (user.emailVerificationAttempts >= 5) {
-      user.emailVerificationCodeHash = null;
-      user.emailVerificationCodeExpires = null;
+    if (pendingRegistration.emailVerificationAttempts >= 5) {
+      pendingRegistration.emailVerificationCodeHash = null;
+      pendingRegistration.emailVerificationCodeExpires = null;
 
-      await user.save();
+      await pendingRegistration.save();
 
       return res.status(429).json({
         message: "Too many attempts. Please request a new verification code.",
@@ -324,7 +326,10 @@ export const verifyEmail = async (req, res) => {
       .update(code)
       .digest("hex");
 
-    const storedHashBuffer = Buffer.from(user.emailVerificationCodeHash, "hex");
+    const storedHashBuffer = Buffer.from(
+      pendingRegistration.emailVerificationCodeHash,
+      "hex",
+    );
 
     const submittedHashBuffer = Buffer.from(submittedCodeHash, "hex");
 
@@ -335,14 +340,26 @@ export const verifyEmail = async (req, res) => {
     if (!isCodeValid) {
       user.emailVerificationAttempts += 1;
 
-      if (user.emailVerificationAttempts >= 5) {
-        user.emailVerificationCodeHash = null;
-        user.emailVerificationCodeExpires = null;
+      if (!isCodeValid) {
+        pendingRegistration.emailVerificationAttempts += 1;
 
-        await user.save();
+        if (pendingRegistration.emailVerificationAttempts >= 5) {
+          pendingRegistration.emailVerificationCodeHash = null;
+          pendingRegistration.emailVerificationCodeExpires = null;
 
-        return res.status(429).json({
-          message: "Too many attempts. Please request a new verification code.",
+          await pendingRegistration.save();
+
+          return res.status(429).json({
+            message:
+              "Too many attempts. Please request a new verification code.",
+          });
+        }
+
+        await pendingRegistration.save();
+
+        return res.status(400).json({
+          message: "Invalid or expired verification code",
+          attemptsRemaining: 5 - pendingRegistration.emailVerificationAttempts,
         });
       }
 
@@ -354,12 +371,17 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
-    user.emailVerified = true;
-    user.emailVerificationCodeHash = null;
-    user.emailVerificationCodeExpires = null;
-    user.emailVerificationAttempts = 0;
+    await User.create({
+      username: pendingRegistration.username,
+      email: pendingRegistration.email,
+      password: pendingRegistration.password,
+      avatar: pendingRegistration.avatar,
+      emailVerified: true,
+    });
 
-    await user.save();
+    await PendingRegistration.deleteOne({
+      _id: pendingRegistration._id,
+    });
 
     return res
       .status(200)
@@ -380,24 +402,24 @@ export const resendVerificationCode = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const pendingRegistration = await PendingRegistration.findOne({
+      email: email.toLowerCase().trim(),
+    });
 
-    if (!user) {
-      return res.status(404).json({ message: "Account not found" });
-    }
-
-    if (user.emailVerified) {
-      return res
-        .status(400)
-        .json({ message: "Email already verified. Please login" });
+    if (!pendingRegistration) {
+      return res.status(404).json({
+        message: "Pending registration not found",
+      });
     }
 
     if (
-      user.emailVerificationLastSentAt &&
-      Date.now() - user.emailVerificationLastSentAt.getTime() < 60 * 1000
-    ) {
-      const elapsedTime =
-        Date.now() - user.emailVerificationLastSentAt.getTime();
+  pendingRegistration.emailVerificationLastSentAt &&
+  Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime() <
+    60 * 1000
+) {
+  const elapsedTime =
+    Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime();
+
       const retryAfterSeconds = Math.ceil((60000 - elapsedTime) / 1000);
 
       return res.status(429).json({
