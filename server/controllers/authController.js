@@ -40,29 +40,34 @@ export const registerUser = async (req, res) => {
         .json({ message: "Password must be at least 8 characters long" });
     }
 
-    const [existingUser, existingPending] = await Promise.all([
-      User.findOne({
-        $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
-      }),
-      PendingRegistration.findOne({
-        $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
-      }),
-    ]);
+    const [existingUser, pendingByEmail, pendingByUsername] = await Promise.all(
+      [
+        User.findOne({
+          $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
+        }),
+        PendingRegistration.findOne({ email: normalizedEmail }),
+        PendingRegistration.findOne({ username: normalizedUsername }),
+      ],
+    );
 
-    if (existingUser || existingPending) {
-      return res.status(409).json({
-        message: "Username or email already exists",
-      });
+    if (
+      existingUser ||
+      (pendingByUsername && pendingByUsername.email !== normalizedEmail)
+    ) {
+      return res
+        .status(409)
+        .json({ message: "Username or email already exists" });
     }
 
-   
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { verificationCode, codeHash } = generateVerificationCode();
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const pendingRegistration = await PendingRegistration.create({
+    let pendingRegistration;
+
+    const registrationData = {
       username: normalizedUsername,
       email: normalizedEmail,
       password: hashedPassword,
@@ -71,7 +76,14 @@ export const registerUser = async (req, res) => {
       emailVerificationCodeExpires: expiresAt,
       emailVerificationAttempts: 0,
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
+    };
+
+    if (pendingByEmail) {
+      pendingByEmail.set(registrationData);
+      pendingRegistration = await pendingByEmail.save();
+    } else {
+      pendingRegistration = await PendingRegistration.create(registrationData);
+    }
 
     const emailHtml = `<h2> Welcome to HavenPlay! </h2>
     <p> Your email verification code is: </p>
