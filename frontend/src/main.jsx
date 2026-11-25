@@ -5,14 +5,18 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./index.css";
 import App from "./App.jsx";
+import {Analytics} from '@vercel/analytics/react';
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
+      <>
         <AuthProvider>
           <App />
         </AuthProvider>
+        <Analytics />
+        </>
       </BrowserRouter>
     </GoogleOAuthProvider>
   </StrictMode>,
