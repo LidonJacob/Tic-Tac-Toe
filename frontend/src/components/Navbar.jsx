@@ -47,7 +47,7 @@ const Navbar = () => {
         </Link>
       ) : (
         <div className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400">
-          Tic-Tac-Toe
+          HavenPlay
         </div>
       )}
       <div className="flex items-center gap-3 sm:gap-6">

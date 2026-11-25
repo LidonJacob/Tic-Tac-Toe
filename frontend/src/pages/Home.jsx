@@ -28,10 +28,10 @@ const Home = () => {
         </div>
         <div className="relative z-10">
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-3">
-            Tic-Tac-Toe
+            HavenPlay
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
-            Challenge Yourself or play against friends
+            Your world. Your games. Play, connect and challenge yourself
           </p>
 
           <button
@@ -40,14 +40,14 @@ const Home = () => {
         rounded-xl text-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-cyan-500/20"
           >
             {" "}
-            Play Game
+            Play Tic-Tac-Toe
           </button>
         </div>
       </section>
 
       <section className="max-w-6xl mx-auto mt-10 w-full">
         <h2 className="text-3xl font-bold text-white text-center mb-6">
-          Everything You need to Play
+          Play Tic-Tac-Toe Online
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
