@@ -14,14 +14,11 @@ Features
 
 Tech Stack
 
-Frontend| Backend
-React| Node.js
-Vite| Express.js
-JavaScript| MongoDB
-Tailwind CSS v4| Mongoose
-React Router| Socket.IO
-Axios| JWT
-Lucide React| Cloudinary
+Frontend: React, Vite, JavaScript, Tailwind CSS v4, React Router, Axios, Lucide React.
+
+Backend: Node.js, Express.js, MongoDB, Mongoose, Socket.IO, JWT, Cloudinary, Nodemailer.
+
+Authentication: JWT, Google OAuth, HTTP-only cookies.
 
 Additional tools include Nodemailer, Google OAuth, and React Toastify.
 
@@ -52,32 +49,11 @@ npm install
 
 3. Configure environment variables
 
-Create a ".env" file inside both the "frontend" and "server" directories.
+Create ".env" files in both the "frontend" and "server" directories using the provided ".env.example" files as references.
 
-Use the provided ".env.example" files as templates.
+Add your own credentials and configuration values before starting the application.
 
-Backend — "server/.env"
-
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-EMAIL_VERIFICATION_SECRET=your_verification_secret
-
-EMAIL_USER=your_email
-EMAIL_PASS=your_email_app_password
-GOOGLE_CLIENT_ID=your_google_client_id
-
-Frontend — "frontend/.env"
-
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
-VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-
-Replace the placeholder values with your actual credentials.
-
-Important: Never commit your actual ".env" files or expose private credentials.
+Note: Keep your actual ".env" files private.
 
 4. Run the application
 
@@ -99,17 +75,17 @@ Project Structure
 
 Tic-Tac-Toe/
 ├── frontend/
-│   ├── public/
-│   └── src/
+│ ├── public/
+│ └── src/
 │
 ├── server/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── socket/
-│   └── utils/
+│ ├── config/
+│ ├── controllers/
+│ ├── middleware/
+│ ├── models/
+│ ├── routes/
+│ ├── socket/
+│ └── utils/
 │
 └── README.md
 
