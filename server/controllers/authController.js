@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import pendingRegistration from "../models/pendingRegistration.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
@@ -38,9 +39,22 @@ export const registerUser = async (req, res) => {
         .status(400)
         .json({ message: "Password must be at least 8 characters long" });
     }
-    const existingUser = await User.findOne({
-      $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
-    });
+
+    const [existingUser, existingPending] = await Promise.all([
+      User.findOne({
+        $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
+      }),
+      PendingRegistration.findOne({
+        $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
+      }),
+    ]);
+
+    if (existingUser || existingPending) {
+      return res.status(409).json({
+        message: "Username or email already exists",
+      });
+    }
+
     if (existingUser) {
       return res
         .status(409)
@@ -52,14 +66,15 @@ export const registerUser = async (req, res) => {
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const user = await User.create({
+    await PendingRegistration.create({
       username: normalizedUsername,
       email: normalizedEmail,
       password: hashedPassword,
       avatar,
-      emailVerified: false,
       emailVerificationCodeHash: codeHash,
       emailVerificationCodeExpires: expiresAt,
+      emailVerificationAttempts: 0,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
     const emailHtml = `<h2> Welcome to TicTacToe! </h2>
@@ -67,8 +82,12 @@ export const registerUser = async (req, res) => {
     <h1> ${verificationCode} </h1>
     <p> This code expires in 10 minutes </p>`;
 
-    await sendEmail(email, "Verify your TicTacToe account", emailHtml);
-    user.emailVerificationLastSentAt = new Date();
+    const pendingRegistration = await PendingRegistration.findOne({
+      email: normalizedEmail,
+    });
+
+    pendingRegistration.emailVerificationLastSentAt = new Date();
+    await pendingRegistration.save();
 
     await user.save();
 
@@ -267,14 +286,14 @@ export const verifyEmail = async (req, res) => {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    const user = await User.findOne({
+    const pendingRegistration = await PendingRegistration.findOne({
       email: normalizedEmail,
     });
 
-    if (!user || user.emailVerified) {
-      return res
-        .status(400)
-        .json({ message: "Invalid or expired verification code" });
+    if (!pendingRegistration) {
+      return res.status(400).json({
+        message: "Invalid or expired verification code",
+      });
     }
 
     if (
