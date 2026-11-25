@@ -21,6 +21,17 @@ const Account = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authCooldown, setAuthCooldown] = useState(0);
+
+  useEffect(() => {
+    if (authCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setAuthCooldown((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [authCooldown]);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -33,6 +44,9 @@ const Account = () => {
       setUser(response.data.user);
       navigate("/");
     } catch (error) {
+      if (error.response?.status === 429) {
+        setAuthCooldown(error.response.data.retryAfter);
+      }
       console.error("Google Authentication error:", error);
       toast.error(error.response?.data?.message || "Google Login Failed");
     }
@@ -75,6 +89,10 @@ const Account = () => {
         navigate("/");
       }
     } catch (error) {
+      if (error.response?.status === 429) {
+        setAuthCooldown(error.response.data.retryAfter);
+      }
+
       console.error("Authentication error:", error);
       toast.error(
         error.response?.data?.message ||
@@ -310,19 +328,22 @@ const Account = () => {
             type="submit"
             disabled={
               isSubmitting ||
+              authCooldown > 0 ||
               (activeTab === "register" &&
                 (!confirmPassword || !passwordsMatch))
             }
             className="w-full py-3 bg-cyan-500 rounded-lg text-gray-950
     font-semibold hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting
-              ? activeTab === "login"
-                ? "Logging in..."
-                : "Creating Account"
-              : activeTab === "login"
-                ? "Login"
-                : "Register"}
+            {authCooldown > 0
+              ? `Try again in ${Math.floor(authCooldown / 60)}:${String(authCooldown % 60).padStart(2, "0")}`
+              : isSubmitting
+                ? activeTab === "login"
+                  ? "Logging in..."
+                  : "Creating Account..."
+                : activeTab === "login"
+                  ? "Login"
+                  : "Register"}
           </button>
         </form>
         <div className="my-3 flex flex-col gap-3">
@@ -332,11 +353,24 @@ const Account = () => {
             <div className="flex-1 h-px bg-gray-700"></div>
           </div>
 
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error("Google login failed")}
-            text={activeTab === "login" ? "signin_with" : "signup_with"}
-          />
+          {authCooldown > 0 ? (
+            <button
+              type="button"
+              disabled
+              className="w-full py-3 px-4 rounded-lg border
+            border-gray-600 bg-gray-800 text-gray-400 font-medium opacity-60 cursor-not-allowed"
+            >
+              {activeTab === "register"
+                ? "Google Registration not available during cooldown"
+                : "Google Login not available during cooldown"}
+            </button>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google login failed")}
+              text={activeTab === "login" ? "signin_with" : "signup_with"}
+            />
+          )}
         </div>
       </div>
     </div>

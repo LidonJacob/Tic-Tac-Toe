@@ -9,8 +9,18 @@ export const authLimiter = rateLimit({
     message:
       "Too many requests from this IP, please try again after 15 minutes",
   },
-});
+  handler: (req, res) => {
+    const retryAfter = Math.max(
+      0,
+      Math.ceil((req.rateLimit.resetTime - Date.now()) / 1000),
+    );
 
+    res.status(429).json({
+      message: "Too many authentication attempts.",
+      retryAfter,
+    });
+  },
+});
 
 export const verificationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -18,7 +28,8 @@ export const verificationLimiter = rateLimit({
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: {
-    message: "Too many verification requests. Please try again after 15 minutes.",
+    message:
+      "Too many verification requests. Please try again after 15 minutes.",
   },
 });
 

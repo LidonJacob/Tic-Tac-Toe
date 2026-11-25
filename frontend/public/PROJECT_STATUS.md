@@ -502,7 +502,7 @@ Status: In Progress
 - [x] Authentication testing.
 - [x] Backend game-management testing.
 - [x] Individual feature regression testing.
-- [ ] Complete application regression testing.
+- [x] Complete application regression testing.
 - [ ] Security and error-handling review.
 - [ ] Codebase cleanup and optimization.
 - [ ] Complete documentation.
