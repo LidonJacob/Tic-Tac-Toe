@@ -26,11 +26,13 @@ const Navbar = () => {
   };
   return (
     <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
-      <link
+      <Link
         to="/"
         className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400"
-      ></link>
-      HavenPlay
+      >
+        HavenPlay
+      </Link>
+    
       <div className="flex items-center gap-3 sm:gap-6">
         <Link
           to={"/"}
