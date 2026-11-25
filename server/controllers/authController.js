@@ -6,7 +6,6 @@ import { OAuth2Client } from "google-auth-library";
 import { sendEmail } from "../utils/sendEmail.js";
 import { generateVerificationCode } from "../utils/tokenUtils.js";
 import { createHmac, timingSafeEqual } from "crypto";
-import pendingRegistration from "../models/pendingRegistration.js";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -67,7 +66,7 @@ export const registerUser = async (req, res) => {
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const PendingRegistration = await PendingRegistration.create({
+    const pendingRegistration = await PendingRegistration.create({
       username: normalizedUsername,
       email: normalizedEmail,
       password: hashedPassword,
@@ -413,12 +412,12 @@ export const resendVerificationCode = async (req, res) => {
     }
 
     if (
-  pendingRegistration.emailVerificationLastSentAt &&
-  Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime() <
-    60 * 1000
-) {
-  const elapsedTime =
-    Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime();
+      pendingRegistration.emailVerificationLastSentAt &&
+      Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime() <
+        60 * 1000
+    ) {
+      const elapsedTime =
+        Date.now() - pendingRegistration.emailVerificationLastSentAt.getTime();
 
       const retryAfterSeconds = Math.ceil((60000 - elapsedTime) / 1000);
 
@@ -433,22 +432,25 @@ export const resendVerificationCode = async (req, res) => {
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    user.emailVerificationCodeHash = codeHash;
-    user.emailVerificationCodeExpires = expiresAt;
-    user.emailVerificationAttempts = 0;
+    pendingRegistration.emailVerificationCodeHash = codeHash;
+    pendingRegistration.emailVerificationCodeExpires = expiresAt;
+    pendingRegistration.emailVerificationAttempts = 0;
 
-    await user.save();
+    await pendingRegistration.save();
 
-    const emailHtml = `<h2> Welcome To TicTacToe!</h2>
-    <p> Your new verification code is</p>
-    <h1>${verificationCode}</h1>
-    <p>This Code expires in 10 minutes</p>`;
+    const emailHtml = `<h2>Welcome to HavenPlay!</h2>
+<p>Your new verification code is:</p>
+<h1>${verificationCode}</h1>
+<p>This code expires in 10 minutes.</p>`;
 
-    await sendEmail(user.email, "TicTacToe Verification Code", emailHtml);
+    await sendEmail(
+      pendingRegistration.email,
+      "HavenPlay verification code",
+      emailHtml,
+    );
 
-    user.emailVerificationLastSentAt = new Date(Date.now());
-
-    await user.save();
+    pendingRegistration.emailVerificationLastSentAt = new Date();
+    await pendingRegistration.save();
 
     return res
       .status(200)
