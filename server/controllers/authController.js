@@ -18,7 +18,7 @@ const cookieOptions = {
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, avatar } = req.body;
-    
+
     if (
       typeof username !== "string" ||
       typeof email !== "string" ||
@@ -30,12 +30,17 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    const normalizedUsername = username.trim();
+    const normalizedEmail = email.toLowerCase().trim();
+
     if (password.length < 8) {
       return res
         .status(400)
         .json({ message: "Password must be at least 8 characters long" });
     }
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    const existingUser = await User.findOne({
+      $or: [{ username: normalizedUsername }, { email: normalizedEmail }],
+    });
     if (existingUser) {
       return res
         .status(409)
@@ -48,8 +53,8 @@ export const registerUser = async (req, res) => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     const user = await User.create({
-      username,
-      email,
+      username: normalizedUsername,
+      email: normalizedEmail,
       password: hashedPassword,
       avatar,
       emailVerified: false,
@@ -83,10 +88,18 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password, rememberMe } = req.body;
-    if (!email || !password) {
+
+    if (
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      !email.trim() ||
+      !password
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    const user = await User.findOne({ email });
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(401).json({ message: "invalid email or password" });
@@ -109,14 +122,14 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: rememberMe ? "7d" : "1d",
+      expiresIn: rememberMe === true ? "7d" : "1d",
     });
 
     const { maxAge, ...sessionCookieOptions } = cookieOptions;
     res.cookie(
       "token",
       token,
-      rememberMe ? cookieOptions : sessionCookieOptions,
+      rememberMe === true ? cookieOptions : sessionCookieOptions,
     );
 
     res.status(200).json({
