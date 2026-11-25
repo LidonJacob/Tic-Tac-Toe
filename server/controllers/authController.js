@@ -18,7 +18,15 @@ const cookieOptions = {
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, avatar } = req.body;
-    if (!username || !email || !password) {
+    
+    if (
+      typeof username !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      !username.trim() ||
+      !email.trim() ||
+      !password
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -236,6 +244,12 @@ export const verifyEmail = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Email and verification code are required" });
+    }
+
+    if (typeof code !== "string" || !/^\d{6}$/.test(code)) {
+      return res.status(400).json({
+        message: "Verification code must be 6 digits",
+      });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
