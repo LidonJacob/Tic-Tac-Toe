@@ -23,11 +23,11 @@ const pendingRegistrationSchema = new mongoose.Schema(
     },
     emailVerificationCodeHash: {
       type: String,
-      required: true,
+      required: false,
     },
     emailVerificationCodeExpires: {
       type: Date,
-      required: true,
+      required: false,
     },
     emailVerificationAttempts: {
       type: Number,
