@@ -26,30 +26,11 @@ const Navbar = () => {
   };
   return (
     <nav className="sticky top-0 z-50 bg-gray-950 border-b border-gray-800 px-3 sm:px-6 py-4 flex items-center justify-between">
-      {!loading && user ? (
-        <Link
-          to="/profile"
-          title="View Profile"
-          className="flex items-center gap-2"
-        >
-          {user.avatar ? (
-            <img
-              src={user.avatar}
-              alt="Profile"
-              className="w-10 h-10 rounded-full object-cover border-2 border-cyan-400"
-            />
-          ) : (
-            <UserRound size={28} className="text-cyan-400" />
-          )}
-          <span className="text-gray-300 font-medium hidden sm:inline hover:text-cyan-400 transition-colors duration-200">
-            Account Settings
-          </span>
-        </Link>
-      ) : (
-        <div className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400">
-          HavenPlay
-        </div>
-      )}
+      <link
+        to="/"
+        className="text-lg sm:text-2xl whitespace-nowrap font-bold text-cyan-400"
+      ></link>
+      HavenPlay
       <div className="flex items-center gap-3 sm:gap-6">
         <Link
           to={"/"}
