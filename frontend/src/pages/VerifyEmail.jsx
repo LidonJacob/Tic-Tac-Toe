@@ -79,6 +79,9 @@ const VerifyEmail = () => {
         <p className="text-gray-400 text-sm text-center mb-6">
           Enter the 6-digit verification code sent to you email
         </p>
+        <p className="text-yellow-400 text-sm text-center mb-4">
+          can't find email? Please check your spam or promotions folder
+        </p>
         <p className="text-cyan-400 text-sm text-center mb-4">
           {registeredEmail}
         </p>
