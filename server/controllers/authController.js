@@ -337,36 +337,24 @@ export const verifyEmail = async (req, res) => {
       timingSafeEqual(storedHashBuffer, submittedHashBuffer);
 
     if (!isCodeValid) {
-      user.emailVerificationAttempts += 1;
+      pendingRegistration.emailVerificationAttempts += 1;
 
-      if (!isCodeValid) {
-        pendingRegistration.emailVerificationAttempts += 1;
-
-        if (pendingRegistration.emailVerificationAttempts >= 5) {
-          pendingRegistration.emailVerificationCodeHash = null;
-          pendingRegistration.emailVerificationCodeExpires = null;
-
-          await pendingRegistration.save();
-
-          return res.status(429).json({
-            message:
-              "Too many attempts. Please request a new verification code.",
-          });
-        }
+      if (pendingRegistration.emailVerificationAttempts >= 5) {
+        pendingRegistration.emailVerificationCodeHash = null;
+        pendingRegistration.emailVerificationCodeExpires = null;
 
         await pendingRegistration.save();
 
-        return res.status(400).json({
-          message: "Invalid or expired verification code",
-          attemptsRemaining: 5 - pendingRegistration.emailVerificationAttempts,
+        return res.status(429).json({
+          message: "Too many attempts. Please request a new verification code.",
         });
       }
 
-      await user.save();
+      await pendingRegistration.save();
 
       return res.status(400).json({
         message: "Invalid or expired verification code",
-        attemptsRemaining: 5 - user.emailVerificationAttempts,
+        attemptsRemaining: 5 - pendingRegistration.emailVerificationAttempts,
       });
     }
 
