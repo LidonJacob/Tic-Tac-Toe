@@ -70,9 +70,9 @@ const Navbar = () => {
               />
             ) : (
               <UserRound size={18} className="flex items-center gap-2 text-gray-300 hover:text-cyan-400
-              transition-colors duration-200 font-medium" />
+              transition-colors duration-200 font-me" />
             )}
-            <span className="text-gray-300 font-medium hidden sm:inline">
+            <span className="text-gray-300 font-medium hidden sm:inline hover:text-cyan-400">
               Account Settings
             </span>
           </Link>
