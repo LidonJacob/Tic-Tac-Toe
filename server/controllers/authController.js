@@ -55,11 +55,7 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "Username or email already exists" });
-    }
+   
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { verificationCode, codeHash } = generateVerificationCode();
@@ -77,7 +73,7 @@ export const registerUser = async (req, res) => {
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    const emailHtml = `<h2> Welcome to TicTacToe! </h2>
+    const emailHtml = `<h2> Welcome to HavenPlay! </h2>
     <p> Your email verification code is: </p>
     <h1> ${verificationCode} </h1>
     <p> This code expires in 10 minutes </p>`;
