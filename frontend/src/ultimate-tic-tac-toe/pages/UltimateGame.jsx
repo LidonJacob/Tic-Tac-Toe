@@ -24,7 +24,7 @@ const UltimateGame = () => {
         Ultimate Tic-Tac-Toe
       </h1>
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-3 w-full">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-2 w-full">
         <div className="flex flex-col items-center gap-3">
           <UltimateGameStatus
             currentPlayer={currentPlayer}

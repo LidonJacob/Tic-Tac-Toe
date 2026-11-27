@@ -8,7 +8,7 @@ const UltimateGameBoard = ({
   isGameOver,
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full mx-auto max-w-[min(88vw,calc(100dvh-180px))] aspect-square">
+    <div className="grid grid-cols-3 gap-2 sm:gap-3 w-[min(88vw,calc(100dvh-180px))] shrink-0 aspect-square">
       {board.map((miniBoard, index) => {
         const isCompleted =
           Boolean(miniBoardWinners[index]) ||
