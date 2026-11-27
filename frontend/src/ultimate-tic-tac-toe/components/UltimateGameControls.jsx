@@ -12,7 +12,7 @@ const UltimateGameControls = ({ onRestart }) => {
         Restart Game
       </button>
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/ultimate-game-home")}
         className="w-full px-5 py-2.5 rounded-lg bg-gray-800 border border-gray-700 
         text-gray-300 font-medium hover:bg-gray-700 hover:border-cyan-400 
         hover:text-cyan-400 transition-all duration-200"
