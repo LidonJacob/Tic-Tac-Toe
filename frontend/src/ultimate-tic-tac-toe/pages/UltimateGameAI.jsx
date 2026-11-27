@@ -43,10 +43,13 @@ const UltimateGameAI = () => {
           />
         </div>
 
-        <UltimateGameControls onRestart={restartGame} />
+        <UltimateGameControls onRestart={restartGame} showDifficulty={true} />
       </div>
     </div>
   );
 };
+
+
+
 
 export default UltimateGameAI;

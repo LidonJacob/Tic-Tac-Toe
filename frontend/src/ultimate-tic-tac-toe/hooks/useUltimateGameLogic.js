@@ -7,7 +7,7 @@ import {
   getAvailableMiniBoards,
   isValidMove,
 } from "../utils/gameRules";
-import { getLegalMoves, getEasyMove } from "../utils/ultimateAi";
+import { getLegalMoves, getEasyMove, getMediumMove } from "../utils/ultimateAi";
 
 const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
   const [board, setBoard] = useState(INITIAL_BOARD);
@@ -70,7 +70,11 @@ const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
     if (winner || isDraw) return;
 
     const legalMoves = getLegalMoves(board, nextMiniBoard);
-    const selectedMove = getEasyMove(legalMoves);
+    const selectedMove =
+      difficulty === "medium"
+        ? getMediumMove(board, legalMoves)
+        : getEasyMove(legalMoves);
+
     if (!selectedMove) return;
 
     const timer = setTimeout(() => {
@@ -86,7 +90,9 @@ const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
     board,
     nextMiniBoard,
     handleMove,
+    difficulty,
   ]);
+
 
   const restartGame = () => {
     setBoard(
