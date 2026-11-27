@@ -87,7 +87,7 @@ const simulateMove = (board, move, player) => {
   return updatedBoard;
 };
 
-const miniMax = (board, nextMiniBoard,depth, isMaximizing) => {
+const miniMax = (board, nextMiniBoard, depth, isMaximizing) => {
   const overallWinner = getMiniBoardWinner(board.map(getMiniBoardWinner));
 
   if (overallWinner === "O") return 10000 + depth;
@@ -102,11 +102,10 @@ const miniMax = (board, nextMiniBoard,depth, isMaximizing) => {
 
   if (isMaximizing) {
     let bestScore = -Infinity;
-  }
 
     for (const move of legalMoves) {
       const updatedBoard = simulateMove(board, move, "O");
-      
+
       const nextBoard = getNextMiniBoard(updatedBoard, move.squareIndex);
 
       const score = miniMax(updatedBoard, nextBoard, depth - 1, false);
@@ -117,5 +116,41 @@ const miniMax = (board, nextMiniBoard,depth, isMaximizing) => {
     return bestScore;
   }
 
+  let bestScore = Infinity;
 
+  for (const move of legalMoves) {
+    const updatedBoard = simulateMove(board, move, "X");
+
+    const nextBoard = getNextMiniBoard(updatedBoard, move.squareIndex);
+
+    const score = miniMax(updatedBoard, nextBoard, depth - 1, true);
+
+    bestScore = Math.min(score, bestScore);
+  }
+
+  return bestScore;
+};
+
+export const getHardMove = (board, nextMiniBoard) => {
+  const legalMoves = getLegalMoves(board, nextMiniBoard);
+
+  if (legalMoves.length === 0) return null;
+
+  let bestMove = legalMoves[0];
+  let bestScore = -Infinity;
+
+  for (const move of legalMoves) {
+    const updatedBoard = simulateMove(board, move, "O");
+
+    const nextBoard = getNextMiniBoard(updatedBoard, move.squareIndex);
+
+    const score = miniMax(updatedBoard, nextBoard, 2, false);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = move;
+    }
+  }
+
+  return bestMove;
 };
