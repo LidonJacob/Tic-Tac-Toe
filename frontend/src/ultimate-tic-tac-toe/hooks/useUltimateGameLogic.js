@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { INITIAL_BOARD } from "../utils/gameConstants";
 import {
   getMiniBoardWinner,
@@ -17,50 +17,52 @@ const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
   const [winner, setWinner] = useState(null);
   const [isDraw, setIsDraw] = useState(false);
 
-  
-const handleMove = (miniBoardIndex, squareIndex) => {
-    if (winner || isDraw) return;
+  const handleMove = useCallback(
+    (miniBoardIndex, squareIndex) => {
+      if (winner || isDraw) return;
 
-    if (nextMiniBoard !== null && miniBoardIndex !== nextMiniBoard) return;
+      if (nextMiniBoard !== null && miniBoardIndex !== nextMiniBoard) return;
 
-    if (!isValidMove(board, miniBoardIndex, squareIndex)) return;
+      if (!isValidMove(board, miniBoardIndex, squareIndex)) return;
 
-    const newBoard = board.map((miniBoard) => [...miniBoard]);
+      const newBoard = board.map((miniBoard) => [...miniBoard]);
 
-    newBoard[miniBoardIndex][squareIndex] = currentPlayer;
+      newBoard[miniBoardIndex][squareIndex] = currentPlayer;
 
-    setBoard(newBoard);
+      setBoard(newBoard);
 
-    const miniBoardWinner = getMiniBoardWinner(newBoard[miniBoardIndex]);
+      const miniBoardWinner = getMiniBoardWinner(newBoard[miniBoardIndex]);
 
-    const newMiniBoardWinners = [...miniBoardWinners];
+      const newMiniBoardWinners = [...miniBoardWinners];
 
-    if (miniBoardWinner) {
-      newMiniBoardWinners[miniBoardIndex] = miniBoardWinner;
-      setMiniBoardWinners(newMiniBoardWinners);
-    }
+      if (miniBoardWinner) {
+        newMiniBoardWinners[miniBoardIndex] = miniBoardWinner;
+        setMiniBoardWinners(newMiniBoardWinners);
+      }
 
-    const overallWinner = getOverallWinner(newMiniBoardWinners);
+      const overallWinner = getOverallWinner(newMiniBoardWinners);
 
-    if (overallWinner) {
-      setWinner(overallWinner);
-    }
+      if (overallWinner) {
+        setWinner(overallWinner);
+      }
 
-    const isGameDraw =
-      !overallWinner && getAvailableMiniBoards(newBoard).length === 0;
+      const isGameDraw =
+        !overallWinner && getAvailableMiniBoards(newBoard).length === 0;
 
-    if (isGameDraw) {
-      setIsDraw(true);
-    }
+      if (isGameDraw) {
+        setIsDraw(true);
+      }
 
-    if (overallWinner || isGameDraw) return;
+      if (overallWinner || isGameDraw) return;
 
-    const nextBoard = getNextMiniBoard(newBoard, squareIndex);
+      const nextBoard = getNextMiniBoard(newBoard, squareIndex);
 
-    setNextMiniBoard(nextBoard);
+      setNextMiniBoard(nextBoard);
 
-    setCurrentPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
-  };
+      setCurrentPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
+    },
+    [winner, isDraw, nextMiniBoard, board, miniBoardWinners, currentPlayer],
+  );
 
   useEffect(() => {
     if (gameMode !== "ai") return;
@@ -71,8 +73,20 @@ const handleMove = (miniBoardIndex, squareIndex) => {
     const selectedMove = getEasyMove(legalMoves);
     if (!selectedMove) return;
 
-    handleMove(selectedMove.miniBoardIndex, selectedMove.squareIndex);
-  }, [gameMode, currentPlayer, winner, isDraw, board, nextMiniBoard, handleMove]);
+    const timer = setTimeout(() => {
+      handleMove(selectedMove.miniBoardIndex, selectedMove.squareIndex);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [
+    gameMode,
+    currentPlayer,
+    winner,
+    isDraw,
+    board,
+    nextMiniBoard,
+    handleMove,
+  ]);
 
   const restartGame = () => {
     setBoard(
