@@ -60,6 +60,19 @@ const useUltimateGameLogic = () => {
     setCurrentPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
   };
 
+  const restartGame = () => {
+    setBoard(
+      Array(9)
+        .fill(null)
+        .map(() => Array(9).fill("")),
+    );
+    setCurrentPlayer("X");
+    setMiniBoardWinners(Array(9).fill(null));
+    setNextMiniBoard(null);
+    setWinner(null);
+    setIsDraw(false);
+  };
+
   return {
     board,
     currentPlayer,
@@ -68,6 +81,7 @@ const useUltimateGameLogic = () => {
     winner,
     isDraw,
     handleMove,
+    restartGame,
   };
 };
 

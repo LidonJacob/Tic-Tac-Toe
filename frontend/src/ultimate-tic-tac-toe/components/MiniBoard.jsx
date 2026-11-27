@@ -23,7 +23,10 @@ const MiniBoard = ({
 
       {miniBoardWinner && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-950/80">
-          <span className="text-7xl sm:text-8xl font-black text-cyan-400 animate-pulse">
+          <span
+            className="text-7xl sm:text-8xl font-black text-cyan-400 animate-[win-pop_450ms_ease-out_both]
+          drop-shadow-[0_0_12px_rgba(34,211,238,0.35)]"
+          >
             {miniBoardWinner}
           </span>
         </div>

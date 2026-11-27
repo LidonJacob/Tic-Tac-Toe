@@ -1,6 +1,7 @@
 import useUltimateGameLogic from "../hooks/useUltimateGameLogic";
 import UltimateGameBoard from "../components/UltimateGameBoard";
 import UltimateGameStatus from "../components/UltimateGameStatus";
+import UltimateGameControls from "../components/UltimateGameControls";
 
 const UltimateGame = () => {
   const {
@@ -11,6 +12,7 @@ const UltimateGame = () => {
     winner,
     isDraw,
     handleMove,
+    restartGame,
   } = useUltimateGameLogic();
 
   return (
@@ -22,18 +24,25 @@ const UltimateGame = () => {
         Ultimate Tic-Tac-Toe
       </h1>
 
-      <UltimateGameStatus
-        currentPlayer={currentPlayer}
-        winner={winner}
-        isDraw={isDraw}
-      />
-      <UltimateGameBoard
-        board={board}
-        miniBoardWinners={miniBoardWinners}
-        nextMiniBoard={nextMiniBoard}
-        onSquareClick={handleMove}
-        isGameOver={Boolean(winner) || isDraw}
-      />
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-3 w-full">
+        <div className="flex flex-col items-center gap-3">
+          <UltimateGameStatus
+            currentPlayer={currentPlayer}
+            winner={winner}
+            isDraw={isDraw}
+          />
+
+          <UltimateGameBoard
+            board={board}
+            miniBoardWinners={miniBoardWinners}
+            nextMiniBoard={nextMiniBoard}
+            onSquareClick={handleMove}
+            isGameOver={Boolean(winner) || isDraw}
+          />
+        </div>
+
+        <UltimateGameControls onRestart={restartGame} />
+      </div>
     </div>
   );
 };
