@@ -1,8 +1,15 @@
 import { randomUUID } from "crypto";
 
-const waitingPlayers = [];
+const waitingUltimatePlayers = [];
 
 export const activeUltimateGames = new Map();
+
+const createInitialUltimateBoard = () =>
+  Array.from({ length: 9 }, () => Array(9).fill(""));
+
+const createInitialMiniBoardWinners = () => Array(9).fill(null);
+
+const INITIAL_CURRENT_PLAYER = "X";
 
 export const handleUltimateMatchMaking = (io, socket) => {
   const userId = socket.user?._id?.toString();
@@ -33,8 +40,6 @@ export const handleUltimateMatchMaking = (io, socket) => {
 
     opponentSocket.join(roomId);
     socket.join(roomId);
-
-    
 
     io.to(roomId).emit("ultimate-match-found", {
       roomId,
