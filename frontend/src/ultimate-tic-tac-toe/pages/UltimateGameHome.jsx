@@ -19,6 +19,16 @@ const UltimateGameHome = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (!showInstructions) return;
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showInstructions]);
+
   return (
     <div
       className="min-h-[calc(100dvh-60px)] w-full bg-gray-950 text-white flex flex-col 
@@ -59,11 +69,19 @@ const UltimateGameHome = () => {
           <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-lg rounded-xl border border-cyan-500/20 shadow-2xl
-            shadow-black/40 bg-gray-900 p-6"
+            shadow-black/40 bg-gray-900 p-6 animate-[dialog-enter_200ms_ease-out]"
           >
-            <h2 className="text-2xl font-bold text-cyan-400 mb-4">
-              How to Play
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-cyan-400">How to Play</h2>
+
+              <button
+                onClick={() => setShowInstructions(false)}
+                className="text-gray-400 hover:text-white text-2xl leading-none transition-colors"
+                aria-label="Close instructions"
+              >
+                &times;
+              </button>
+            </div>
             <div className="space-y-4 text-gray-300 text-sm sm:text-base">
               <p>
                 <span className="text-cyan-400 font-semibold">
