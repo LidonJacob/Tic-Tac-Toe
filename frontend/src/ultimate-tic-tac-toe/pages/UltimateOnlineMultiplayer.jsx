@@ -16,43 +16,63 @@ const UltimateOnlineMultiPlayer = () => {
 
     socket.connect();
 
-    socket.on("connect", () => {
+    const handleConnect = () => {
       setConnectionStatus("connected");
-    });
+    };
 
-    socket.on("disconnect", () => {
+    socket.on("connect", handleConnect);
+
+    const handleDisconnect = () => {
       setConnectionStatus("disconnected");
-    });
+    };
 
-    socket.on("connect_error", () => {
+    socket.on("disconnect", handleDisconnect);
+
+    const handleConnectError = () => {
       setConnectionStatus("error");
-    });
+    };
+
+    socket.on("connect_error", handleConnectError);
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("connect_error");
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleConnectError);
     };
   }, [loading, user]);
   return (
-    <div className="min-h-[calc(100dvh-60px)] bg-gray-950 text-white ">
-      <h1 className="text-3xl font-bold text-cyan-400 text-center pt-10">
+    <div
+      className="min-h-[calc(100dvh-60px)] bg-gray-950 flex flex-col items-center
+    justify-center gap-6 px-4 py-8 text-white"
+    >
+      <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">
         Ultimate Online MultiPlayer
       </h1>
-      {loading && <p>Checking authentication...</p>}
+      {loading && (
+        <p className="text-cyan-400 font-semibold animate-pulse">
+          Checking authentication...
+        </p>
+      )}
 
-      {!loading && !user && <p>Please log in to play online.</p>}
-
+      {!loading && !user && (
+        <p className="text-red-400 font-semibold">
+          Please log in to play online.
+        </p>
+      )}
       {!loading && user && connectionStatus === "disconnected" && (
-        <p>Connecting to the game server...</p>
+        <p className="text-cyan-400 font-semibold animate-pulse">
+          Connecting to the game server...
+        </p>
       )}
 
       {!loading && user && connectionStatus === "connected" && (
-        <p className="text-green-400">Connected to the game server.</p>
+        <p className="text-green-400 font-semibold">
+          Connected to the game server.
+        </p>
       )}
 
       {!loading && user && connectionStatus === "error" && (
-        <p className="text-red-400">
+        <p className="text-red-400 font-semibold">
           Unable to connect to the game server. Please try again.
         </p>
       )}
