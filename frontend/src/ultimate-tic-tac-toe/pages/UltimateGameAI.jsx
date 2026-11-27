@@ -21,7 +21,7 @@ const UltimateGameAI = () => {
 
   return (
     <div
-      className="min-h-[calc(100dvh-60px)] w-full bg-gray-950 text-white flex-flex-col
+      className="min-h-[calc(100dvh-60px)] w-full bg-gray-950 text-white flex flex-col
   items-center justify-center gap-3 px-4 py-3"
     >
       <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400 text-center">
@@ -29,11 +29,21 @@ const UltimateGameAI = () => {
       </h1>
       <div className="flex flex-col lg:flex-row items-center justify-center gap-2 w-full">
         <div className="flex flex-col items-center gap-3">
-          <UltimateGameStatus />
-          <UltimateGameBoard />
+          <UltimateGameStatus
+            currentPlayer={currentPlayer}
+            winner={winner}
+            isDraw={isDraw}
+          />
+          <UltimateGameBoard
+            board={board}
+            miniBoardWinners={miniBoardWinners}
+            nextMiniBoard={nextMiniBoard}
+            onSquareClick={handleMove}
+            isGameOver={Boolean(winner) || isDraw}
+          />
         </div>
 
-        <UltimateGameControls />
+        <UltimateGameControls onRestart={restartGame} />
       </div>
     </div>
   );

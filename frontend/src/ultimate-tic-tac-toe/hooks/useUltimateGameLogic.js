@@ -75,7 +75,7 @@ const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
 
     const timer = setTimeout(() => {
       handleMove(selectedMove.miniBoardIndex, selectedMove.squareIndex);
-    }, 600);
+    }, 900);
 
     return () => clearTimeout(timer);
   }, [

@@ -17,7 +17,7 @@ const UltimateGame = () => {
 
   return (
     <div
-      className="min-h-[calc(100dvh-60px)] w-full bg-gray-950 text-white flex-flex-col
+      className="min-h-[calc(100dvh-60px)] w-full bg-gray-950 text-white flex flex-col
   items-center justify-center gap-3 px-4 py-3"
     >
       <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400 text-center">
