@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile";
 import OnlineMultiplayer from "./pages/OnlineMultiplayer";
 import VerifyEmail from "./pages/VerifyEmail";
+import UltimateGame from "./ultimate-tic-tac-toe/pages/UltimateGame";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/ultimate-game" element={<UltimateGame />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
