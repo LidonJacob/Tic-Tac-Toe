@@ -47,7 +47,7 @@ const UltimateGameModes = () => {
 
         <button
           type="button"
-          onClick={() => navigate("/ultimate-game-ai")}
+          onClick={() => navigate("/ultimate-game-difficulty")}
           className="w-full flex items-center justify-between gap-4
   rounded-xl border border-gray-800 bg-gray-900 p-5 sm:p-6
   text-left hover:border-cyan-500/50 hover:bg-gray-800

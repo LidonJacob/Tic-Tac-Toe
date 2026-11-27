@@ -13,6 +13,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import UltimateGame from "./ultimate-tic-tac-toe/pages/UltimateGame";
 import UltimateGameHome from "./ultimate-tic-tac-toe/pages/UltimateGameHome";
 import UltimateGameModes from "./ultimate-tic-tac-toe/pages/UltimateGameModes";
+import UltimateDifficulty from "./ultimate-tic-tac-toe/pages/UltimateDifficulty";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/ultimate-game-home" element={<UltimateGameHome />} />
         <Route path="/ultimate-game" element={<UltimateGame />} />
         <Route path="/ultimate-game-modes" element={<UltimateGameModes />} />
+        <Route path="/ultimate-game-difficulty" element={<UltimateDifficulty />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

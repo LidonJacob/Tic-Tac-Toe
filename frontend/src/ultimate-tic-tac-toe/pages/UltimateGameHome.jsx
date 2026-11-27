@@ -45,7 +45,7 @@ const UltimateGameHome = () => {
       </div>
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
         <button
-          onClick={() => navigate("/ultimate-game")}
+          onClick={() => navigate("/ultimate-game-modes")}
           className="px-8 py-3 rounded-lg bg-cyan-500
         text-gray-950 font-bold hover:bg-cyan-400 hover:shadow-lg 
         hover:shadow-cyan-500/20 transition-all duration-200"
