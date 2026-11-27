@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { INITIAL_BOARD } from "../utils/gameConstants";
 import {
   getMiniBoardWinner,
@@ -7,8 +7,9 @@ import {
   getAvailableMiniBoards,
   isValidMove,
 } from "../utils/gameRules";
+import { getLegalMoves, getEasyMove } from "../utils/ultimateAi";
 
-const useUltimateGameLogic = () => {
+const useUltimateGameLogic = (gameMode = "local", difficulty = "easy") => {
   const [board, setBoard] = useState(INITIAL_BOARD);
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [miniBoardWinners, setMiniBoardWinners] = useState(Array(9).fill(null));
@@ -16,7 +17,8 @@ const useUltimateGameLogic = () => {
   const [winner, setWinner] = useState(null);
   const [isDraw, setIsDraw] = useState(false);
 
-  const handleMove = (miniBoardIndex, squareIndex) => {
+  
+const handleMove = (miniBoardIndex, squareIndex) => {
     if (winner || isDraw) return;
 
     if (nextMiniBoard !== null && miniBoardIndex !== nextMiniBoard) return;
@@ -60,6 +62,18 @@ const useUltimateGameLogic = () => {
     setCurrentPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
   };
 
+  useEffect(() => {
+    if (gameMode !== "ai") return;
+    if (currentPlayer !== "O") return;
+    if (winner || isDraw) return;
+
+    const legalMoves = getLegalMoves(board, nextMiniBoard);
+    const selectedMove = getEasyMove(legalMoves);
+    if (!selectedMove) return;
+
+    handleMove(selectedMove.miniBoardIndex, selectedMove.squareIndex);
+  }, [gameMode, currentPlayer, winner, isDraw, board, nextMiniBoard, handleMove]);
+
   const restartGame = () => {
     setBoard(
       Array(9)
@@ -74,6 +88,8 @@ const useUltimateGameLogic = () => {
   };
 
   return {
+    gameMode,
+    difficulty,
     board,
     currentPlayer,
     miniBoardWinners,
