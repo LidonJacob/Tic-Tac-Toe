@@ -18,7 +18,19 @@ export const getMiniBoardWinner = (miniBoard) => {
 };
 
 export const isValidMove = (board, miniBoardIndex, squareIndex) => {
+  if (
+    !Number.isInteger(miniBoardIndex) ||
+    miniBoardIndex < 0 ||
+    miniBoardIndex >= board.length
+  ) {
+    return false;
+  }
+
   const miniBoard = board[miniBoardIndex];
+
+  if (!Number.isInteger(squareIndex) || squareIndex < 0 || squareIndex >= miniBoard.length) {
+    return false;
+  }
 
   return (
     miniBoard[squareIndex] === "" &&
@@ -55,5 +67,3 @@ export const getAvailableMiniBoards = (board) => {
 
   return availableBoards;
 };
-
-
