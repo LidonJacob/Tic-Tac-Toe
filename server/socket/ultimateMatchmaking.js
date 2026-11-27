@@ -9,8 +9,6 @@ const createInitialUltimateBoard = () =>
 
 const createInitialMiniBoardWinners = () => Array(9).fill(null);
 
-const INITIAL_CURRENT_PLAYER = "X";
-
 export const handleUltimateMatchMaking = (io, socket) => {
   const userId = socket.user?._id?.toString();
 
@@ -32,10 +30,19 @@ export const handleUltimateMatchMaking = (io, socket) => {
     if (!opponentSocket?.connected) continue;
 
     const roomId = randomUUID();
+    const firstPlayerStarts = Math.random() < 0.5;
 
     const players = [
-      { userId: opponent.userId, socketId: opponent.socketId, symbol: "X" },
-      { userId, socketId: socket.id, symbol: "O" },
+      {
+        userId: opponent.userId,
+        socketId: opponent.socketId,
+        symbol: firstPlayerStarts ? "X" : "O",
+      },
+      {
+        userId,
+        socketId: socket.id,
+        symbol: firstPlayerStarts ? "O" : "X",
+      },
     ];
 
     opponentSocket.join(roomId);
