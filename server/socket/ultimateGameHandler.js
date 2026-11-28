@@ -73,7 +73,7 @@ const isMiniBoardPlayable = (board, miniBoardIndex) => {
   const nextMiniBoard = board[miniBoardIndex];
 
   return (
-    nextMiniBoard && !getMiniBoardWinner(MiniBoard) && !isMiniBoardFull(MiniBoard)
+    nextMiniBoard && !getMiniBoardWinner(nextMiniBoard) && !isMiniBoardFull(nextMiniBoard)
   );
 };
 
