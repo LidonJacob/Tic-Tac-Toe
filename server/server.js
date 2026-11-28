@@ -10,7 +10,12 @@ import {
   handlePlayerReconnect,
 } from "./socket/matchmaking.js";
 
-import { handleUltimateMatchMaking, removeWaitingUltimatePlayer } from "./socket/ultimateMatchmaking.js";
+import {
+  handleUltimateMatchMaking,
+  removeWaitingUltimatePlayer,
+} from "./socket/ultimateMatchmaking.js";
+
+import { handleUltimateMove } from "./socket/ultimateGameHandler.js";
 
 import {
   handleMakeMove,
@@ -34,7 +39,7 @@ io.on("connection", (socket) => {
 
   socket.on("cancel-ultimate-match", () => {
     removeWaitingUltimatePlayer(socket);
-  })
+  });
 
   socket.on("find-match", () => {
     handleMatchMaking(io, socket);
@@ -44,13 +49,15 @@ io.on("connection", (socket) => {
     handleUltimateMatchMaking(io, socket);
   });
 
+  socket.on("make-ultimate-move", (moveData) => {
+    handleUltimateMove(io, socket, moveData);
+  });
+
   socket.on("disconnect", () => {
     removeWaitingPlayer(socket);
     removeWaitingUltimatePlayer(socket);
     handlePlayerDisconnect(io, socket);
   });
-
-
 
   socket.on("make-move", (moveData) => {
     handleMakeMove(io, socket, moveData);
