@@ -73,7 +73,9 @@ const isMiniBoardPlayable = (board, miniBoardIndex) => {
   const nextMiniBoard = board[miniBoardIndex];
 
   return (
-    nextMiniBoard && !getMiniBoardWinner(nextMiniBoard) && !isMiniBoardFull(nextMiniBoard)
+    nextMiniBoard &&
+    !getMiniBoardWinner(nextMiniBoard) &&
+    !isMiniBoardFull(nextMiniBoard)
   );
 };
 
@@ -88,6 +90,10 @@ const isValidUltimateMove = (
   nextMiniBoard,
 ) => {
   if (!areValidMovesCoordinates(miniBoardIndex, squareIndex)) {
+    return false;
+  }
+
+  if (!isMiniBoardPlayable(board, miniBoardIndex)) {
     return false;
   }
 
