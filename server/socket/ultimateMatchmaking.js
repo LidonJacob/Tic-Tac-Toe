@@ -9,6 +9,24 @@ const createInitialUltimateBoard = () =>
 
 const createInitialMiniBoardWinners = () => Array(9).fill(null);
 
+const INITIAL_GAME_STATUS = "active";
+
+const INITIAL_WINNER = null;
+
+const INITIAL_IS_DRAW = false;
+
+const createInitialUltimateGame = (roomId, players) => ({
+  roomId,
+  board: createInitialUltimateBoard(),
+  miniBoardWinners: createInitialMiniBoardWinners(),
+  nextMiniBoard: null,
+  currentPlayer: "X",
+  status: INITIAL_GAME_STATUS,
+  winner: INITIAL_WINNER,
+  isDraw: INITIAL_IS_DRAW,
+  players,
+});
+
 export const handleUltimateMatchMaking = (io, socket) => {
   const userId = socket.user?._id?.toString();
 
@@ -45,12 +63,25 @@ export const handleUltimateMatchMaking = (io, socket) => {
       },
     ];
 
+    const game = createInitialUltimateGame(roomId, players);
+
+    activeUltimateGames.set(roomId, game);
+
     opponentSocket.join(roomId);
     socket.join(roomId);
 
     io.to(roomId).emit("ultimate-match-found", {
       roomId,
       players: players.map(({ userId, symbol }) => ({ userId, symbol })),
+      gameState: {
+        board: game.board,
+        miniBoardWinners: game.miniBoardWinners,
+        nextMiniBoard: game.nextMiniBoard,
+        currentPlayer: game.currentPlayer,
+        status: game.status,
+        winner: game.winner,
+        isDraw: game.isDraw,
+      }
     });
 
     return;
