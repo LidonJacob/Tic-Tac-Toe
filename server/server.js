@@ -9,6 +9,9 @@ import {
   removeWaitingPlayer,
   handlePlayerReconnect,
 } from "./socket/matchmaking.js";
+
+import { handleUltimateMatchMaking, removeWaitingUltimatePlayer } from "./socket/ultimateMatchmaking.js";
+
 import {
   handleMakeMove,
   handleRematchRequest,
@@ -29,14 +32,25 @@ io.use(socketAuth);
 io.on("connection", (socket) => {
   handlePlayerReconnect(io, socket);
 
+  socket.on("cancel-ultimate-match", () => {
+    removeWaitingUltimatePlayer(socket);
+  })
+
   socket.on("find-match", () => {
     handleMatchMaking(io, socket);
   });
 
+  socket.on("find-ultimate-match", () => {
+    handleUltimateMatchMaking(io, socket);
+  });
+
   socket.on("disconnect", () => {
     removeWaitingPlayer(socket);
+    removeWaitingUltimatePlayer(socket);
     handlePlayerDisconnect(io, socket);
   });
+
+
 
   socket.on("make-move", (moveData) => {
     handleMakeMove(io, socket, moveData);
