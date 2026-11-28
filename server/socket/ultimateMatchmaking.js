@@ -81,7 +81,7 @@ export const handleUltimateMatchMaking = (io, socket) => {
         status: game.status,
         winner: game.winner,
         isDraw: game.isDraw,
-      }
+      },
     });
 
     return;
@@ -93,4 +93,18 @@ export const handleUltimateMatchMaking = (io, socket) => {
   });
 
   socket.emit("ultimate-waiting-for-opponent");
+};
+
+export const removeWaitingUltimatePlayer = (socket) => {
+  const userId = socket.user?._id?.toString();
+
+  if (!userId) return;
+
+  const playerIndex = waitingUltimatePlayers.findIndex(
+    (player) => player.userId === userId && player.socketId === socket.id,
+  );
+
+  if (playerIndex !== -1) {
+    waitingUltimatePlayers.splice(playerIndex, 1);
+  }
 };
